@@ -10,8 +10,9 @@ cmds = ["cd dohhh && yarn install"]
 cmds = ["cd dohhh && yarn build"]
 
 [start]
-cmd = "cd dohhh && yarn start"
+cmd = "cd dohhh && NODE_OPTIONS='--dns-result-order=ipv4first' yarn start:railway"
 
 [variables]
 NODE_ENV = "production"
 PORT = "9000"
+NODE_OPTIONS = "--dns-result-order=ipv4first"
