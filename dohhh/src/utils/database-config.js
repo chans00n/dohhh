@@ -1,4 +1,5 @@
 const dns = require('dns');
+const net = require('net');
 
 // Force IPv4 for database connections on Railway
 function configureDatabaseConnection() {
@@ -23,28 +24,33 @@ function configureDatabaseConnection() {
       
       // If it's a Supabase URL, ensure proper configuration
       if (url.hostname.includes('supabase.co')) {
-        // Use session pooler port if not already set
-        if (!url.port || url.port === '5432') {
-          url.port = '6543'; // Session pooler port
+        // Keep existing pgbouncer settings if they exist
+        if (!url.searchParams.has('pgbouncer')) {
+          url.searchParams.set('pgbouncer', 'true');
         }
         
-        // Add connection parameters
-        url.searchParams.set('sslmode', 'require');
-        url.searchParams.set('connect_timeout', '10');
-        url.searchParams.set('pool_mode', 'session');
+        // Ensure SSL is required
+        if (!url.searchParams.has('sslmode')) {
+          url.searchParams.set('sslmode', 'require');
+        }
         
-        // For IPv4, we might need to use the IPv4 address directly
-        // This is a fallback if DNS resolution still fails
-        if (url.hostname === 'db.whycrwrascteduazhmyu.supabase.co') {
-          // You can optionally hardcode the IPv4 address here if needed
-          // url.hostname = 'xxx.xxx.xxx.xxx'; // Replace with actual IPv4
+        // Add connection timeout if not present
+        if (!url.searchParams.has('connect_timeout')) {
+          url.searchParams.set('connect_timeout', '10');
+        }
+        
+        // Keep connection limit if specified
+        if (!url.searchParams.has('connection_limit')) {
+          url.searchParams.set('connection_limit', '1');
         }
         
         databaseUrl = url.toString();
         process.env.DATABASE_URL = databaseUrl;
         
         console.log('Database configured for Railway with IPv4 preferences');
-        console.log('Using session pooler on port:', url.port);
+        console.log('Using Supabase pooler on port:', url.port);
+        console.log('PgBouncer enabled:', url.searchParams.get('pgbouncer'));
+        console.log('Connection limit:', url.searchParams.get('connection_limit'));
       }
     } catch (e) {
       console.error('Error configuring database URL:', e);
@@ -54,4 +60,34 @@ function configureDatabaseConnection() {
   return databaseUrl;
 }
 
-module.exports = { configureDatabaseConnection };
+// Helper to check if we can connect using IPv4
+async function testIPv4Connection(hostname, port = 6543) {
+  return new Promise((resolve) => {
+    dns.lookup(hostname, { family: 4 }, (err, address) => {
+      if (err) {
+        console.log('IPv4 lookup failed:', err.message);
+        resolve(false);
+      } else {
+        console.log('IPv4 address resolved:', address);
+        const socket = net.createConnection({ host: address, port, family: 4 }, () => {
+          console.log('IPv4 connection test successful');
+          socket.end();
+          resolve(true);
+        });
+        
+        socket.on('error', (err) => {
+          console.log('IPv4 connection test failed:', err.message);
+          resolve(false);
+        });
+        
+        socket.setTimeout(5000, () => {
+          console.log('IPv4 connection test timed out');
+          socket.destroy();
+          resolve(false);
+        });
+      }
+    });
+  });
+}
+
+module.exports = { configureDatabaseConnection, testIPv4Connection };
