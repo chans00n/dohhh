@@ -36,8 +36,18 @@ async function startup() {
     });
   });
   
-  // Step 2b: Check build output
-  console.log('\nStep 2b: Checking build output...');
+  // Step 2b: Fix and build admin panel completely
+  console.log('\nStep 2b: Fixing admin panel...');
+  const { fixAdminPanel } = require('./railway-admin-fix');
+  try {
+    await fixAdminPanel();
+    console.log('✅ Admin panel setup complete');
+  } catch (error) {
+    console.log('⚠️  Admin panel setup failed, continuing with API only');
+  }
+  
+  // Step 2c: Check build output
+  console.log('\nStep 2c: Checking build output...');
   await new Promise((resolve) => {
     const check = spawn('node', ['check-build.js'], {
       stdio: 'inherit'
@@ -45,8 +55,8 @@ async function startup() {
     check.on('exit', () => resolve());
   });
   
-  // Step 2c: Preserve admin build
-  console.log('\nStep 2c: Preserving admin build...');
+  // Step 2d: Preserve admin build
+  console.log('\nStep 2d: Preserving admin build...');
   await new Promise((resolve) => {
     const preserve = spawn('node', ['preserve-admin.js'], {
       stdio: 'inherit'
