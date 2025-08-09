@@ -1,119 +1,54 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const path = require("path");
-
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, "../dohhh/.env") });
-
-let app;
-let isInitializing = false;
-
-async function getApp() {
-  if (app) return app;
-  
-  if (isInitializing) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return getApp();
-  }
-  
-  isInitializing = true;
-  
+module.exports = async (req, res) => {
   try {
-    console.log("Initializing Medusa server...");
-    
-    const expressApp = express();
-    
-    // Basic middleware
-    expressApp.use(express.json());
-    expressApp.use(express.urlencoded({ extended: true }));
-    
-    // CORS
-    expressApp.use((req, res, next) => {
-      const origin = req.headers.origin;
-      const allowedOrigins = [
-        process.env.STORE_CORS,
-        process.env.ADMIN_CORS,
-        process.env.AUTH_CORS
-      ].join(",").split(",").filter(Boolean);
-      
-      if (allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-      }
-      
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-      
-      if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-      }
-      
-      next();
-    });
-    
-    // Health check
-    expressApp.get("/admin/health", (req, res) => {
-      res.json({
+    // Simple health check first
+    if (req.url === "/health" || req.url === "/admin/health") {
+      return res.status(200).json({
         status: "ok",
         timestamp: new Date().toISOString(),
         environment: {
           NODE_ENV: process.env.NODE_ENV || "production",
           DATABASE_URL: process.env.DATABASE_URL ? "configured" : "missing",
-          CORS: {
-            ADMIN: process.env.ADMIN_CORS || "not set",
-            STORE: process.env.STORE_CORS || "not set"
-          }
+          JWT_SECRET: process.env.JWT_SECRET ? "configured" : "missing",
+          COOKIE_SECRET: process.env.COOKIE_SECRET ? "configured" : "missing",
+          ADMIN_CORS: process.env.ADMIN_CORS || "not set",
+          STORE_CORS: process.env.STORE_CORS || "not set",
+          AUTH_CORS: process.env.AUTH_CORS || "not set"
+        },
+        headers: {
+          host: req.headers.host,
+          origin: req.headers.origin
         }
       });
-    });
-    
-    // Load API routes
-    try {
-      const adminHealthRoute = require("../dohhh/src/api/admin/health/route");
-      expressApp.get("/admin/health/check", adminHealthRoute.GET);
-    } catch (e) {
-      console.log("Admin health route not found");
     }
-    
-    // Root
-    expressApp.get("/", (req, res) => {
-      res.json({
-        name: "Medusa Server",
+
+    // Root endpoint
+    if (req.url === "/" || req.url === "") {
+      return res.status(200).json({
+        name: "Medusa API",
         version: "2.8.8",
         status: "running",
         endpoints: [
+          "/health",
           "/admin/health",
           "/store",
           "/admin"
         ]
       });
-    });
-    
-    // Admin app route
-    expressApp.get("/app", (req, res) => {
-      res.redirect("https://app.medusajs.com");
-    });
-    
-    app = expressApp;
-    isInitializing = false;
-    
-    return app;
-  } catch (error) {
-    console.error("Failed to initialize:", error);
-    isInitializing = false;
-    throw error;
-  }
-}
+    }
 
-module.exports = async (req, res) => {
-  try {
-    const medusaApp = await getApp();
-    return medusaApp(req, res);
+    // For now, return method not implemented for other routes
+    return res.status(501).json({
+      error: "Not Implemented",
+      message: "This endpoint is not yet implemented",
+      path: req.url,
+      method: req.method
+    });
+
   } catch (error) {
-    console.error("Handler error:", error);
-    res.status(500).json({
+    console.error("API Error:", error);
+    return res.status(500).json({
       error: "Internal Server Error",
-      message: error.message,
+      message: error.message || "An unexpected error occurred",
       timestamp: new Date().toISOString()
     });
   }
