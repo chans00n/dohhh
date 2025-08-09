@@ -29,6 +29,11 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  admin: {
+    disable: false,
+    path: "admin",
+    outDir: ".medusa/server/public/admin"
+  },
   modules: [
     {
       resolve: "@medusajs/medusa/payment",

@@ -36,6 +36,15 @@ async function startup() {
     });
   });
   
+  // Step 2b: Check build output
+  console.log('\nStep 2b: Checking build output...');
+  await new Promise((resolve) => {
+    const check = spawn('node', ['check-build.js'], {
+      stdio: 'inherit'
+    });
+    check.on('exit', () => resolve());
+  });
+  
   // Step 3: Start the server
   console.log('\nStep 3: Starting Medusa server...\n');
   const server = spawn('yarn', ['start'], {
