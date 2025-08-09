@@ -1,0 +1,17 @@
+# Nixpacks configuration for Medusa
+
+[phases.setup]
+nixPkgs = ["nodejs-18_x", "yarn"]
+
+[phases.install]
+cmds = ["cd dohhh && yarn install"]
+
+[phases.build]
+cmds = ["cd dohhh && yarn build"]
+
+[start]
+cmd = "cd dohhh && yarn start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "9000"
