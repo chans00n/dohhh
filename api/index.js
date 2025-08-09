@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 
 // Load environment variables
-dotenv.config({ path: path.join(__dirname, "../.env") });
+dotenv.config({ path: path.join(__dirname, "../dohhh/.env") });
 
 let app;
 let isInitializing = false;
@@ -69,7 +69,7 @@ async function getApp() {
     
     // Load API routes
     try {
-      const adminHealthRoute = require("../src/api/admin/health/route");
+      const adminHealthRoute = require("../dohhh/src/api/admin/health/route");
       expressApp.get("/admin/health/check", adminHealthRoute.GET);
     } catch (e) {
       console.log("Admin health route not found");

@@ -1,17 +1,17 @@
 {
   "framework": null,
   "buildCommand": "cd dohhh && yarn build",
-  "outputDirectory": "dohhh",
+  "outputDirectory": ".",
   "installCommand": "cd dohhh && yarn install",
   "functions": {
-    "dohhh/api/index.js": {
+    "api/*.js": {
       "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/dohhh/api"
+      "destination": "/api"
     }
   ]
 }
