@@ -1,4 +1,5 @@
 const path = require("path");
+const express = require("express");
 
 // Set up environment
 const MEDUSA_DIR = path.join(__dirname, "../dohhh");
@@ -41,20 +42,25 @@ async function getMedusaApp() {
     console.log("Database URL:", process.env.DATABASE_URL ? "Set" : "Not set");
     console.log("Working directory:", process.cwd());
     
-    // Import and run Medusa
-    const { createMedusaExpressApp } = require("@medusajs/framework/http");
-    const { getConfigFile } = require("@medusajs/utils");
+    // Create Express app
+    const expressApp = express();
     
-    // Load configuration
-    const configFile = getConfigFile(MEDUSA_DIR, "medusa-config");
+    // Load Medusa using the loaders
+    const loaders = require("@medusajs/medusa/dist/loaders").default;
+    const expressLoader = require("@medusajs/medusa/dist/loaders/express").default;
+    const configModule = require(path.join(MEDUSA_DIR, "medusa-config"));
     
-    // Create the Medusa app
-    const medusaApp = await createMedusaExpressApp({
-      config: configFile.configModule,
+    // Initialize container with all services
+    const container = await loaders({
       directory: MEDUSA_DIR,
+      expressApp,
+      isTest: false,
     });
     
-    app = medusaApp;
+    // Load express server
+    await expressLoader({ app: expressApp, configModule });
+    
+    app = expressApp;
     console.log("Medusa initialized successfully");
     
     return app;
