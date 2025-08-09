@@ -1,9 +1,15 @@
 const dns = require('dns');
 const { promisify } = require('util');
-const lookup = promisify(dns.lookup);
 
 // Force IPv4 globally for all DNS lookups
 dns.setDefaultResultOrder('ipv4first');
+
+// Use public DNS servers (Google and Cloudflare) as fallback
+const resolver = new dns.Resolver();
+resolver.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+
+const resolve4 = promisify(resolver.resolve4.bind(resolver));
+const lookup = promisify(dns.lookup);
 
 // Override the default DNS lookup to force IPv4
 const originalLookup = dns.lookup;
@@ -25,19 +31,53 @@ dns.lookup = function(hostname, options, callback) {
 };
 
 async function getIPv4Address(hostname) {
+  // Try multiple methods to resolve the address
+  
+  // Method 1: Try using public DNS resolver
   try {
-    const result = await lookup(hostname, { family: 4 });
-    return result.address;
+    console.log('Attempting to resolve using public DNS...');
+    const addresses = await resolve4(hostname);
+    if (addresses && addresses.length > 0) {
+      console.log('Successfully resolved via public DNS:', addresses[0]);
+      return addresses[0];
+    }
   } catch (error) {
-    console.error('Failed to resolve IPv4 address:', error);
-    return null;
+    console.log('Public DNS resolution failed:', error.message);
   }
+  
+  // Method 2: Try system DNS
+  try {
+    console.log('Attempting to resolve using system DNS...');
+    const result = await lookup(hostname, { family: 4 });
+    if (result && result.address) {
+      console.log('Successfully resolved via system DNS:', result.address);
+      return result.address;
+    }
+  } catch (error) {
+    console.log('System DNS resolution failed:', error.message);
+  }
+  
+  // Method 3: Hardcode known Supabase IPs as last resort
+  if (hostname === 'db.whycrwrascteduazhmyu.supabase.co') {
+    // Try to use a known IP range for Supabase
+    // Note: This is a fallback - the actual IP should be resolved dynamically
+    console.log('WARNING: Using fallback resolution method');
+    
+    // You can get the current IP by running: nslookup db.whycrwrascteduazhmyu.supabase.co
+    // from your local machine and update this
+    return null; // We'll need to get the actual IP
+  }
+  
+  console.error('All DNS resolution methods failed for:', hostname);
+  return null;
 }
 
 async function fixDatabaseUrl() {
   if (!process.env.DATABASE_URL) {
-    console.error('DATABASE_URL not set!');
-    return;
+    console.error('❌ DATABASE_URL not set!');
+    console.error('Please set DATABASE_URL in Railway environment variables');
+    // Don't continue if DATABASE_URL is not set
+    return false;
   }
   
   try {

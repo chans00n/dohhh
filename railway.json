@@ -5,7 +5,7 @@
     "buildCommand": "cd dohhh && yarn install && yarn build"
   },
   "deploy": {
-    "startCommand": "cd dohhh && NODE_ENV=production node railway-start.js",
+    "startCommand": "cd dohhh && NODE_ENV=production node railway-debug.js && NODE_ENV=production node railway-start.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
