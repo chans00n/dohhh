@@ -58,10 +58,35 @@ module.exports = async (req, res) => {
       });
     }
     
-    // Admin app redirect
-    if (req.url === "/admin/app" || req.url === "/app") {
-      res.setHeader("Location", "https://app.medusajs.com");
-      return res.status(302).end();
+    // Admin app - serve HTML
+    if (req.url === "/app" || req.url === "/admin" || req.url === "/admin/app") {
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Medusa Admin</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+    <h1>Medusa Admin</h1>
+    <p>The admin panel needs to be built and deployed separately.</p>
+    <p>For now, you can:</p>
+    <ul style="list-style: none; padding: 0;">
+      <li>1. Run the admin locally with: <code>cd dohhh && yarn dev</code></li>
+      <li>2. Access it at: <code>http://localhost:5173</code></li>
+      <li>3. Or deploy the admin separately to Vercel/Netlify</li>
+    </ul>
+    <hr style="margin: 30px auto; width: 300px;">
+    <p>API Status: ✅ Running</p>
+    <p><a href="/health">Check API Health</a></p>
+  </div>
+</body>
+</html>`;
+      
+      res.setHeader("Content-Type", "text/html");
+      return res.status(200).send(html);
     }
     
     // Auth endpoints
