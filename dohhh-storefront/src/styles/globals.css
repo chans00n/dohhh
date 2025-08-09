@@ -1,0 +1,181 @@
+/* Smooth scroll for in-page anchors */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+}
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  :root {
+    /* Brand colors */
+    --color-primary: #FF8C00;
+    --color-primary-hover: #E67E00;
+    --color-primary-light: #FFA500;
+    
+    /* Light mode colors (default) */
+    --color-bg-base: #F5F5F5;
+    --color-bg-card: #FFFFFF;
+    --color-bg-hover: #EEEEEE;
+    --color-text-base: #1A1A1A;
+    --color-text-muted: #666666;
+    --color-text-subtle: #999999;
+    --color-border: #E0E0E0;
+    
+    /* Stripe input colors for light mode */
+    --text-base: #1A1A1A;
+  }
+  
+  /* Dark mode */
+  .dark {
+    --color-bg-base: #1e1915;
+    --color-bg-card: #2c2622;
+    --color-bg-hover: #3a3430;
+    --color-text-base: #FFFFFF;
+    --color-text-muted: #CCCCCC;
+    --color-text-subtle: #999999;
+    --color-border: #404040;
+    
+    /* Stripe input colors for dark mode */
+    --text-base: #FFFFFF;
+  }
+  
+  /* Apply base styles */
+  body {
+    @apply bg-light-bg-base dark:bg-dark-bg-base text-light-text-base dark:text-dark-text-base transition-colors duration-200;
+  }
+  
+  /* Update form elements for theme */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text-base);
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-card) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  input:focus ~ label,
+  input:not(:placeholder-shown) ~ label {
+    @apply -translate-y-2 text-xsmall-regular;
+  }
+
+  input:focus ~ label {
+    @apply left-0;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border: 1px solid #212121;
+    -webkit-text-fill-color: #212121;
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+  }
+}
+
+@layer components {
+  .content-container {
+    @apply max-w-[1440px] w-full mx-auto px-6;
+  }
+
+  .contrast-btn {
+    @apply px-4 py-2 border border-light-text-base dark:border-dark-text-base rounded-full hover:bg-light-text-base dark:hover:bg-dark-text-base hover:text-light-bg-card dark:hover:text-dark-bg-base transition-colors duration-200 ease-in;
+  }
+  
+  .primary-btn {
+    @apply px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-hover transition-colors duration-200 ease-in font-medium;
+  }
+
+  .text-xsmall-regular {
+    @apply text-[10px] leading-4 font-normal;
+  }
+
+  .text-small-regular {
+    @apply text-xs leading-5 font-normal;
+  }
+
+  .text-small-semi {
+    @apply text-xs leading-5 font-semibold;
+  }
+
+  .text-base-regular {
+    @apply text-sm leading-6 font-normal;
+  }
+
+  .text-base-semi {
+    @apply text-sm leading-6 font-semibold;
+  }
+
+  .text-large-regular {
+    @apply text-base leading-6 font-normal;
+  }
+
+  .text-large-semi {
+    @apply text-base leading-6 font-semibold;
+  }
+
+  .text-xl-regular {
+    @apply text-2xl leading-[36px] font-normal;
+  }
+
+  .text-xl-semi {
+    @apply text-2xl leading-[36px] font-semibold;
+  }
+
+  .text-2xl-regular {
+    @apply text-[30px] leading-[48px] font-normal;
+  }
+
+  .text-2xl-semi {
+    @apply text-[30px] leading-[48px] font-semibold;
+  }
+
+  .text-3xl-regular {
+    @apply text-[32px] leading-[44px] font-normal;
+  }
+
+  .text-3xl-semi {
+    @apply text-[32px] leading-[44px] font-semibold;
+  }
+}
