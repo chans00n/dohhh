@@ -1,10 +1,11 @@
 const { loadEnv, defineConfig } = require('@medusajs/framework/utils');
+const { configureDatabaseConnection } = require('./src/utils/database-config');
 
 // Load environment variables
 loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
-// Railway provides DATABASE_URL directly, so use it if available
-const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_URL;
+// Configure database connection for Railway with IPv4
+const databaseUrl = configureDatabaseConnection();
 
 // Log for debugging (remove in production)
 console.log('Environment:', process.env.NODE_ENV);

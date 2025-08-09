@@ -5,8 +5,10 @@
     "buildCommand": "cd dohhh && yarn install && yarn build"
   },
   "deploy": {
-    "startCommand": "cd dohhh && node railway-check.js && NODE_ENV=production NODE_OPTIONS='--dns-result-order=ipv4first' yarn start",
+    "startCommand": "cd dohhh && NODE_ENV=production NODE_OPTIONS='--dns-result-order=ipv4first' node railway-check.js && NODE_ENV=production NODE_OPTIONS='--dns-result-order=ipv4first' yarn start",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "restartPolicyMaxRetries": 10,
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100
   }
 }
