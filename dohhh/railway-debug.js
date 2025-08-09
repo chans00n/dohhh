@@ -55,10 +55,13 @@ if (!process.env.DATABASE_URL) {
     console.log('  PgBouncer:', url.searchParams.get('pgbouncer') || 'false');
     console.log('  Connection Limit:', url.searchParams.get('connection_limit') || 'not set');
     
-    if (url.port !== '6543' && url.hostname.includes('supabase.co')) {
-      console.log('\n⚠️  WARNING: Using direct connection port (5432) instead of session pooler (6543)');
+    // Check if using the correct pooler configuration
+    if (url.hostname === 'aws-0-us-west-1.pooler.supabase.com') {
+      console.log('\n✅ Using Supabase session pooler (correct configuration)');
+    } else if (url.hostname.includes('supabase.co') && url.hostname.startsWith('db.')) {
+      console.log('\n⚠️  WARNING: Using direct connection instead of session pooler');
       console.log('  This may cause connection issues on Railway');
-      console.log('  Update your DATABASE_URL to use port 6543');
+      console.log('  Update to use: aws-0-us-west-1.pooler.supabase.com');
     }
   } catch (e) {
     console.log('❌ Invalid DATABASE_URL format:', e.message);

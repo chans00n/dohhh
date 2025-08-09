@@ -110,23 +110,26 @@ async function fixSupabaseConnection() {
         return true;
       } else {
         console.error('\n❌ Unrecognized Supabase URL format');
-          console.log('\n📝 Alternative solution:');
-          console.log('1. Go to your Supabase dashboard');
-          console.log('2. Go to Settings -> Database');
-          console.log('3. Find "Connection string" section');
-          console.log('4. Use the "Connection pooling" tab');
-          console.log('5. Copy the "Session mode" connection string');
-          console.log('6. Update DATABASE_URL in Railway with this string');
-          console.log('\nOr try using the direct IP address:');
-          console.log('  You may need to use a different Supabase region or endpoint');
-        }
+        console.log('\n📝 Alternative solution:');
+        console.log('1. Go to your Supabase dashboard');
+        console.log('2. Go to Settings -> Database');
+        console.log('3. Find "Connection string" section');
+        console.log('4. Use the "Connection pooling" tab');
+        console.log('5. Copy the "Session mode" connection string');
+        console.log('6. Update DATABASE_URL in Railway with this string');
+        console.log('\nOr try using the direct IP address:');
+        console.log('  You may need to use a different Supabase region or endpoint');
+        return false;
       }
+    } else {
+      // Not a Supabase URL that needs conversion
+      console.log('  URL format does not require conversion');
+      return true;
     }
   } catch (error) {
     console.error('Error processing DATABASE_URL:', error);
+    return false;
   }
-  
-  return false;
 }
 
 // Export for use in other modules
