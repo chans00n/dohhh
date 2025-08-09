@@ -1,25 +1,43 @@
-const path = require("path");
+const { createMedusaApp } = require("@medusajs/framework");
+const express = require("express");
 
 let medusaApp;
+let isInitializing = false;
 
 async function loadApp() {
   if (medusaApp) {
     return medusaApp;
   }
 
-  try {
-    // Set up the correct directory
-    const appDir = path.join(__dirname, "..");
-    process.chdir(appDir);
+  if (isInitializing) {
+    // Wait for initialization to complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return loadApp();
+  }
 
-    // Load the built Medusa app
-    const medusaPath = path.join(appDir, ".medusa", "server", "index.js");
-    const { app } = require(medusaPath);
+  isInitializing = true;
+
+  try {
+    console.log("Initializing Medusa app...");
+    
+    const app = express();
+    
+    // Create Medusa app
+    const { runApp } = await createMedusaApp({
+      expressApp: app,
+      projectConfigPath: process.cwd(),
+    });
+
+    await runApp();
     
     medusaApp = app;
+    isInitializing = false;
+    
+    console.log("Medusa app initialized successfully");
     return medusaApp;
   } catch (error) {
-    console.error("Failed to load Medusa app:", error);
+    console.error("Failed to initialize Medusa app:", error);
+    isInitializing = false;
     throw error;
   }
 }
@@ -33,7 +51,7 @@ module.exports = async (req, res) => {
     res.status(500).json({
       error: "Internal Server Error",
       message: error.message,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined
+      details: process.env.NODE_ENV === "development" ? error.stack : undefined
     });
   }
 };
