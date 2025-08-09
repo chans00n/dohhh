@@ -1,5 +1,5 @@
 import { ExecArgs } from "@medusajs/framework/types"
-import { FUNDRAISING_MODULE } from "../../modules/fundraising"
+import { FUNDRAISING_MODULE } from "../modules/fundraising"
 
 export default async function seedProductionData({ container }: ExecArgs) {
   const logger = container.resolve("logger")
