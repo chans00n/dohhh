@@ -19,10 +19,8 @@ export async function GET(
 
     // Try to check database connection
     try {
-      const dbModule = req.scope.resolve("__pg_connection__")
-      if (dbModule) {
-        response["database"] = "connected"
-      }
+      req.scope.resolve("__pg_connection__")
+      response["database"] = "connected"
     } catch (dbError) {
       response["database"] = "error"
       response["dbError"] = dbError.message
