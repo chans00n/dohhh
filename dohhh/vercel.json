@@ -1,17 +1,21 @@
 {
-  "buildCommand": "yarn build",
-  "outputDirectory": "dist",
+  "buildCommand": "./vercel-build.sh",
+  "outputDirectory": ".medusa/server",
   "installCommand": "yarn install",
   "framework": null,
   "functions": {
-    "api/index.js": {
-      "maxDuration": 30
+    "api/serverless.js": {
+      "maxDuration": 30,
+      "includeFiles": ".medusa/server/**"
     }
   },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/index.js"
+      "destination": "/api/serverless.js"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
