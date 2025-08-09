@@ -24,6 +24,12 @@ function configureDatabaseConnection() {
       
       // If it's a Supabase URL, ensure proper configuration
       if (url.hostname.includes('supabase.co')) {
+        // IMPORTANT: Ensure we're using the session pooler port
+        if (!url.port || url.port === '5432') {
+          console.log('WARNING: Database URL is using direct connection port 5432, switching to pooler port 6543');
+          url.port = '6543';
+        }
+        
         // Keep existing pgbouncer settings if they exist
         if (!url.searchParams.has('pgbouncer')) {
           url.searchParams.set('pgbouncer', 'true');
