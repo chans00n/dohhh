@@ -21,10 +21,13 @@ function fixAdminAuth() {
     process.env.COOKIE_SECRET = 'supersecret-change-this-in-production';
   }
   
-  // Set correct CORS for admin
+  // Set correct CORS for admin - allow localhost for development
   const adminDomain = 'https://admin.dohhh.shop';
-  process.env.ADMIN_CORS = adminDomain;
-  process.env.AUTH_CORS = `${adminDomain},https://dohhh.shop,https://www.dohhh.shop`;
+  const localhostOrigins = 'http://localhost:8888,http://localhost:8000,http://localhost:3000,http://127.0.0.1:8888';
+  
+  process.env.ADMIN_CORS = `${adminDomain},${localhostOrigins}`;
+  process.env.AUTH_CORS = `${adminDomain},https://dohhh.shop,https://www.dohhh.shop,${localhostOrigins}`;
+  process.env.STORE_CORS = `https://dohhh.shop,https://www.dohhh.shop,${localhostOrigins}`;
   
   // Set the backend URL correctly for Railway
   if (process.env.RAILWAY_PUBLIC_DOMAIN) {
