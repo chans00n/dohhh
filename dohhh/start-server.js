@@ -6,19 +6,31 @@ const path = require('path');
 
 // Check if admin build exists
 const adminPath = path.join(process.cwd(), '.medusa/server/public/admin/index.html');
+const backupPath = path.join(process.cwd(), 'admin-backup/index.html');
+
 console.log('Checking for admin build at:', adminPath);
 
-if (fs.existsSync(adminPath)) {
-  console.log('✅ Admin build found!');
+if (!fs.existsSync(adminPath)) {
+  console.log('❌ Admin build not found at expected location');
   
-  // List admin directory contents
+  // Try to restore from backup
+  if (fs.existsSync(backupPath)) {
+    console.log('✅ Found admin backup, restoring...');
+    const { spawn } = require('child_process');
+    const restore = spawn('node', ['preserve-admin.js'], { stdio: 'inherit' });
+    restore.on('exit', () => {
+      console.log('Admin restore attempt complete');
+    });
+  } else {
+    console.log('❌ No admin backup found');
+  }
+}
+
+if (fs.existsSync(adminPath)) {
+  console.log('✅ Admin build is available');
   const adminDir = path.dirname(adminPath);
   const files = fs.readdirSync(adminDir);
   console.log('Admin directory contains:', files);
-} else {
-  console.log('❌ Admin build not found!');
-  console.log('Current directory:', process.cwd());
-  console.log('Directory contents:', fs.readdirSync(process.cwd()));
 }
 
 // Set environment variables

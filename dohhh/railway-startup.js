@@ -45,6 +45,15 @@ async function startup() {
     check.on('exit', () => resolve());
   });
   
+  // Step 2c: Preserve admin build
+  console.log('\nStep 2c: Preserving admin build...');
+  await new Promise((resolve) => {
+    const preserve = spawn('node', ['preserve-admin.js'], {
+      stdio: 'inherit'
+    });
+    preserve.on('exit', () => resolve());
+  });
+  
   // Step 3: Start the server
   console.log('\nStep 3: Starting Medusa server...\n');
   const server = spawn('node', ['start-server.js'], {
