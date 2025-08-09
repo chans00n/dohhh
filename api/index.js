@@ -1,57 +1,83 @@
 const path = require("path");
-const express = require("express");
 
-// Set the Medusa directory
+// Set up environment
 const MEDUSA_DIR = path.join(__dirname, "../dohhh");
-
-// Change to Medusa directory
 process.chdir(MEDUSA_DIR);
 
-// Create a cached app instance
-let app;
+// Load production environment variables
+require("dotenv").config({ path: path.join(MEDUSA_DIR, ".env.production") });
 
-async function createApp() {
+let app;
+let isInitializing = false;
+let initializationError = null;
+
+async function getMedusaApp() {
+  // Return cached app if available
   if (app) return app;
   
+  // Return error if initialization failed
+  if (initializationError) throw initializationError;
+  
+  // Wait if already initializing
+  if (isInitializing) {
+    return new Promise((resolve, reject) => {
+      const checkInterval = setInterval(() => {
+        if (app) {
+          clearInterval(checkInterval);
+          resolve(app);
+        } else if (initializationError) {
+          clearInterval(checkInterval);
+          reject(initializationError);
+        }
+      }, 100);
+    });
+  }
+  
+  // Start initialization
+  isInitializing = true;
+  
   try {
-    console.log("Creating Medusa app for Vercel...");
+    console.log("Initializing Medusa for Vercel...");
+    console.log("Database URL:", process.env.DATABASE_URL ? "Set" : "Not set");
+    console.log("Working directory:", process.cwd());
     
-    // Create Express app
-    const expressApp = express();
+    // Import and run Medusa
+    const { createMedusaExpressApp } = require("@medusajs/framework/http");
+    const { getConfigFile } = require("@medusajs/utils");
     
-    // Import Medusa's loaders
-    const loaders = require(path.join(MEDUSA_DIR, "node_modules/@medusajs/medusa/dist/loaders")).default;
+    // Load configuration
+    const configFile = getConfigFile(MEDUSA_DIR, "medusa-config");
     
-    // Load Medusa
-    await loaders({
+    // Create the Medusa app
+    const medusaApp = await createMedusaExpressApp({
+      config: configFile.configModule,
       directory: MEDUSA_DIR,
-      expressApp,
-      isTest: false
     });
     
-    app = expressApp;
-    console.log("Medusa app created successfully");
+    app = medusaApp;
+    console.log("Medusa initialized successfully");
     
     return app;
   } catch (error) {
-    console.error("Failed to create Medusa app:", error);
+    console.error("Failed to initialize Medusa:", error);
+    initializationError = error;
     throw error;
+  } finally {
+    isInitializing = false;
   }
 }
 
-// Export the handler
+// Export handler
 module.exports = async (req, res) => {
   try {
-    const medusaApp = await createApp();
+    const medusaApp = await getMedusaApp();
     return medusaApp(req, res);
   } catch (error) {
-    console.error("Request handler error:", error);
-    
-    // If initialization fails, return a meaningful error
+    console.error("Handler error:", error);
     res.status(500).json({
-      error: "Server initialization failed",
+      error: "Server Error",
       message: error.message,
-      details: process.env.NODE_ENV === "development" ? error.stack : undefined
+      path: req.path
     });
   }
 };
