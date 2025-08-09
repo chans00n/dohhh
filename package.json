@@ -4,5 +4,9 @@
   "private": true,
   "scripts": {
     "build": "echo 'Build completed'"
+  },
+  "dependencies": {
+    "@medusajs/medusa": "2.8.8",
+    "express": "^4.18.2"
   }
 }

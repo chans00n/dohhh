@@ -4,11 +4,40 @@
   "outputDirectory": ".",
   "installCommand": "cd dohhh && yarn install",
   "functions": {
-    "api/*.js": {
-      "maxDuration": 30
+    "api/index.js": {
+      "maxDuration": 30,
+      "includeFiles": "dohhh/**"
     }
   },
   "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/api"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/app",
+      "destination": "/api"
+    },
+    {
+      "source": "/app/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/store/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/hooks/(.*)",
+      "destination": "/api"
+    },
     {
       "source": "/(.*)",
       "destination": "/api"
