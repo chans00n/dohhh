@@ -1,16 +1,17 @@
 {
+  "framework": null,
   "buildCommand": "yarn build",
   "outputDirectory": ".",
+  "installCommand": "yarn install",
   "functions": {
     "api/index.js": {
-      "maxDuration": 30,
-      "includeFiles": ".medusa/**,src/**,medusa-config.js,.env"
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/index.js"
+      "destination": "/api"
     }
   ]
 }
