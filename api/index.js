@@ -1,6 +1,29 @@
 module.exports = async (req, res) => {
   try {
-    // Simple health check first
+    // Set CORS headers
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      "https://dohhh.shop",
+      "https://www.dohhh.shop",
+      "https://api.dohhh.shop",
+      "http://localhost:8000",
+      "http://localhost:9000"
+    ];
+    
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    
+    // Handle OPTIONS request
+    if (req.method === "OPTIONS") {
+      return res.status(200).end();
+    }
+    
+    // Health check endpoints
     if (req.url === "/health" || req.url === "/admin/health") {
       return res.status(200).json({
         status: "ok",
@@ -10,17 +33,15 @@ module.exports = async (req, res) => {
           DATABASE_URL: process.env.DATABASE_URL ? "configured" : "missing",
           JWT_SECRET: process.env.JWT_SECRET ? "configured" : "missing",
           COOKIE_SECRET: process.env.COOKIE_SECRET ? "configured" : "missing",
-          ADMIN_CORS: process.env.ADMIN_CORS || "not set",
-          STORE_CORS: process.env.STORE_CORS || "not set",
-          AUTH_CORS: process.env.AUTH_CORS || "not set"
-        },
-        headers: {
-          host: req.headers.host,
-          origin: req.headers.origin
+          CORS: {
+            ADMIN: process.env.ADMIN_CORS,
+            STORE: process.env.STORE_CORS,
+            AUTH: process.env.AUTH_CORS
+          }
         }
       });
     }
-
+    
     // Root endpoint
     if (req.url === "/" || req.url === "") {
       return res.status(200).json({
@@ -30,20 +51,54 @@ module.exports = async (req, res) => {
         endpoints: [
           "/health",
           "/admin/health",
+          "/admin/app",
           "/store",
           "/admin"
         ]
       });
     }
-
-    // For now, return method not implemented for other routes
-    return res.status(501).json({
-      error: "Not Implemented",
-      message: "This endpoint is not yet implemented",
+    
+    // Admin app redirect
+    if (req.url === "/admin/app" || req.url === "/app") {
+      res.setHeader("Location", "https://app.medusajs.com");
+      return res.status(302).end();
+    }
+    
+    // Auth endpoints
+    if (req.url.startsWith("/auth")) {
+      // For now, return a placeholder
+      return res.status(200).json({
+        message: "Auth endpoint",
+        path: req.url
+      });
+    }
+    
+    // Store endpoints
+    if (req.url.startsWith("/store")) {
+      // For now, return a placeholder
+      return res.status(200).json({
+        message: "Store endpoint",
+        path: req.url
+      });
+    }
+    
+    // Admin endpoints
+    if (req.url.startsWith("/admin")) {
+      // For now, return a placeholder
+      return res.status(200).json({
+        message: "Admin endpoint",
+        path: req.url
+      });
+    }
+    
+    // 404 for everything else
+    return res.status(404).json({
+      error: "Not Found",
+      message: "The requested endpoint does not exist",
       path: req.url,
       method: req.method
     });
-
+    
   } catch (error) {
     console.error("API Error:", error);
     return res.status(500).json({
