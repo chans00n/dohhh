@@ -22,9 +22,9 @@ module.exports = defineConfig({
     databaseUrl: databaseUrl,
     http: {
       port: process.env.PORT || 9000,
-      storeCors: process.env.STORE_CORS || "https://dohhh.shop,https://www.dohhh.shop",
-      adminCors: process.env.ADMIN_CORS || "https://admin.dohhh.shop",
-      authCors: process.env.AUTH_CORS || "https://dohhh.shop,https://www.dohhh.shop,https://admin.dohhh.shop",
+      storeCors: process.env.STORE_CORS || "https://dohhh.shop,https://www.dohhh.shop,http://localhost:*",
+      adminCors: process.env.ADMIN_CORS || "https://admin.dohhh.shop,http://localhost:*,http://127.0.0.1:*",
+      authCors: process.env.AUTH_CORS || "https://dohhh.shop,https://www.dohhh.shop,https://admin.dohhh.shop,http://localhost:*,http://127.0.0.1:*",
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
