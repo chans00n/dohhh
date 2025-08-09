@@ -30,9 +30,10 @@ module.exports = defineConfig({
     }
   },
   admin: {
-    disable: false,
+    disable: process.env.DISABLE_ADMIN === 'true' ? true : false,
     path: "admin",
-    outDir: ".medusa/server/public/admin"
+    outDir: ".medusa/server/public/admin",
+    backendUrl: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : "http://localhost:9000"
   },
   modules: [
     {

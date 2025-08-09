@@ -47,13 +47,9 @@ async function startup() {
   
   // Step 3: Start the server
   console.log('\nStep 3: Starting Medusa server...\n');
-  const server = spawn('yarn', ['start'], {
+  const server = spawn('node', ['start-server.js'], {
     stdio: 'inherit',
-    env: {
-      ...process.env,
-      NODE_ENV: 'production',
-      NODE_OPTIONS: '--dns-result-order=ipv4first'
-    }
+    cwd: process.cwd()
   });
   
   server.on('exit', (code) => {
