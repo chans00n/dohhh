@@ -64,8 +64,24 @@ async function startup() {
     preserve.on('exit', () => resolve());
   });
   
-  // Step 3: Start the server
-  console.log('\nStep 3: Starting Medusa server...\n');
+  // Step 3: Setup admin user (optional, don't fail if it doesn't work)
+  console.log('\nStep 3: Setting up admin user...');
+  try {
+    await new Promise((resolve) => {
+      const setup = spawn('node', ['setup-admin-production.js'], {
+        stdio: 'inherit',
+        env: process.env
+      });
+      setup.on('exit', () => resolve());
+      // Timeout after 30 seconds
+      setTimeout(resolve, 30000);
+    });
+  } catch (error) {
+    console.log('⚠️  Admin setup skipped');
+  }
+  
+  // Step 4: Start the server
+  console.log('\nStep 4: Starting Medusa server...\n');
   const server = spawn('node', ['start-server.js'], {
     stdio: 'inherit',
     cwd: process.cwd()

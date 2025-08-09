@@ -43,9 +43,22 @@ if (fs.existsSync(adminPath)) {
 process.env.NODE_ENV = 'production';
 process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
 
+// Ensure JWT and Cookie secrets are set
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-secret-change-in-production';
+  console.log('⚠️  Using default JWT_SECRET - CHANGE THIS IN PRODUCTION!');
+}
+
+if (!process.env.COOKIE_SECRET) {
+  process.env.COOKIE_SECRET = process.env.COOKIE_SECRET || 'your-super-secret-cookie-secret-change-in-production';
+  console.log('⚠️  Using default COOKIE_SECRET - CHANGE THIS IN PRODUCTION!');
+}
+
 // Don't disable admin - let it run even without UI
 // The API endpoints will still work for authentication
 console.log('\n✅ Admin panel enabled at /admin');
+console.log('   JWT_SECRET is set:', !!process.env.JWT_SECRET);
+console.log('   COOKIE_SECRET is set:', !!process.env.COOKIE_SECRET);
 
 // Start Medusa
 console.log('\nStarting Medusa server...\n');
