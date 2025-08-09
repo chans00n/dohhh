@@ -80,7 +80,8 @@ async function fixSupabaseConnection() {
       // Ensure connection parameters
       newUrl.searchParams.set('pgbouncer', 'true');
       newUrl.searchParams.set('connection_limit', '1');
-      newUrl.searchParams.set('sslmode', 'require');
+      // Use no-verify to bypass certificate validation while maintaining SSL encryption
+      newUrl.searchParams.set('sslmode', 'no-verify');
       
       // If using IP, add the original host for SSL verification
       if (resolvedIP) {
@@ -104,7 +105,8 @@ async function fixSupabaseConnection() {
       // Just ensure we have the right parameters
       originalUrl.searchParams.set('pgbouncer', 'true');
       originalUrl.searchParams.set('connection_limit', '1');
-      originalUrl.searchParams.set('sslmode', 'require');
+      // Use no-verify to bypass certificate validation while maintaining SSL encryption
+      originalUrl.searchParams.set('sslmode', 'no-verify');
       
       process.env.DATABASE_URL = originalUrl.toString();
       return true;
