@@ -11,7 +11,7 @@ export const GET = async (
 ) => {
   const { id } = req.params
   
-  const fundraisingModule = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModule = req.scope.resolve(FUNDRAISING_MODULE) as any
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   
   try {

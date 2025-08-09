@@ -8,7 +8,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
 
   try {
     const [campaigns, count] = await fundraisingModuleService.listAndCountFundraisingCampaigns(
@@ -37,7 +37,7 @@ export async function POST(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
 
   try {
     const campaign = await fundraisingModuleService.createCampaignWithStats(req.body)

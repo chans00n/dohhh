@@ -8,7 +8,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
 
   try {
@@ -39,7 +39,7 @@ export async function PUT(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
 
   console.log(`[CAMPAIGN UPDATE] PUT - Updating campaign ${id} with data:`, req.body)
@@ -83,7 +83,7 @@ export async function PATCH(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
 
   console.log(`[CAMPAIGN UPDATE] Updating campaign ${id} with data:`, req.body)
@@ -138,7 +138,7 @@ export async function DELETE(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
 
   try {

@@ -8,7 +8,7 @@ export async function POST(
   res: MedusaResponse
 ) {
   // Authentication handled by middleware
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
 
   try {

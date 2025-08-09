@@ -23,7 +23,7 @@ const createContributionStep = createStep(
     { container }
   ) => {
     const orderModule = container.resolve(Modules.ORDER)
-    const fundraisingModule = container.resolve(FUNDRAISING_MODULE)
+    const fundraisingModule = container.resolve(FUNDRAISING_MODULE) as any
     
     // Get the order details - try with minimal relations first
     let order = await orderModule.retrieveOrder(order_id)
@@ -221,7 +221,7 @@ const createContributionStep = createStep(
   async (contributionId, { container }) => {
     if (!contributionId) return
     
-    const fundraisingModule = container.resolve(FUNDRAISING_MODULE)
+    const fundraisingModule = container.resolve(FUNDRAISING_MODULE) as any
     await fundraisingModule.deleteFundraisingContributions(contributionId)
   }
 )
@@ -236,7 +236,7 @@ const updateCampaignStatsStep = createStep(
       return new StepResponse(null)
     }
     
-    const fundraisingModule = container.resolve(FUNDRAISING_MODULE)
+    const fundraisingModule = container.resolve(FUNDRAISING_MODULE) as any
     
     // Get the campaign with its current stats
     const campaign = await fundraisingModule.retrieveFundraisingCampaign(
@@ -290,7 +290,7 @@ const updateCampaignStatsStep = createStep(
   async (data, { container }) => {
     if (!data || !data.stats) return
     
-    const fundraisingModule = container.resolve(FUNDRAISING_MODULE)
+    const fundraisingModule = container.resolve(FUNDRAISING_MODULE) as any
     
     if (data.isNew) {
       // Delete the newly created stats

@@ -7,7 +7,7 @@ export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
 ) {
-  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModuleService = req.scope.resolve(FUNDRAISING_MODULE) as any
   
   try {
     const activeCampaign = await fundraisingModuleService.getActiveCampaign()

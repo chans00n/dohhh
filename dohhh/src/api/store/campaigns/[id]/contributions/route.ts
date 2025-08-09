@@ -6,7 +6,7 @@ export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
 ) {
-  const fundraisingModule = req.scope.resolve(FUNDRAISING_MODULE)
+  const fundraisingModule = req.scope.resolve(FUNDRAISING_MODULE) as any
   const { id } = req.params
   const limit = Math.min(parseInt((req.query.limit as string) || "12"), 50)
   const since = (req.query.since as string) || "" // ISO date string
