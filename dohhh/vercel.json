@@ -1,6 +1,8 @@
 {
+  "buildCommand": "yarn build",
+  "outputDirectory": ".",
   "functions": {
-    "api/*.js": {
+    "api/index.js": {
       "maxDuration": 30
     }
   },
