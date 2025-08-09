@@ -1,89 +1,116 @@
 const path = require("path");
 const express = require("express");
 
-// Set up environment
+// Set environment
+process.env.NODE_ENV = "production";
 const MEDUSA_DIR = path.join(__dirname, "../dohhh");
-process.chdir(MEDUSA_DIR);
 
-// Load production environment variables
+// Load environment variables
 require("dotenv").config({ path: path.join(MEDUSA_DIR, ".env.production") });
 
-let app;
-let isInitializing = false;
-let initializationError = null;
+// Simple health check for immediate response
+if (!process.env.DATABASE_URL) {
+  module.exports = (req, res) => {
+    res.status(500).json({ error: "DATABASE_URL not configured" });
+  };
+  return;
+}
 
-async function getMedusaApp() {
-  // Return cached app if available
-  if (app) return app;
-  
-  // Return error if initialization failed
-  if (initializationError) throw initializationError;
-  
-  // Wait if already initializing
-  if (isInitializing) {
-    return new Promise((resolve, reject) => {
-      const checkInterval = setInterval(() => {
-        if (app) {
-          clearInterval(checkInterval);
-          resolve(app);
-        } else if (initializationError) {
-          clearInterval(checkInterval);
-          reject(initializationError);
-        }
-      }, 100);
-    });
-  }
-  
-  // Start initialization
-  isInitializing = true;
+// Create Express app
+const app = express();
+
+// Basic middleware
+app.use(express.json());
+app.use(require("cors")({
+  origin: process.env.STORE_CORS?.split(",") || "*",
+  credentials: true
+}));
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Initialize Medusa
+let medusaInitialized = false;
+let initError = null;
+
+async function initializeMedusa() {
+  if (medusaInitialized || initError) return;
   
   try {
-    console.log("Initializing Medusa for Vercel...");
-    console.log("Database URL:", process.env.DATABASE_URL ? "Set" : "Not set");
-    console.log("Working directory:", process.cwd());
+    console.log("Starting Medusa initialization...");
     
-    // Create Express app
-    const expressApp = express();
+    // Change to Medusa directory
+    process.chdir(MEDUSA_DIR);
     
-    // Load Medusa using the loaders
+    // Load Medusa
     const loaders = require("@medusajs/medusa/dist/loaders").default;
-    const expressLoader = require("@medusajs/medusa/dist/loaders/express").default;
-    const configModule = require(path.join(MEDUSA_DIR, "medusa-config"));
-    
-    // Initialize container with all services
-    const container = await loaders({
+    await loaders({
       directory: MEDUSA_DIR,
-      expressApp,
-      isTest: false,
+      expressApp: app,
+      isTest: false
     });
     
-    // Load express server
-    await expressLoader({ app: expressApp, configModule });
-    
-    app = expressApp;
+    medusaInitialized = true;
     console.log("Medusa initialized successfully");
-    
-    return app;
   } catch (error) {
-    console.error("Failed to initialize Medusa:", error);
-    initializationError = error;
-    throw error;
-  } finally {
-    isInitializing = false;
+    console.error("Medusa initialization failed:", error);
+    initError = error;
   }
 }
 
+// Start initialization immediately
+initializeMedusa();
+
 // Export handler
 module.exports = async (req, res) => {
-  try {
-    const medusaApp = await getMedusaApp();
-    return medusaApp(req, res);
-  } catch (error) {
-    console.error("Handler error:", error);
-    res.status(500).json({
-      error: "Server Error",
-      message: error.message,
-      path: req.path
+  // Quick health check
+  if (req.path === "/health") {
+    return res.json({ 
+      status: medusaInitialized ? "ready" : "initializing",
+      error: initError?.message 
     });
   }
+  
+  // Admin not supported in serverless
+  if (req.path.startsWith("/app") || req.path.startsWith("/admin")) {
+    return res.status(200).json({
+      message: "Admin dashboard is not available in serverless deployment",
+      info: "Use Medusa Admin locally or deploy to a traditional hosting platform"
+    });
+  }
+  
+  // Wait for initialization if needed
+  if (!medusaInitialized && !initError) {
+    const maxWait = 25000; // 25 seconds max
+    const start = Date.now();
+    
+    while (!medusaInitialized && !initError && (Date.now() - start) < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+  
+  // Check initialization status
+  if (initError) {
+    return res.status(500).json({
+      error: "Server initialization failed",
+      message: initError.message
+    });
+  }
+  
+  if (!medusaInitialized) {
+    return res.status(503).json({
+      error: "Server is still initializing",
+      message: "Please try again in a few seconds"
+    });
+  }
+  
+  // Handle the request with Express app
+  return new Promise((resolve, reject) => {
+    app(req, res, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 };

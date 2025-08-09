@@ -2,42 +2,13 @@
   "framework": null,
   "buildCommand": "cd dohhh && yarn build",
   "outputDirectory": ".",
-  "installCommand": "cd dohhh && yarn install",
+  "installCommand": "cd dohhh && yarn install --production",
   "functions": {
     "api/index.js": {
-      "maxDuration": 30,
-      "includeFiles": "dohhh/**"
+      "maxDuration": 30
     }
   },
   "rewrites": [
-    {
-      "source": "/admin",
-      "destination": "/api"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/app",
-      "destination": "/api"
-    },
-    {
-      "source": "/app/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/store/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/auth/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/hooks/(.*)",
-      "destination": "/api"
-    },
     {
       "source": "/(.*)",
       "destination": "/api"

@@ -6,10 +6,10 @@
     "build": "echo 'Build completed'"
   },
   "dependencies": {
-    "@medusajs/framework": "2.8.8",
     "@medusajs/medusa": "2.8.8",
-    "@medusajs/utils": "2.8.8",
     "express": "^4.18.2",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5"
   }
 }
