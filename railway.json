@@ -5,7 +5,7 @@
     "buildCommand": "cd dohhh && yarn install && NODE_ENV=production node run-migrations.js"
   },
   "deploy": {
-    "startCommand": "cd dohhh && NODE_ENV=production yarn build && NODE_ENV=production node railway-debug.js && NODE_ENV=production node railway-start.js",
+    "startCommand": "cd dohhh && NODE_ENV=production node railway-startup.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
