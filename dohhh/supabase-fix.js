@@ -38,89 +38,76 @@ async function fixSupabaseConnection() {
       const parts = originalUrl.hostname.split('.');
       const projectId = parts[1]; // whycrwrascteduazhmyu
       console.log('  Project ID:', projectId);
+      
+      // For your project, the correct pooler endpoint is aws-0-us-west-1.pooler.supabase.com
+      const poolerEndpoint = 'aws-0-us-west-1.pooler.supabase.com';
+      
+      // Try to resolve the pooler endpoint to an IP address
+      let resolvedIP = null;
+      
+      try {
+        console.log(`\nResolving pooler endpoint: ${poolerEndpoint}`);
+        const resolve4 = promisify(resolver.resolve4.bind(resolver));
+        const addresses = await resolve4(poolerEndpoint);
         
-        // For your project, the correct pooler endpoint is aws-0-us-west-1.pooler.supabase.com
-        const poolerEndpoint = 'aws-0-us-west-1.pooler.supabase.com';
-        
-        // Try to resolve the pooler endpoint to an IP address
-        let resolvedIP = null;
-        
-        try {
-          console.log(`\nResolving pooler endpoint: ${poolerEndpoint}`);
-          const resolve4 = promisify(resolver.resolve4.bind(resolver));
-          const addresses = await resolve4(poolerEndpoint);
-          
-          if (addresses && addresses.length > 0) {
-            console.log(`✅ Successfully resolved to IP: ${addresses[0]}`);
-            resolvedIP = addresses[0];
-          }
-        } catch (error) {
-          console.log(`  Failed to resolve: ${error.message}`);
+        if (addresses && addresses.length > 0) {
+          console.log(`✅ Successfully resolved to IP: ${addresses[0]}`);
+          resolvedIP = addresses[0];
         }
-        
-        // Build the new connection URL
-        const newUrl = new URL(process.env.DATABASE_URL);
-        
-        if (resolvedIP) {
-          // Use the resolved IP for Railway (avoids DNS issues)
-          newUrl.hostname = resolvedIP;
-          console.log('  Using resolved IP address for connection');
-        } else {
-          // Fallback to the pooler hostname
-          newUrl.hostname = poolerEndpoint;
-          console.log('  Using pooler hostname directly');
-        }
-        
-        // Update username format for pooler: postgres.{project-id}
-        newUrl.username = `postgres.${projectId}`;
-        
-        // Use port 5432 for the pooler (not 6543)
-        newUrl.port = '5432';
-          
-        // Ensure connection parameters
-        newUrl.searchParams.set('pgbouncer', 'true');
-        newUrl.searchParams.set('connection_limit', '1');
-        newUrl.searchParams.set('sslmode', 'require');
-        
-        // If using IP, add the original host for SSL verification
-        if (resolvedIP) {
-          newUrl.searchParams.set('host', poolerEndpoint);
-        }
-        
-        const updatedUrl = newUrl.toString();
-        process.env.DATABASE_URL = updatedUrl;
-        
-        console.log('\n✅ Database URL updated to use session pooler:');
-        console.log('  New Host:', newUrl.hostname);
-        console.log('  New Username:', newUrl.username);
-        console.log('  Port:', newUrl.port);
-        console.log('  PgBouncer:', 'enabled');
-        
-        return true;
-      } else if (originalUrl.hostname === 'aws-0-us-west-1.pooler.supabase.com') {
-        // Already using the correct pooler endpoint
-        console.log('✅ Already using session pooler endpoint');
-        
-        // Just ensure we have the right parameters
-        originalUrl.searchParams.set('pgbouncer', 'true');
-        originalUrl.searchParams.set('connection_limit', '1');
-        originalUrl.searchParams.set('sslmode', 'require');
-        
-        process.env.DATABASE_URL = originalUrl.toString();
-        return true;
-      } else {
-        console.error('\n❌ Unrecognized Supabase URL format');
-        console.log('\n📝 Alternative solution:');
-        console.log('1. Go to your Supabase dashboard');
-        console.log('2. Go to Settings -> Database');
-        console.log('3. Find "Connection string" section');
-        console.log('4. Use the "Connection pooling" tab');
-        console.log('5. Copy the "Session mode" connection string');
-        console.log('6. Update DATABASE_URL in Railway with this string');
-        console.log('\nOr try using the direct IP address:');
-        console.log('  You may need to use a different Supabase region or endpoint');
-        return false;
+      } catch (error) {
+        console.log(`  Failed to resolve: ${error.message}`);
       }
+      
+      // Build the new connection URL
+      const newUrl = new URL(process.env.DATABASE_URL);
+      
+      if (resolvedIP) {
+        // Use the resolved IP for Railway (avoids DNS issues)
+        newUrl.hostname = resolvedIP;
+        console.log('  Using resolved IP address for connection');
+      } else {
+        // Fallback to the pooler hostname
+        newUrl.hostname = poolerEndpoint;
+        console.log('  Using pooler hostname directly');
+      }
+      
+      // Update username format for pooler: postgres.{project-id}
+      newUrl.username = `postgres.${projectId}`;
+      
+      // Use port 5432 for the pooler (not 6543)
+      newUrl.port = '5432';
+      
+      // Ensure connection parameters
+      newUrl.searchParams.set('pgbouncer', 'true');
+      newUrl.searchParams.set('connection_limit', '1');
+      newUrl.searchParams.set('sslmode', 'require');
+      
+      // If using IP, add the original host for SSL verification
+      if (resolvedIP) {
+        newUrl.searchParams.set('host', poolerEndpoint);
+      }
+      
+      const updatedUrl = newUrl.toString();
+      process.env.DATABASE_URL = updatedUrl;
+      
+      console.log('\n✅ Database URL updated to use session pooler:');
+      console.log('  New Host:', newUrl.hostname);
+      console.log('  New Username:', newUrl.username);
+      console.log('  Port:', newUrl.port);
+      console.log('  PgBouncer:', 'enabled');
+      
+      return true;
+    } else if (originalUrl.hostname === 'aws-0-us-west-1.pooler.supabase.com') {
+      // Already using the correct pooler endpoint
+      console.log('✅ Already using session pooler endpoint');
+      
+      // Just ensure we have the right parameters
+      originalUrl.searchParams.set('pgbouncer', 'true');
+      originalUrl.searchParams.set('connection_limit', '1');
+      originalUrl.searchParams.set('sslmode', 'require');
+      
+      process.env.DATABASE_URL = originalUrl.toString();
+      return true;
     } else {
       // Not a Supabase URL that needs conversion
       console.log('  URL format does not require conversion');
