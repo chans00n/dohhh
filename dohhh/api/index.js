@@ -1,61 +1,95 @@
-// Load environment variables
-require("dotenv").config();
+const path = require("path");
 
-const express = require("express");
-const { MedusaAppLoader, configLoader, logger } = require("@medusajs/framework");
-const loaders = require("@medusajs/medusa/dist/loaders").default;
-
-let app;
-let isLoading = false;
-
-async function loadApp() {
-  if (app) return app;
-  if (isLoading) {
-    // Wait for the app to load
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return loadApp();
-  }
-
-  isLoading = true;
-
-  try {
-    console.log("Loading Medusa app...");
-    
-    const expressApp = express();
-    const directory = process.cwd();
-    
-    // Load config
-    const { configModule } = configLoader(directory);
-    
-    // Initialize Medusa
-    const { container } = await loaders({
-      directory,
-      expressApp,
-      isTest: false,
-    });
-    
-    app = expressApp;
-    isLoading = false;
-    
-    console.log("Medusa app loaded successfully");
-    return app;
-  } catch (error) {
-    console.error("Failed to load Medusa app:", error);
-    isLoading = false;
-    throw error;
-  }
-}
+// Cache the server instance
+let serverInstance;
 
 module.exports = async (req, res) => {
   try {
-    const medusaApp = await loadApp();
-    return medusaApp(req, res);
+    if (!serverInstance) {
+      // Change to project root
+      const projectRoot = path.join(__dirname, "..");
+      process.chdir(projectRoot);
+      
+      // Set environment
+      process.env.NODE_ENV = process.env.NODE_ENV || "production";
+      process.env.MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_URL || "https://api.dohhh.shop";
+      
+      // Load environment variables
+      if (!process.env.DATABASE_URL) {
+        require("dotenv").config({ path: path.join(projectRoot, ".env") });
+      }
+      
+      console.log("Initializing Medusa server for Vercel...");
+      
+      // Import the main server file
+      const mainPath = path.join(projectRoot, ".medusa", "server", "src", "main.js");
+      
+      try {
+        // Try to load the built server
+        serverInstance = require(mainPath);
+      } catch (err) {
+        console.log("Built server not found, using development mode...");
+        
+        // Fall back to development server
+        const express = require("express");
+        const app = express();
+        
+        // CORS middleware
+        app.use((req, res, next) => {
+          const origin = req.headers.origin;
+          const allowedOrigins = (process.env.ADMIN_CORS || "").split(",");
+          
+          if (allowedOrigins.includes(origin)) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+          }
+          
+          res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+          res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+          res.setHeader("Access-Control-Allow-Credentials", "true");
+          
+          if (req.method === "OPTIONS") {
+            return res.sendStatus(200);
+          }
+          
+          next();
+        });
+        
+        // Basic routes
+        app.use(express.json());
+        
+        app.get("/", (req, res) => {
+          res.json({ message: "Medusa server is starting..." });
+        });
+        
+        app.get("/admin/health", (req, res) => {
+          res.json({
+            status: "ok",
+            timestamp: new Date().toISOString(),
+            mode: "fallback"
+          });
+        });
+        
+        serverInstance = app;
+      }
+    }
+    
+    // Handle the request
+    if (typeof serverInstance === "function") {
+      return serverInstance(req, res);
+    } else if (serverInstance.app) {
+      return serverInstance.app(req, res);
+    } else if (serverInstance.handler) {
+      return serverInstance.handler(req, res);
+    } else {
+      throw new Error("Invalid server instance");
+    }
   } catch (error) {
-    console.error("Serverless function error:", error);
+    console.error("Vercel serverless error:", error);
     res.status(500).json({
       error: "Internal Server Error",
       message: error.message,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      path: req.url,
+      timestamp: new Date().toISOString()
     });
   }
 };
