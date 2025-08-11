@@ -397,171 +397,357 @@ export function AddressForm({
   const isDefaultAddress = defaultAddress?.id === addressId;
   return (
     <Form id={addressId}>
-      <fieldset className="space-y-6">
+      <fieldset>
         <input type="hidden" name="addressId" defaultValue={addressId} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+        
+        {/* Desktop Table-like Layout */}
+        <div className="hidden lg:block">
+          <div className="space-y-4">
+            {/* Name Row */}
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-6">
+                <label htmlFor="firstName" className="block text-xs font-bold uppercase mb-1">FIRST NAME*</label>
+                <input
+                  aria-label="First name"
+                  autoComplete="given-name"
+                  defaultValue={address?.firstName ?? ''}
+                  id="firstName"
+                  name="firstName"
+                  placeholder="FIRST NAME"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-6">
+                <label htmlFor="lastName" className="block text-xs font-bold uppercase mb-1">LAST NAME*</label>
+                <input
+                  aria-label="Last name"
+                  autoComplete="family-name"
+                  defaultValue={address?.lastName ?? ''}
+                  id="lastName"
+                  name="lastName"
+                  placeholder="LAST NAME"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+            </div>
+            
+            {/* Company and Address 1 Row */}
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-4">
+                <label htmlFor="company" className="block text-xs font-bold uppercase mb-1">COMPANY</label>
+                <input
+                  aria-label="Company"
+                  autoComplete="organization"
+                  defaultValue={address?.company ?? ''}
+                  id="company"
+                  name="company"
+                  placeholder="COMPANY NAME"
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-8">
+                <label htmlFor="address1" className="block text-xs font-bold uppercase mb-1">ADDRESS LINE 1*</label>
+                <input
+                  aria-label="Address line 1"
+                  autoComplete="address-line1"
+                  defaultValue={address?.address1 ?? ''}
+                  id="address1"
+                  name="address1"
+                  placeholder="STREET ADDRESS"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+            </div>
+            
+            {/* Address 2 and Location Row */}
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-4">
+                <label htmlFor="address2" className="block text-xs font-bold uppercase mb-1">ADDRESS LINE 2</label>
+                <input
+                  aria-label="Address line 2"
+                  autoComplete="address-line2"
+                  defaultValue={address?.address2 ?? ''}
+                  id="address2"
+                  name="address2"
+                  placeholder="APT, SUITE, UNIT"
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-3">
+                <label htmlFor="city" className="block text-xs font-bold uppercase mb-1">CITY*</label>
+                <input
+                  aria-label="City"
+                  autoComplete="address-level2"
+                  defaultValue={address?.city ?? ''}
+                  id="city"
+                  name="city"
+                  placeholder="CITY"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-2">
+                <label htmlFor="zoneCode" className="block text-xs font-bold uppercase mb-1">STATE*</label>
+                <input
+                  aria-label="State/Province"
+                  autoComplete="address-level1"
+                  defaultValue={address?.zoneCode ?? ''}
+                  id="zoneCode"
+                  name="zoneCode"
+                  placeholder="STATE"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-3">
+                <label htmlFor="zip" className="block text-xs font-bold uppercase mb-1">ZIP CODE*</label>
+                <input
+                  aria-label="Zip"
+                  autoComplete="postal-code"
+                  defaultValue={address?.zip ?? ''}
+                  id="zip"
+                  name="zip"
+                  placeholder="ZIP"
+                  required
+                  type="text"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+            </div>
+            
+            {/* Country and Phone Row */}
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-3">
+                <label htmlFor="territoryCode" className="block text-xs font-bold uppercase mb-1">COUNTRY* (2 LETTERS)</label>
+                <input
+                  aria-label="territoryCode"
+                  autoComplete="country"
+                  defaultValue={address?.territoryCode ?? ''}
+                  id="territoryCode"
+                  name="territoryCode"
+                  placeholder="US"
+                  required
+                  type="text"
+                  maxLength={2}
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-5">
+                <label htmlFor="phoneNumber" className="block text-xs font-bold uppercase mb-1">PHONE NUMBER</label>
+                <input
+                  aria-label="Phone Number"
+                  autoComplete="tel"
+                  defaultValue={address?.phoneNumber ?? ''}
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  placeholder="+1 613 555 1111"
+                  pattern="^\+?[1-9]\d{3,14}$"
+                  type="tel"
+                  className="w-full px-3 py-2 border-2 border-black text-base font-mono placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                />
+              </div>
+              <div className="col-span-4 flex items-end">
+                <div className="flex items-center gap-3 p-3 border-2 border-black bg-white w-full">
+                  <input
+                    defaultChecked={isDefaultAddress}
+                    id="defaultAddress"
+                    name="defaultAddress"
+                    type="checkbox"
+                    className="w-5 h-5 border-2 border-black"
+                  />
+                  <label htmlFor="defaultAddress" className="text-sm font-bold uppercase cursor-pointer">DEFAULT ADDRESS</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Mobile/Tablet Layout */}
+        <div className="lg:hidden space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-bold uppercase mb-2">FIRST NAME*</label>
+              <input
+                aria-label="First name"
+                autoComplete="given-name"
+                defaultValue={address?.firstName ?? ''}
+                id="firstName"
+                name="firstName"
+                placeholder="FIRST NAME"
+                required
+                type="text"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-bold uppercase mb-2">LAST NAME*</label>
+              <input
+                aria-label="Last name"
+                autoComplete="family-name"
+                defaultValue={address?.lastName ?? ''}
+                id="lastName"
+                name="lastName"
+                placeholder="LAST NAME"
+                required
+                type="text"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
+          </div>
+          
           <div>
-            <label htmlFor="firstName" className="block text-sm font-bold uppercase mb-2">FIRST NAME*</label>
+            <label htmlFor="company" className="block text-sm font-bold uppercase mb-2">COMPANY</label>
             <input
-              aria-label="First name"
-              autoComplete="given-name"
-              defaultValue={address?.firstName ?? ''}
-              id="firstName"
-              name="firstName"
-              placeholder="FIRST NAME"
+              aria-label="Company"
+              autoComplete="organization"
+              defaultValue={address?.company ?? ''}
+              id="company"
+              name="company"
+              placeholder="COMPANY NAME"
+              type="text"
+              className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="address1" className="block text-sm font-bold uppercase mb-2">ADDRESS LINE 1*</label>
+            <input
+              aria-label="Address line 1"
+              autoComplete="address-line1"
+              defaultValue={address?.address1 ?? ''}
+              id="address1"
+              name="address1"
+              placeholder="STREET ADDRESS"
               required
               type="text"
               className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
             />
           </div>
+          
           <div>
-            <label htmlFor="lastName" className="block text-sm font-bold uppercase mb-2">LAST NAME*</label>
+            <label htmlFor="address2" className="block text-sm font-bold uppercase mb-2">ADDRESS LINE 2</label>
             <input
-              aria-label="Last name"
-              autoComplete="family-name"
-              defaultValue={address?.lastName ?? ''}
-              id="lastName"
-              name="lastName"
-              placeholder="LAST NAME"
-              required
+              aria-label="Address line 2"
+              autoComplete="address-line2"
+              defaultValue={address?.address2 ?? ''}
+              id="address2"
+              name="address2"
+              placeholder="APT, SUITE, UNIT, ETC."
               type="text"
               className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
             />
           </div>
-        </div>
-        <div>
-          <label htmlFor="company" className="block text-sm font-bold uppercase mb-2">COMPANY</label>
-          <input
-            aria-label="Company"
-            autoComplete="organization"
-            defaultValue={address?.company ?? ''}
-            id="company"
-            name="company"
-            placeholder="COMPANY NAME"
-            type="text"
-            className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-          />
-        </div>
-        <div>
-          <label htmlFor="address1" className="block text-sm font-bold uppercase mb-2">ADDRESS LINE 1*</label>
-          <input
-            aria-label="Address line 1"
-            autoComplete="address-line1"
-            defaultValue={address?.address1 ?? ''}
-            id="address1"
-            name="address1"
-            placeholder="STREET ADDRESS"
-            required
-            type="text"
-            className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-          />
-        </div>
-        <div>
-          <label htmlFor="address2" className="block text-sm font-bold uppercase mb-2">ADDRESS LINE 2</label>
-          <input
-            aria-label="Address line 2"
-            autoComplete="address-line2"
-            defaultValue={address?.address2 ?? ''}
-            id="address2"
-            name="address2"
-            placeholder="APT, SUITE, UNIT, ETC."
-            type="text"
-            className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-          />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-          <div>
-            <label htmlFor="city" className="block text-sm font-bold uppercase mb-2">CITY*</label>
-            <input
-              aria-label="City"
-              autoComplete="address-level2"
-              defaultValue={address?.city ?? ''}
-              id="city"
-              name="city"
-              placeholder="CITY"
-              required
-              type="text"
-              className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-            />
+          
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="city" className="block text-sm font-bold uppercase mb-2">CITY*</label>
+              <input
+                aria-label="City"
+                autoComplete="address-level2"
+                defaultValue={address?.city ?? ''}
+                id="city"
+                name="city"
+                placeholder="CITY"
+                required
+                type="text"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="zoneCode" className="block text-sm font-bold uppercase mb-2">STATE*</label>
+              <input
+                aria-label="State/Province"
+                autoComplete="address-level1"
+                defaultValue={address?.zoneCode ?? ''}
+                id="zoneCode"
+                name="zoneCode"
+                placeholder="STATE"
+                required
+                type="text"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="zip" className="block text-sm font-bold uppercase mb-2">ZIP CODE*</label>
+              <input
+                aria-label="Zip"
+                autoComplete="postal-code"
+                defaultValue={address?.zip ?? ''}
+                id="zip"
+                name="zip"
+                placeholder="ZIP CODE"
+                required
+                type="text"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="zoneCode" className="block text-sm font-bold uppercase mb-2">STATE/PROVINCE*</label>
-            <input
-              aria-label="State/Province"
-              autoComplete="address-level1"
-              defaultValue={address?.zoneCode ?? ''}
-              id="zoneCode"
-              name="zoneCode"
-              placeholder="STATE"
-              required
-              type="text"
-              className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-            />
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="territoryCode" className="block text-sm font-bold uppercase mb-2">COUNTRY* (2 LETTERS)</label>
+              <input
+                aria-label="territoryCode"
+                autoComplete="country"
+                defaultValue={address?.territoryCode ?? ''}
+                id="territoryCode"
+                name="territoryCode"
+                placeholder="US"
+                required
+                type="text"
+                maxLength={2}
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="phoneNumber" className="block text-sm font-bold uppercase mb-2">PHONE NUMBER</label>
+              <input
+                aria-label="Phone Number"
+                autoComplete="tel"
+                defaultValue={address?.phoneNumber ?? ''}
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="+1 613 555 1111"
+                pattern="^\+?[1-9]\d{3,14}$"
+                type="tel"
+                className="w-full px-4 py-3 border-2 border-black text-lg font-mono placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="zip" className="block text-sm font-bold uppercase mb-2">ZIP/POSTAL CODE*</label>
+          
+          <div className="flex items-center gap-3 p-4 border-2 border-black bg-white">
             <input
-              aria-label="Zip"
-              autoComplete="postal-code"
-              defaultValue={address?.zip ?? ''}
-              id="zip"
-              name="zip"
-              placeholder="ZIP CODE"
-              required
-              type="text"
-              className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+              defaultChecked={isDefaultAddress}
+              id="defaultAddress"
+              name="defaultAddress"
+              type="checkbox"
+              className="w-5 h-5 border-2 border-black"
             />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-          <div>
-            <label htmlFor="territoryCode" className="block text-sm font-bold uppercase mb-2">COUNTRY CODE* (2 LETTERS)</label>
-            <input
-              aria-label="territoryCode"
-              autoComplete="country"
-              defaultValue={address?.territoryCode ?? ''}
-              id="territoryCode"
-              name="territoryCode"
-              placeholder="US"
-              required
-              type="text"
-              maxLength={2}
-              className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-            />
-          </div>
-          <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-bold uppercase mb-2">PHONE NUMBER</label>
-            <input
-              aria-label="Phone Number"
-              autoComplete="tel"
-              defaultValue={address?.phoneNumber ?? ''}
-              id="phoneNumber"
-              name="phoneNumber"
-              placeholder="+1 613 555 1111"
-              pattern="^\+?[1-9]\d{3,14}$"
-              type="tel"
-              className="w-full px-4 py-3 border-2 border-black text-lg font-mono placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-            />
+            <label htmlFor="defaultAddress" className="text-lg font-bold uppercase cursor-pointer">SET AS DEFAULT ADDRESS</label>
           </div>
         </div>
-        <div className="flex items-center gap-3 p-4 border-2 border-black bg-white">
-          <input
-            defaultChecked={isDefaultAddress}
-            id="defaultAddress"
-            name="defaultAddress"
-            type="checkbox"
-            className="w-5 h-5 border-2 border-black"
-          />
-          <label htmlFor="defaultAddress" className="text-lg font-bold uppercase cursor-pointer">SET AS DEFAULT ADDRESS</label>
-        </div>
+        
         {error && (
-          <div className="p-4 border-2 border-red-500 bg-red-50">
+          <div className="p-4 border-2 border-red-500 bg-red-50 mt-4">
             <p className="text-red-500 font-bold uppercase">ERROR: {error}</p>
           </div>
         )}
-        {children({
-          stateForMethod: (method) => (formMethod === method ? state : 'idle'),
-        })}
+        
+        <div className="mt-6">
+          {children({
+            stateForMethod: (method) => (formMethod === method ? state : 'idle'),
+          })}
+        </div>
       </fieldset>
     </Form>
   );
