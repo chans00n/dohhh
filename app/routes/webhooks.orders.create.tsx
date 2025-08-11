@@ -26,27 +26,33 @@ export async function action({request, context}: ActionFunctionArgs) {
   const rawBody = await request.text();
   const headerHmac = request.headers.get('X-Shopify-Hmac-Sha256');
   const ok = await verifyHmacFromBody(rawBody, headerHmac, context.env.SHOPIFY_WEBHOOK_SECRET);
-  if (!ok) return new Response('Unauthorized', {status: 401});
+  if (!ok) {
+    console.error('Webhook HMAC validation failed');
+    return new Response('Unauthorized', {status: 401});
+  }
 
   let payload: any = {};
   try {
     payload = JSON.parse(rawBody);
-  } catch {}
+  } catch (e) {
+    console.error('Failed to parse webhook payload:', e);
+    return new Response('Bad Request', {status: 400});
+  }
+  
+  console.log('Processing order webhook:', payload?.name || payload?.id);
   const orderGid = payload?.admin_graphql_api_id as string | undefined;
   const lineItems = (payload?.line_items as any[]) || [];
-  const items: Array<{productId: string; quantity: number; amount: number; tags: string[]}> = [];
+  const items: Array<{productId: string; quantity: number; amount: number}> = [];
   for (const li of lineItems) {
     const productNumericId = li?.product_id as number | undefined;
     if (!productNumericId) continue;
     const productId = `gid://shopify/Product/${productNumericId}`;
     const quantity = Number(li?.quantity || 0);
     const amount = Number((li?.price || 0) * quantity);
-    items.push({productId, quantity, amount, tags: []});
+    items.push({productId, quantity, amount});
   }
 
-  const campaignItems = items.filter((i) => i.tags.includes('campaign'));
-  const byProduct: Record<string, {q: number; amt: number}> = {};
-  // Resolve tags via Storefront for each unique product
+  // Resolve tags via Storefront for each unique product FIRST
   const uniqueIds = Array.from(new Set(items.map((i) => i.productId)));
   const idToTags: Record<string, string[]> = {};
   for (const id of uniqueIds) {
@@ -58,12 +64,20 @@ export async function action({request, context}: ActionFunctionArgs) {
       idToTags[id] = [];
     }
   }
+  
+  // Now filter for campaign items and aggregate
+  const byProduct: Record<string, {q: number; amt: number}> = {};
   for (const it of items) {
     const tags = idToTags[it.productId] || [];
     if (!tags.includes('campaign')) continue;
+    console.log(`Found campaign product ${it.productId} with quantity ${it.quantity}`);
     byProduct[it.productId] = byProduct[it.productId] || {q: 0, amt: 0};
     byProduct[it.productId].q += it.quantity;
     byProduct[it.productId].amt += it.amount;
+  }
+  
+  if (Object.keys(byProduct).length === 0) {
+    console.log('No campaign products found in order');
   }
 
   for (const [productId, agg] of Object.entries(byProduct)) {
