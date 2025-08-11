@@ -68,48 +68,95 @@ export default function AccountLayout() {
 
 function AccountMenu() {
   return (
-    <nav className="flex flex-wrap gap-0">
-      <NavLink 
-        to="/account/orders" 
-        className={({isActive}) => 
-          isActive 
-            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
-            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
-        }
-      >
-        ORDERS
-      </NavLink>
-      <NavLink 
-        to="/account/profile" 
-        className={({isActive}) => 
-          isActive 
-            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
-            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
-        }
-      >
-        PROFILE
-      </NavLink>
-      <NavLink 
-        to="/account/addresses" 
-        className={({isActive}) => 
-          isActive 
-            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
-            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
-        }
-      >
-        ADDRESSES
-      </NavLink>
-      <NavLink 
-        to="/account/campaigns" 
-        className={({isActive}) => 
-          isActive 
-            ? 'px-6 py-4 text-lg font-bold uppercase bg-black text-white'
-            : 'px-6 py-4 text-lg font-bold uppercase hover:bg-gray-100'
-        }
-      >
-        MY CAMPAIGNS
-      </NavLink>
-    </nav>
+    <>
+      {/* Mobile: 2x2 Grid */}
+      <nav className="grid grid-cols-2 sm:hidden">
+        <NavLink 
+          to="/account/orders" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-4 py-4 text-base font-bold uppercase border-r-2 border-b-2 border-black bg-black text-white text-center'
+              : 'px-4 py-4 text-base font-bold uppercase border-r-2 border-b-2 border-black hover:bg-gray-100 text-center'
+          }
+        >
+          ORDERS
+        </NavLink>
+        <NavLink 
+          to="/account/profile" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-4 py-4 text-base font-bold uppercase border-b-2 border-black bg-black text-white text-center'
+              : 'px-4 py-4 text-base font-bold uppercase border-b-2 border-black hover:bg-gray-100 text-center'
+          }
+        >
+          PROFILE
+        </NavLink>
+        <NavLink 
+          to="/account/addresses" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-4 py-4 text-base font-bold uppercase border-r-2 border-black bg-black text-white text-center'
+              : 'px-4 py-4 text-base font-bold uppercase border-r-2 border-black hover:bg-gray-100 text-center'
+          }
+        >
+          ADDRESSES
+        </NavLink>
+        <NavLink 
+          to="/account/campaigns" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-4 py-4 text-base font-bold uppercase border-black bg-black text-white text-center'
+              : 'px-4 py-4 text-base font-bold uppercase border-black hover:bg-gray-100 text-center'
+          }
+        >
+          MY CAMPAIGNS
+        </NavLink>
+      </nav>
+      
+      {/* Tablet and Desktop: Horizontal Row */}
+      <nav className="hidden sm:flex flex-wrap gap-0">
+        <NavLink 
+          to="/account/orders" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+              : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+          }
+        >
+          ORDERS
+        </NavLink>
+        <NavLink 
+          to="/account/profile" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+              : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+          }
+        >
+          PROFILE
+        </NavLink>
+        <NavLink 
+          to="/account/addresses" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+              : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+          }
+        >
+          ADDRESSES
+        </NavLink>
+        <NavLink 
+          to="/account/campaigns" 
+          className={({isActive}) => 
+            isActive 
+              ? 'px-6 py-4 text-lg font-bold uppercase bg-black text-white'
+              : 'px-6 py-4 text-lg font-bold uppercase hover:bg-gray-100'
+          }
+        >
+          MY CAMPAIGNS
+        </NavLink>
+      </nav>
+    </>
   );
 }
 

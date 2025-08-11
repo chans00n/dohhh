@@ -95,7 +95,7 @@ export default function AccountProfile() {
           MY PROFILE
         </h1>
         
-        <div className="max-w-2xl">
+        <div className="max-w-7xl mx-auto">
           <Form method="PUT">
             <div className="border-2 border-black p-8">
               <h2 className="text-2xl font-bold uppercase mb-8">

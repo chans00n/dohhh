@@ -336,7 +336,7 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="w-full">
       {addresses.nodes.map((address) => (
         <div key={address.id} className="border-2 border-black p-6 hover:shadow-lg transition-shadow">
           {defaultAddress?.id === address.id && (
