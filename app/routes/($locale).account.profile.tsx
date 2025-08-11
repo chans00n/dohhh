@@ -177,7 +177,7 @@ export default function AccountProfile() {
             <div className="space-y-3">
               <div className="flex gap-2">
                 <span className="font-bold uppercase">EMAIL:</span>
-                <span className="font-mono">{customer?.email}</span>
+                <span className="font-mono">{customer?.emailAddress?.emailAddress}</span>
               </div>
               <div className="flex gap-2">
                 <span className="font-bold uppercase">MEMBER SINCE:</span>

@@ -45,7 +45,7 @@ export default function AccountLayout() {
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <h1 className="text-4xl lg:text-5xl font-bold uppercase">{heading}</h1>
             <div className="flex items-center gap-4">
-              <span className="text-lg uppercase">{customer?.email}</span>
+              <span className="text-lg uppercase">{customer?.emailAddress?.emailAddress}</span>
               <Logout />
             </div>
           </div>
