@@ -62,6 +62,16 @@ nav a.active {
   color: white !important;
 }
 
+/* Ensure text is white on black backgrounds */
+.bg-black {
+  color: white !important;
+}
+
+/* Account navigation specific */
+nav a {
+  transition: all 0.2s ease;
+}
+
 footer a:visited {
   color: white !important;
 }
