@@ -30,4 +30,5 @@ jobs:
         run: |
           npx shopify hydrogen deploy \
             --env production \
-            --token $SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN
+            --token $SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN \
+            --force
