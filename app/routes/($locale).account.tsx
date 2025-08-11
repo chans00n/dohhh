@@ -72,37 +72,41 @@ function AccountMenu() {
     <nav className="flex flex-wrap gap-0">
       <NavLink 
         to="/account/orders" 
-        className={({isActive}) => `
-          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
-        `}
+        className={({isActive}) => 
+          isActive 
+            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+        }
       >
         ORDERS
       </NavLink>
       <NavLink 
         to="/account/profile" 
-        className={({isActive}) => `
-          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
-        `}
+        className={({isActive}) => 
+          isActive 
+            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+        }
       >
         PROFILE
       </NavLink>
       <NavLink 
         to="/account/addresses" 
-        className={({isActive}) => `
-          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
-        `}
+        className={({isActive}) => 
+          isActive 
+            ? 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black bg-black text-white'
+            : 'px-6 py-4 text-lg font-bold uppercase border-r-2 border-black hover:bg-gray-100'
+        }
       >
         ADDRESSES
       </NavLink>
       <NavLink 
         to="/account/campaigns" 
-        className={({isActive}) => `
-          px-6 py-4 text-lg font-bold uppercase
-          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
-        `}
+        className={({isActive}) => 
+          isActive 
+            ? 'px-6 py-4 text-lg font-bold uppercase bg-black text-white'
+            : 'px-6 py-4 text-lg font-bold uppercase hover:bg-gray-100'
+        }
       >
         MY CAMPAIGNS
       </NavLink>
