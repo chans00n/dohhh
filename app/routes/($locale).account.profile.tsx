@@ -175,20 +175,12 @@ export default function AccountProfile() {
               ACCOUNT DETAILS
             </h2>
             <div className="space-y-3">
-              <div className="flex gap-2">
-                <span className="font-bold uppercase">EMAIL:</span>
-                <span className="font-mono">{customer?.emailAddress?.emailAddress}</span>
-              </div>
-              <div className="flex gap-2">
-                <span className="font-bold uppercase">MEMBER SINCE:</span>
-                <span className="font-mono">
-                  {customer?.createdAt && new Date(customer.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                  }).toUpperCase()}
-                </span>
-              </div>
+              <p className="text-lg uppercase">
+                Welcome {customer?.firstName || 'Customer'}!
+              </p>
+              <p className="text-sm uppercase text-gray-600">
+                Your account information is managed through Shopify's secure customer portal.
+              </p>
             </div>
           </div>
         </div>
