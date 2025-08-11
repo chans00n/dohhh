@@ -44,6 +44,24 @@ img {
 
 /*
 * --------------------------------------------------
+* Footer link overrides
+* --------------------------------------------------
+*/
+footer a {
+  color: white !important;
+}
+
+footer a:hover {
+  color: white !important;
+  text-decoration: underline;
+}
+
+footer a:visited {
+  color: white !important;
+}
+
+/*
+* --------------------------------------------------
 * components/Aside
 * --------------------------------------------------
 */

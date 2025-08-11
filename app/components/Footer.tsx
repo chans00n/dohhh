@@ -1,6 +1,9 @@
 import {Link} from 'react-router';
+import {useAside} from '~/components/Aside';
 
 export function Footer() {
+  const {open} = useAside();
+  
   return (
     <footer className="w-full bg-black text-white border-t-2 border-black">
       {/* Main Footer Content */}
@@ -14,7 +17,7 @@ export function Footer() {
               className="h-8 lg:h-8 w-auto"
             />
           </Link>
-          <p className="text-lg uppercase mb-2">HEY, DOHHH DOHHH 👋</p>
+          <p className="text-lg uppercase mb-2">HEY DOHHH DOHHH 👋</p>
           <p className="text-lg uppercase mb-2">HUNTINGTON BEACH, CA</p>
           <p className="text-lg uppercase">EST. 2025</p>
         </div>
@@ -23,16 +26,19 @@ export function Footer() {
         <div className="p-8 lg:p-12">
           <h4 className="text-2xl font-bold uppercase mb-6">SHOP</h4>
           <div className="space-y-3">
-            <Link to="/campaigns" className="block text-lg uppercase hover:underline">
+            <Link to="/campaigns" className="block text-lg uppercase text-white hover:underline">
               CAMPAIGNS
             </Link>
-            <Link to="/cookies" className="block text-lg uppercase hover:underline">
+            <Link to="/cookies" className="block text-lg uppercase text-white hover:underline">
               COOKIES
             </Link>
-            <Link to="/cart" className="block text-lg uppercase hover:underline">
+            <button 
+              onClick={() => open('cart')}
+              className="block text-lg uppercase text-white hover:underline text-left w-full"
+            >
               CART
-            </Link>
-            <Link to="/account" className="block text-lg uppercase hover:underline">
+            </button>
+            <Link to="/account" className="block text-lg uppercase text-white hover:underline">
               ACCOUNT
             </Link>
           </div>
@@ -42,16 +48,16 @@ export function Footer() {
         <div className="p-8 lg:p-12">
           <h4 className="text-2xl font-bold uppercase mb-6">INFO</h4>
           <div className="space-y-3">
-            <Link to="/pages/about" className="block text-lg uppercase hover:underline">
+            <Link to="/pages/about" className="block text-lg uppercase text-white hover:underline">
               ABOUT US
             </Link>
-            <Link to="/pages/how-it-works" className="block text-lg uppercase hover:underline">
+            <Link to="/pages/how-it-works" className="block text-lg uppercase text-white hover:underline">
               HOW IT WORKS
             </Link>
-            <Link to="/pages/shipping" className="block text-lg uppercase hover:underline">
+            <Link to="/pages/shipping" className="block text-lg uppercase text-white hover:underline">
               SHIPPING
             </Link>
-            <Link to="/pages/contact" className="block text-lg uppercase hover:underline">
+            <Link to="/pages/contact" className="block text-lg uppercase text-white hover:underline">
               CONTACT
             </Link>
           </div>
@@ -86,13 +92,13 @@ export function Footer() {
             © 2025 DOHHH. ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-6">
-            <Link to="/policies/privacy-policy" className="text-sm uppercase hover:underline">
+            <Link to="/policies/privacy-policy" className="text-sm uppercase text-white hover:underline">
               PRIVACY
             </Link>
-            <Link to="/policies/terms-of-service" className="text-sm uppercase hover:underline">
+            <Link to="/policies/terms-of-service" className="text-sm uppercase text-white hover:underline">
               TERMS
             </Link>
-            <Link to="/policies/refund-policy" className="text-sm uppercase hover:underline">
+            <Link to="/policies/refund-policy" className="text-sm uppercase text-white hover:underline">
               REFUNDS
             </Link>
           </div>

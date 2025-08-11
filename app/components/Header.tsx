@@ -112,9 +112,9 @@ export function Header({
                 <DropdownContent>
                   <div className="py-2">
                     <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Social</div>
-                    <DropdownItem href="https://twitter.com">Twitter</DropdownItem>
-                    <DropdownItem href="https://instagram.com">Instagram</DropdownItem>
-                    <DropdownItem href="https://tiktok.com">TikTok</DropdownItem>
+                    <DropdownItem href="https://twitter.com">TWITTER</DropdownItem>
+                    <DropdownItem href="https://instagram.com">INSTAGRAM</DropdownItem>
+                    <DropdownItem href="https://tiktok.com">TIKTOK</DropdownItem>
                   </div>
                   
                   <DropdownSeparator />
@@ -122,8 +122,8 @@ export function Header({
                   <div className="py-2">
                     <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Help</div>
                     <DropdownItem href="/pages/faq">FAQ</DropdownItem>
-                    <DropdownItem href="/pages/contact">Contact</DropdownItem>
-                    <DropdownItem href="/pages/refunds">Refunds</DropdownItem>
+                    <DropdownItem href="/pages/contact">CONTACT</DropdownItem>
+                    <DropdownItem href="/pages/refunds">REFUNDS</DropdownItem>
                   </div>
                   
                   <DropdownSeparator />

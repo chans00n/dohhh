@@ -89,48 +89,110 @@ export default function AccountProfile() {
   const customer = action?.customer ?? account?.customer;
 
   return (
-    <div className="account-profile">
-      <h2>My profile</h2>
-      <br />
-      <Form method="PUT">
-        <legend>Personal information</legend>
-        <fieldset>
-          <label htmlFor="firstName">First name</label>
-          <input
-            id="firstName"
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            placeholder="First name"
-            aria-label="First name"
-            defaultValue={customer.firstName ?? ''}
-            minLength={2}
-          />
-          <label htmlFor="lastName">Last name</label>
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            placeholder="Last name"
-            aria-label="Last name"
-            defaultValue={customer.lastName ?? ''}
-            minLength={2}
-          />
-        </fieldset>
-        {action?.error ? (
-          <p>
-            <mark>
-              <small>{action.error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <button type="submit" disabled={state !== 'idle'}>
-          {state !== 'idle' ? 'Updating' : 'Update'}
-        </button>
-      </Form>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <h1 className="text-5xl lg:text-6xl font-bold uppercase mb-12">
+          MY PROFILE
+        </h1>
+        
+        <div className="max-w-2xl">
+          <Form method="PUT">
+            <div className="border-2 border-black p-8">
+              <h2 className="text-2xl font-bold uppercase mb-8">
+                PERSONAL INFORMATION
+              </h2>
+              
+              <div className="space-y-6">
+                <div>
+                  <label 
+                    htmlFor="firstName" 
+                    className="block text-lg font-bold uppercase mb-2"
+                  >
+                    FIRST NAME
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    placeholder="ENTER FIRST NAME"
+                    aria-label="First name"
+                    defaultValue={customer.firstName ?? ''}
+                    minLength={2}
+                    className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                  />
+                </div>
+                
+                <div>
+                  <label 
+                    htmlFor="lastName" 
+                    className="block text-lg font-bold uppercase mb-2"
+                  >
+                    LAST NAME
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    placeholder="ENTER LAST NAME"
+                    aria-label="Last name"
+                    defaultValue={customer.lastName ?? ''}
+                    minLength={2}
+                    className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                  />
+                </div>
+              </div>
+              
+              {action?.error && (
+                <div className="mt-6 p-4 border-2 border-red-500 bg-red-50">
+                  <p className="text-red-500 font-bold uppercase">
+                    ERROR: {action.error}
+                  </p>
+                </div>
+              )}
+              
+              {action?.customer && !action?.error && (
+                <div className="mt-6 p-4 border-2 border-green-500 bg-green-50">
+                  <p className="text-green-700 font-bold uppercase">
+                    ✓ PROFILE UPDATED SUCCESSFULLY
+                  </p>
+                </div>
+              )}
+              
+              <button 
+                type="submit" 
+                disabled={state !== 'idle'}
+                className="mt-8 w-full px-8 py-4 border-2 border-black bg-black text-white hover:bg-white hover:text-black transition-colors text-xl font-bold uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {state !== 'idle' ? 'UPDATING...' : 'UPDATE PROFILE'}
+              </button>
+            </div>
+          </Form>
+          
+          <div className="mt-8 border-2 border-black p-8">
+            <h2 className="text-2xl font-bold uppercase mb-4">
+              ACCOUNT DETAILS
+            </h2>
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <span className="font-bold uppercase">EMAIL:</span>
+                <span className="font-mono">{customer.email}</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-bold uppercase">MEMBER SINCE:</span>
+                <span className="font-mono">
+                  {new Date(customer.createdAt).toLocaleDateString('en-US', {
+                    month: 'SHORT',
+                    day: 'NUMERIC',
+                    year: 'NUMERIC'
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

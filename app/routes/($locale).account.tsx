@@ -33,59 +33,92 @@ export default function AccountLayout() {
 
   const heading = customer
     ? customer.firstName
-      ? `Welcome, ${customer.firstName}`
-      : `Welcome to your account.`
-    : 'Account Details';
+      ? `WELCOME, ${customer.firstName.toUpperCase()}`
+      : `WELCOME TO YOUR ACCOUNT`
+    : 'ACCOUNT DETAILS';
 
   return (
-    <div className="account">
-      <h1>{heading}</h1>
-      <br />
-      <AccountMenu />
-      <br />
-      <br />
-      <Outlet context={{customer}} />
+    <div className="min-h-screen bg-white">
+      {/* Account Header */}
+      <div className="border-b-2 border-black">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+            <h1 className="text-4xl lg:text-5xl font-bold uppercase">{heading}</h1>
+            <div className="flex items-center gap-4">
+              <span className="text-lg uppercase">{customer?.email}</span>
+              <Logout />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Navigation */}
+      <div className="border-b-2 border-black bg-amber-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <AccountMenu />
+        </div>
+      </div>
+      
+      {/* Content */}
+      <div className="min-h-[60vh]">
+        <Outlet context={{customer}} />
+      </div>
     </div>
   );
 }
 
 function AccountMenu() {
-  function isActiveStyle({
-    isActive,
-    isPending,
-  }: {
-    isActive: boolean;
-    isPending: boolean;
-  }) {
-    return {
-      fontWeight: isActive ? 'bold' : undefined,
-      color: isPending ? 'grey' : 'black',
-    };
-  }
-
   return (
-    <nav role="navigation">
-      <NavLink to="/account/orders" style={isActiveStyle}>
-        Orders &nbsp;
+    <nav className="flex flex-wrap gap-0">
+      <NavLink 
+        to="/account/orders" 
+        className={({isActive}) => `
+          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
+          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+        `}
+      >
+        ORDERS
       </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/profile" style={isActiveStyle}>
-        &nbsp; Profile &nbsp;
+      <NavLink 
+        to="/account/profile" 
+        className={({isActive}) => `
+          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
+          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+        `}
+      >
+        PROFILE
       </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/addresses" style={isActiveStyle}>
-        &nbsp; Addresses &nbsp;
+      <NavLink 
+        to="/account/addresses" 
+        className={({isActive}) => `
+          px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
+          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+        `}
+      >
+        ADDRESSES
       </NavLink>
-      &nbsp;|&nbsp;
-      <Logout />
+      <NavLink 
+        to="/account/campaigns" 
+        className={({isActive}) => `
+          px-6 py-4 text-lg font-bold uppercase
+          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+        `}
+      >
+        MY CAMPAIGNS
+      </NavLink>
     </nav>
   );
 }
 
 function Logout() {
   return (
-    <Form className="account-logout" method="POST" action="/account/logout">
-      &nbsp;<button type="submit">Sign out</button>
+    <Form method="POST" action="/account/logout">
+      <button 
+        type="submit"
+        className="px-6 py-2 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold uppercase"
+      >
+        SIGN OUT
+      </button>
     </Form>
   );
 }
