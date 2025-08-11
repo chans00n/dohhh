@@ -258,7 +258,7 @@ export default function Addresses() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-5xl lg:text-6xl font-bold uppercase mb-12">
           SHIPPING ADDRESSES
         </h1>
@@ -270,16 +270,18 @@ export default function Addresses() {
             <NewAddressForm />
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="border-2 border-black p-8 bg-white">
+          <div className="space-y-8">
+            <div className="w-full">
+              <div className="border-2 border-black p-6 lg:p-8 xl:p-10 bg-white">
                 <h2 className="text-2xl font-bold uppercase mb-6">ADD NEW ADDRESS</h2>
-                <NewAddressForm />
+                <div className="w-full">
+                  <NewAddressForm />
+                </div>
               </div>
             </div>
             
-            <div className="lg:col-span-3">
-              <h2 className="text-2xl font-bold uppercase mb-6 mt-8 lg:mt-0">SAVED ADDRESSES</h2>
+            <div>
+              <h2 className="text-2xl font-bold uppercase mb-6">SAVED ADDRESSES</h2>
               <ExistingAddresses
                 addresses={addresses}
                 defaultAddress={defaultAddress}
@@ -334,7 +336,7 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {addresses.nodes.map((address) => (
         <div key={address.id} className="border-2 border-black p-6 hover:shadow-lg transition-shadow">
           {defaultAddress?.id === address.id && (
@@ -397,7 +399,7 @@ export function AddressForm({
     <Form id={addressId}>
       <fieldset className="space-y-6">
         <input type="hidden" name="addressId" defaultValue={addressId} />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-bold uppercase mb-2">FIRST NAME*</label>
             <input
@@ -467,7 +469,7 @@ export function AddressForm({
             className="w-full px-4 py-3 border-2 border-black text-lg font-mono uppercase placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           <div>
             <label htmlFor="city" className="block text-sm font-bold uppercase mb-2">CITY*</label>
             <input
@@ -511,7 +513,7 @@ export function AddressForm({
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
           <div>
             <label htmlFor="territoryCode" className="block text-sm font-bold uppercase mb-2">COUNTRY CODE* (2 LETTERS)</label>
             <input
