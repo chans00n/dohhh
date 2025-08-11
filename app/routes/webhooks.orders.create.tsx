@@ -22,9 +22,15 @@ const PRODUCT_TAGS_QUERY = `#graphql
 ` as const;
 
 export async function action({request, context}: ActionFunctionArgs) {
+  console.log('Webhook received:', request.method, request.url);
+  
   // Read the raw body exactly once for HMAC verification and JSON parsing
   const rawBody = await request.text();
   const headerHmac = request.headers.get('X-Shopify-Hmac-Sha256');
+  
+  console.log('HMAC header present:', !!headerHmac);
+  console.log('Webhook secret configured:', !!context.env.SHOPIFY_WEBHOOK_SECRET);
+  
   const ok = await verifyHmacFromBody(rawBody, headerHmac, context.env.SHOPIFY_WEBHOOK_SECRET);
   if (!ok) {
     console.error('Webhook HMAC validation failed');
