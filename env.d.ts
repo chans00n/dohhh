@@ -19,7 +19,10 @@ declare global {
   const process: {env: {NODE_ENV: 'production' | 'development'}};
 
   interface Env extends HydrogenEnv {
-    // declare additional Env parameter use in the fetch handler and Remix loader context here
+    // Admin/Webhook configuration
+    SHOPIFY_ADMIN_API_VERSION?: string;
+    PRIVATE_ADMIN_API_ACCESS_TOKEN?: string;
+    SHOPIFY_WEBHOOK_SECRET?: string;
   }
 }
 

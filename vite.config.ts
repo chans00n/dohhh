@@ -13,6 +13,20 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
   ],
+  server: {
+    // Allow external access for tunnels while keeping localhost default
+    host: true,
+    // Allow any Cloudflare tunnel subdomain
+    allowedHosts: ['.trycloudflare.com'],
+    // Improve HMR over HTTPS tunnels (optional but recommended)
+    hmr: process.env.TUNNEL_HOST
+      ? {
+          host: process.env.TUNNEL_HOST,
+          protocol: 'wss',
+          clientPort: 443,
+        }
+      : undefined,
+  },
   build: {
     // Allow a strict Content-Security-Policy
     // withtout inlining assets as base64:

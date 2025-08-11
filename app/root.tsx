@@ -17,6 +17,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import {ToastProvider} from './components/ui/toast';
 
 export type RootLoader = typeof loader;
 
@@ -164,7 +165,9 @@ export function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            <PageLayout {...data}>{children}</PageLayout>
+            <ToastProvider>
+              <PageLayout {...data}>{children}</PageLayout>
+            </ToastProvider>
           </Analytics.Provider>
         ) : (
           children

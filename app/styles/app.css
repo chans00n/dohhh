@@ -1,5 +1,5 @@
 :root {
-  --aside-width: 400px;
+  --aside-width: 500px; /* Increased from 400px for wider panels */
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
@@ -8,8 +8,28 @@
   --color-light: #fff;
 }
 
+/* Yeezy-style monospace for everything */
+* {
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
 img {
-  border-radius: 4px;
+  border-radius: 0;
+}
+
+/* Ultra-minimal Yeezy-inspired styles */
+.mono-text {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.text-huge {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.text-massive {
+  font-size: 6rem;
+  line-height: 1;
 }
 
 /*
@@ -37,11 +57,20 @@ aside {
   background: var(--color-light);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   height: 100vh;
-  width: min(var(--aside-width), 100vw);
+  width: var(--aside-width);
+  max-width: 100vw;
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
   transition: transform 200ms ease-in-out;
+  z-index: 60; /* Ensure aside is above overlay */
+}
+
+@media (max-width: 640px) {
+  aside {
+    width: 90vw; /* Use 90vw to ensure it doesn't go off screen */
+    right: -90vw;
+  }
 }
 
 aside header {
@@ -102,7 +131,7 @@ aside li {
   transition: opacity 400ms ease-in-out;
   transition: opacity 400ms;
   visibility: hidden;
-  z-index: 10;
+  z-index: 50; /* Increased z-index to be above header (z-40) */
 }
 
 .overlay .close-outside {
@@ -114,6 +143,12 @@ aside li {
   position: absolute;
   top: 0;
   width: calc(100% - var(--aside-width));
+}
+
+@media (max-width: 640px) {
+  .overlay .close-outside {
+    width: 10vw; /* Small area on the left to close the panel */
+  }
 }
 
 .overlay .light {
@@ -135,6 +170,12 @@ aside li {
 /* reveal aside */
 .overlay.expanded aside {
   transform: translateX(calc(var(--aside-width) * -1));
+}
+
+@media (max-width: 640px) {
+  .overlay.expanded aside {
+    transform: translateX(-90vw); /* Match the width for proper positioning */
+  }
 }
 
 button.reset {
@@ -266,12 +307,7 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .cart-summary-aside {
-  background: white;
-  border-top: 1px solid var(--color-dark);
-  bottom: 0;
-  padding-top: 0.75rem;
-  position: absolute;
-  width: calc(var(--aside-width) - 40px);
+  /* Remove absolute positioning to let Tailwind classes handle layout */
 }
 
 .cart-line-quantity {
@@ -294,8 +330,7 @@ button.reset:hover:not(:has(> *)) {
 * --------------------------------------------------
 */
 .predictive-search {
-  height: calc(100vh - var(--header-height) - 40px);
-  overflow-y: auto;
+  /* Remove height and overflow since the Aside component handles scrolling */
 }
 
 .predictive-search-form {

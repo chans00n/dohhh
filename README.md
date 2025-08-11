@@ -1,45 +1,70 @@
-# Hydrogen template: Skeleton
+# Dohhh: Artisan Cookie Crowdfunding (Hydrogen + Remix)
 
-Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dovetail with [Remix](https://remix.run/), Shopify’s full stack web framework. This template contains a **minimal setup** of components, queries and tooling to get started with Hydrogen.
+Dohhh is a Shopify Hydrogen storefront that sells cookies through time-limited, goal‑oriented crowdfunding campaigns.
 
-[Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
-[Get familiar with Remix](https://remix.run/docs/en/v1)
+## Quick start
 
-## What's included
-
-- Remix
-- Hydrogen
-- Oxygen
-- Vite
-- Shopify CLI
-- ESLint
-- Prettier
-- GraphQL generator
-- TypeScript and JavaScript flavors
-- Minimal setup of components and routes
-
-## Getting started
-
-**Requirements:**
-
-- Node.js version 18.0.0 or higher
+1) Install deps
 
 ```bash
-npm create @shopify/hydrogen@latest
+npm install
 ```
 
-## Building for production
+2) Environment variables (create `.env` or Oxygen variables)
 
-```bash
-npm run build
+```
+PUBLIC_STORE_DOMAIN=your-store.myshopify.com
+PUBLIC_STOREFRONT_ID=xxxxxx
+PUBLIC_STOREFRONT_API_TOKEN=shpat_xxxxx
+PUBLIC_CHECKOUT_DOMAIN=checkout.shopify.com
+SESSION_SECRET=dev-secret
+
+# Admin API (required for webhooks + metafield writes)
+PRIVATE_ADMIN_API_ACCESS_TOKEN=shppa_xxx
+SHOPIFY_ADMIN_API_VERSION=2024-10
+SHOPIFY_WEBHOOK_SECRET=whsec_xxx
 ```
 
-## Local development
+3) Dev server
 
 ```bash
 npm run dev
 ```
 
-## Setup for using Customer Account API (`/account` section)
+Open `/campaigns` to see live campaign data from Shopify products tagged `campaign`.
 
-Follow step 1 and 2 of <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
+## Metafields schema
+
+Namespace: `campaign`
+- `slug` (single_line_text_field) — recommended equal to Product handle
+- `description` (multi_line_text_field)
+- `story_html` (multi_line_text_field)
+- `goal_quantity` (number_integer)
+- `deadline` (single_line_text_field ISO string)
+- `status` (single_line_text_field: draft|active|funded|completed|cancelled)
+- `delivery_methods` (json)
+- Progress (updated by webhook):
+  - `current_quantity` (number_integer)
+  - `backer_count` (number_integer)
+  - `total_raised` (number_decimal)
+
+Tag every campaign product with `campaign`.
+
+## Data flow
+
+- Storefront queries products tagged `campaign` and reads metafields for display
+- Checkout: creates cart for a variant and redirects to Shopify checkout
+- Webhook `/webhooks/orders/create`: increments progress metafields for any `campaign` products purchased in the order (idempotent via order metafield `campaign.processed=true`)
+- Admin page `/admin/campaigns`: edit campaign metafields
+
+## Shopify setup
+
+1) Create a custom app with Admin API + Storefront API access; copy tokens/secrets to env
+2) Create the metafield definitions above (Product scope, namespace `campaign`)
+3) Add a `campaign` product tag to each campaign product
+4) Configure webhooks: `orders/create` to `https://your-domain/webhooks/orders/create` (HMAC secret = `SHOPIFY_WEBHOOK_SECRET`)
+
+## Notes
+
+- Campaign slugs resolve via product handle; set `slug` metafield if you need a different URL
+- Progress percentage is computed from `current_quantity / goal_quantity`
