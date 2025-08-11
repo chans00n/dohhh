@@ -271,7 +271,7 @@ export default function Addresses() {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="border-2 border-black p-8 bg-amber-50">
+            <div className="border-2 border-black p-8 bg-white">
               <h2 className="text-2xl font-bold uppercase mb-6">ADD NEW ADDRESS</h2>
               <NewAddressForm />
             </div>
@@ -540,7 +540,7 @@ export function AddressForm({
             />
           </div>
         </div>
-        <div className="flex items-center gap-3 p-4 border-2 border-black bg-amber-50">
+        <div className="flex items-center gap-3 p-4 border-2 border-black bg-white">
           <input
             defaultChecked={isDefaultAddress}
             id="defaultAddress"

@@ -59,139 +59,173 @@ export default function OrderRoute() {
     discountPercentage,
     fulfillmentStatus,
   } = useLoaderData<typeof loader>();
+  
+  // Extract order number with DOHHH_ prefix
+  const orderNumber = order.name?.replace('#', 'DOHHH_') || order.name;
+  
   return (
-    <div className="account-order">
-      <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt!).toDateString()}</p>
-      <br />
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Order Header */}
+        <div className="border-b-2 border-black pb-6 mb-8">
+          <h1 className="text-5xl lg:text-6xl font-bold uppercase mb-4">
+            ORDER #{orderNumber}
+          </h1>
+          <p className="text-xl uppercase">
+            PLACED ON {new Date(order.processedAt!).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            }).toUpperCase()}
+          </p>
+        </div>
+
+        {/* Order Items */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold uppercase mb-6">ORDER ITEMS</h2>
+          <div className="border-2 border-black">
+            {/* Table Header */}
+            <div className="grid grid-cols-12 gap-4 p-4 border-b-2 border-black bg-black text-white font-bold uppercase">
+              <div className="col-span-6">PRODUCT</div>
+              <div className="col-span-2 text-right">PRICE</div>
+              <div className="col-span-2 text-center">QUANTITY</div>
+              <div className="col-span-2 text-right">TOTAL</div>
+            </div>
+            
+            {/* Line Items */}
             {lineItems.map((lineItem, lineItemIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
               <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
             ))}
-          </tbody>
-          <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <tr>
-                <th scope="row" colSpan={3}>
-                  <p>Discounts</p>
-                </th>
-                <th scope="row">
-                  <p>Discounts</p>
-                </th>
-                <td>
-                  {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
-                  ) : (
-                    discountValue && <Money data={discountValue!} />
-                  )}
-                </td>
-              </tr>
-            )}
-            <tr>
-              <th scope="row" colSpan={3}>
-                <p>Subtotal</p>
-              </th>
-              <th scope="row">
-                <p>Subtotal</p>
-              </th>
-              <td>
-                <Money data={order.subtotal!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Tax
-              </th>
-              <th scope="row">
-                <p>Tax</p>
-              </th>
-              <td>
-                <Money data={order.totalTax!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Total
-              </th>
-              <th scope="row">
-                <p>Total</p>
-              </th>
-              <td>
-                <Money data={order.totalPrice!} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-        <div>
-          <h3>Shipping Address</h3>
-          {order?.shippingAddress ? (
-            <address>
-              <p>{order.shippingAddress.name}</p>
-              {order.shippingAddress.formatted ? (
-                <p>{order.shippingAddress.formatted}</p>
-              ) : (
-                ''
+            
+            {/* Order Summary */}
+            <div className="border-t-2 border-black">
+              {((discountValue && discountValue.amount) || discountPercentage) && (
+                <div className="grid grid-cols-12 gap-4 p-4 border-b border-gray-300">
+                  <div className="col-span-10 text-right font-bold uppercase">DISCOUNTS</div>
+                  <div className="col-span-2 text-right font-mono">
+                    {discountPercentage ? (
+                      <span>-{discountPercentage}% OFF</span>
+                    ) : (
+                      discountValue && <Money data={discountValue!} />
+                    )}
+                  </div>
+                </div>
               )}
-              {order.shippingAddress.formattedArea ? (
-                <p>{order.shippingAddress.formattedArea}</p>
-              ) : (
-                ''
-              )}
-            </address>
-          ) : (
-            <p>No shipping address defined</p>
-          )}
-          <h3>Status</h3>
-          <div>
-            <p>{fulfillmentStatus}</p>
+              
+              <div className="grid grid-cols-12 gap-4 p-4 border-b border-gray-300">
+                <div className="col-span-10 text-right font-bold uppercase">SUBTOTAL</div>
+                <div className="col-span-2 text-right font-mono">
+                  <Money data={order.subtotal!} />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-12 gap-4 p-4 border-b border-gray-300">
+                <div className="col-span-10 text-right font-bold uppercase">TAX</div>
+                <div className="col-span-2 text-right font-mono">
+                  <Money data={order.totalTax!} />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-12 gap-4 p-4 bg-black text-white">
+                <div className="col-span-10 text-right font-bold uppercase text-xl">TOTAL</div>
+                <div className="col-span-2 text-right font-mono text-xl">
+                  <Money data={order.totalPrice!} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Shipping and Status */}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Shipping Address */}
+          <div className="border-2 border-black p-6">
+            <h3 className="text-xl font-bold uppercase mb-4">SHIPPING ADDRESS</h3>
+            {order?.shippingAddress ? (
+              <address className="not-italic space-y-2">
+                <p className="font-bold uppercase">{order.shippingAddress.name}</p>
+                {order.shippingAddress.formatted && (
+                  <p className="font-mono">{order.shippingAddress.formatted}</p>
+                )}
+                {order.shippingAddress.formattedArea && (
+                  <p className="font-mono">{order.shippingAddress.formattedArea}</p>
+                )}
+              </address>
+            ) : (
+              <p className="text-gray-500 uppercase">NO SHIPPING ADDRESS DEFINED</p>
+            )}
+          </div>
+          
+          {/* Order Status */}
+          <div className="border-2 border-black p-6">
+            <h3 className="text-xl font-bold uppercase mb-4">ORDER STATUS</h3>
+            <div className="space-y-4">
+              <div>
+                <span className="font-bold uppercase">PAYMENT: </span>
+                <span className={`inline-block px-3 py-1 border-2 border-black text-sm font-bold uppercase ${
+                  order.financialStatus === 'PAID' ? 'bg-black text-white' : 'bg-yellow-100'
+                }`}>
+                  {order.financialStatus}
+                </span>
+              </div>
+              <div>
+                <span className="font-bold uppercase">FULFILLMENT: </span>
+                <span className={`inline-block px-3 py-1 border-2 border-black text-sm font-bold uppercase ${
+                  fulfillmentStatus === 'DELIVERED' ? 'bg-black text-white' : 'bg-blue-100'
+                }`}>
+                  {fulfillmentStatus}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* View Order Status Link */}
+        <div className="mt-8">
+          <a 
+            target="_blank" 
+            href={order.statusPageUrl} 
+            rel="noreferrer"
+            className="inline-block px-8 py-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors text-xl font-bold uppercase"
+          >
+            VIEW ORDER STATUS →
+          </a>
+        </div>
       </div>
-      <br />
-      <p>
-        <a target="_blank" href={order.statusPageUrl} rel="noreferrer">
-          View Order Status →
-        </a>
-      </p>
     </div>
   );
 }
 
 function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
+  const lineItemTotal = {
+    amount: (parseFloat(lineItem.price?.amount || '0') * lineItem.quantity).toFixed(2),
+    currencyCode: lineItem.price?.currencyCode || 'USD'
+  };
+  
   return (
-    <tr key={lineItem.id}>
-      <td>
-        <div>
-          {lineItem?.image && (
-            <div>
-              <Image data={lineItem.image} width={96} height={96} />
-            </div>
-          )}
-          <div>
-            <p>{lineItem.title}</p>
-            <small>{lineItem.variantTitle}</small>
+    <div className="grid grid-cols-12 gap-4 p-4 border-b border-gray-300 hover:bg-gray-50">
+      <div className="col-span-6 flex gap-4">
+        {lineItem?.image && (
+          <div className="border-2 border-black">
+            <Image data={lineItem.image} width={96} height={96} />
           </div>
+        )}
+        <div>
+          <p className="font-bold uppercase">{lineItem.title}</p>
+          {lineItem.variantTitle && (
+            <p className="text-sm uppercase text-gray-600">{lineItem.variantTitle}</p>
+          )}
         </div>
-      </td>
-      <td>
+      </div>
+      <div className="col-span-2 text-right font-mono">
         <Money data={lineItem.price!} />
-      </td>
-      <td>{lineItem.quantity}</td>
-      <td>
-        <Money data={lineItem.totalDiscount!} />
-      </td>
-    </tr>
+      </div>
+      <div className="col-span-2 text-center font-mono">
+        {lineItem.quantity}
+      </div>
+      <div className="col-span-2 text-right font-mono">
+        <Money data={lineItemTotal} />
+      </div>
+    </div>
   );
 }

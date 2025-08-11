@@ -88,7 +88,7 @@ function OrderItem({order}: {order: OrderItemFragment}) {
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
         <div className="flex-1">
           <Link to={`/account/orders/${btoa(order.id)}`} className="hover:underline">
-            <h3 className="text-2xl font-bold uppercase mb-2">ORDER #{order.number}</h3>
+            <h3 className="text-2xl font-bold uppercase mb-2">ORDER #DOHHH_{order.number}</h3>
           </Link>
           <p className="text-lg uppercase mb-1">
             {new Date(order.processedAt).toLocaleDateString('en-US', { 
@@ -99,7 +99,7 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           </p>
           <div className="flex gap-4 flex-wrap">
             <span className={`inline-block px-3 py-1 border-2 border-black text-sm font-bold uppercase ${
-              order.financialStatus === 'PAID' ? 'bg-green-100' : 'bg-yellow-100'
+              order.financialStatus === 'PAID' ? 'bg-black text-white' : 'bg-yellow-100'
             }`}>
               {order.financialStatus}
             </span>

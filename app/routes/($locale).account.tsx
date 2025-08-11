@@ -53,7 +53,7 @@ export default function AccountLayout() {
       </div>
       
       {/* Navigation */}
-      <div className="border-b-2 border-black bg-amber-50">
+      <div className="border-b-2 border-black bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <AccountMenu />
         </div>
@@ -74,7 +74,7 @@ function AccountMenu() {
         to="/account/orders" 
         className={({isActive}) => `
           px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
         `}
       >
         ORDERS
@@ -83,7 +83,7 @@ function AccountMenu() {
         to="/account/profile" 
         className={({isActive}) => `
           px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
         `}
       >
         PROFILE
@@ -92,7 +92,7 @@ function AccountMenu() {
         to="/account/addresses" 
         className={({isActive}) => `
           px-6 py-4 text-lg font-bold uppercase border-r-2 border-black
-          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
         `}
       >
         ADDRESSES
@@ -101,7 +101,7 @@ function AccountMenu() {
         to="/account/campaigns" 
         className={({isActive}) => `
           px-6 py-4 text-lg font-bold uppercase
-          ${isActive ? 'bg-black text-white' : 'hover:bg-amber-100'}
+          ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}
         `}
       >
         MY CAMPAIGNS
