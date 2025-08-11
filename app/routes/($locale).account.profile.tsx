@@ -183,10 +183,10 @@ export default function AccountProfile() {
                 <span className="font-bold uppercase">MEMBER SINCE:</span>
                 <span className="font-mono">
                   {new Date(customer.createdAt).toLocaleDateString('en-US', {
-                    month: 'SHORT',
-                    day: 'NUMERIC',
-                    year: 'NUMERIC'
-                  })}
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }).toUpperCase()}
                 </span>
               </div>
             </div>

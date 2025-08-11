@@ -92,10 +92,10 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           </Link>
           <p className="text-lg uppercase mb-1">
             {new Date(order.processedAt).toLocaleDateString('en-US', { 
-              month: 'SHORT', 
-              day: 'NUMERIC', 
-              year: 'NUMERIC' 
-            })}
+              month: 'short', 
+              day: 'numeric', 
+              year: 'numeric' 
+            }).toUpperCase()}
           </p>
           <div className="flex gap-4 flex-wrap">
             <span className={`inline-block px-3 py-1 border-2 border-black text-sm font-bold uppercase ${
