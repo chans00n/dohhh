@@ -1,32 +1,46 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, type MetaFunction} from 'react-router';
+import {Link, useLoaderData, type MetaFunction} from 'react-router';
+import {Money, flattenConnection, getPaginationVariables} from '@shopify/hydrogen';
+import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
 
 export const meta: MetaFunction = () => [{title: 'Dohhh | My Campaigns'}];
 
-export async function loader({context}: LoaderFunctionArgs) {
-  // In a real implementation, you would fetch the customer's supported campaigns
-  // from your backend or Shopify metafields here
-  return {
-    isLoggedIn: await context.customerAccount.isLoggedIn(),
-    campaigns: [] // Placeholder for actual campaign data
-  };
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const paginationVariables = getPaginationVariables(request, {
+    pageBy: 20,
+  });
+
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_ORDERS_QUERY,
+    {
+      variables: {
+        ...paginationVariables,
+      },
+    },
+  );
+
+  if (errors?.length || !data?.customer) {
+    throw Error('Customer orders not found');
+  }
+
+  return {customer: data.customer};
 }
 
 export default function AccountCampaigns() {
-  // In production, this would come from loader data
-  const campaigns: any[] = [];
+  const {customer} = useLoaderData<typeof loader>();
+  const orders = customer?.orders?.nodes || [];
   
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <h1 className="text-5xl lg:text-6xl font-bold uppercase mb-12">
-          MY CAMPAIGNS
+          MY SUPPORTED CAMPAIGNS
         </h1>
         
-        {campaigns.length === 0 ? (
+        {orders.length === 0 ? (
           <EmptyCampaigns />
         ) : (
-          <CampaignsList campaigns={campaigns} />
+          <CampaignsList orders={orders} />
         )}
       </div>
     </div>
@@ -55,54 +69,81 @@ function EmptyCampaigns() {
   );
 }
 
-function CampaignsList({campaigns}: {campaigns: any[]}) {
+function CampaignsList({orders}: {orders: any[]}) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      {campaigns.map((campaign: any) => (
-        <div 
-          key={campaign.id} 
-          className="border-2 border-black p-6 hover:shadow-lg transition-shadow"
-        >
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-2xl font-bold uppercase">
-              {campaign.name}
-            </h3>
-            <span className="px-3 py-1 border-2 border-black bg-green-100 text-sm font-bold uppercase">
-              ACTIVE
-            </span>
-          </div>
-          
-          <div className="space-y-2 mb-6">
-            <div className="flex justify-between">
-              <span className="font-bold uppercase">Contribution:</span>
-              <span className="font-mono">${campaign.contribution}</span>
+      {orders.map((order: any) => {
+        // Extract campaign/product info from the order
+        const lineItems = flattenConnection(order.lineItems);
+        const firstItem = lineItems[0];
+        const campaignName = firstItem?.title || 'Cookie Campaign';
+        const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status || 'PROCESSING';
+        
+        return (
+          <div 
+            key={order.id} 
+            className="border-2 border-black p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-2xl font-bold uppercase mb-2">
+                  {campaignName}
+                </h3>
+                <p className="text-sm uppercase text-gray-600">
+                  ORDER #DOHHH_{order.number}
+                </p>
+              </div>
+              <span className={`inline-block px-3 py-1 border-2 border-black text-sm font-bold uppercase ${
+                order.financialStatus === 'PAID' ? 'bg-black text-white' : 'bg-yellow-100'
+              }`}>
+                {order.financialStatus}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span className="font-bold uppercase">Date:</span>
-              <span className="font-mono">{campaign.date}</span>
+            
+            <div className="space-y-2 mb-6">
+              <div className="flex justify-between">
+                <span className="font-bold uppercase">Contribution:</span>
+                <span className="font-mono">
+                  <Money data={order.totalPrice} />
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-bold uppercase">Date:</span>
+                <span className="font-mono">
+                  {new Date(order.processedAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-bold uppercase">Fulfillment:</span>
+                <span className={`inline-block px-2 py-1 border border-black text-xs font-bold uppercase ${
+                  fulfillmentStatus === 'DELIVERED' ? 'bg-green-100' : 'bg-blue-100'
+                }`}>
+                  {fulfillmentStatus}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="font-bold uppercase">Status:</span>
-              <span className="font-mono uppercase">{campaign.status}</span>
+            
+            <div className="flex gap-4">
+              <Link 
+                to="/campaigns"
+                className="flex-1 px-6 py-3 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold uppercase text-center"
+              >
+                VIEW CAMPAIGNS
+              </Link>
+              <Link 
+                to={`/account/orders/${btoa(order.id)}`}
+                className="px-6 py-3 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold uppercase"
+              >
+                ORDER →
+              </Link>
             </div>
           </div>
-          
-          <div className="flex gap-4">
-            <Link 
-              to={`/campaigns/${campaign.slug}`}
-              className="flex-1 px-6 py-3 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold uppercase text-center"
-            >
-              VIEW CAMPAIGN
-            </Link>
-            <Link 
-              to={`/account/orders/${campaign.orderId}`}
-              className="px-6 py-3 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold uppercase"
-            >
-              ORDER →
-            </Link>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
