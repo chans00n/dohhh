@@ -15,6 +15,7 @@ function getMetaValue(product: any, key: string) {
     current_quantity: 'campaignCurrentQuantity',
     backer_count: 'campaignBackerCount',
     total_raised: 'campaignTotalRaised',
+    video: 'campaignVideo',
   };
   const alias = aliasMap[key];
   if (alias && product && product[alias] && typeof product[alias].value !== 'undefined') {
@@ -33,6 +34,7 @@ function getMetaValue(product: any, key: string) {
     current_quantity: 'campaignCurrentQuantityCustom',
     backer_count: 'campaignBackerCountCustom',
     total_raised: 'campaignTotalRaisedCustom',
+    video: 'campaignVideoCustom',
   };
   // Namespace: custom with prefixed keys
   const customNsAliasMap: Record<string, string> = {
@@ -47,6 +49,7 @@ function getMetaValue(product: any, key: string) {
     current_quantity: 'campaignCurrentQuantityCustomNs',
     backer_count: 'campaignBackerCountCustomNs',
     total_raised: 'campaignTotalRaisedCustomNs',
+    video: 'campaignVideoCustomNs',
   };
   const customNs = customNsAliasMap[key];
   if (customNs && product && product[customNs] && typeof product[customNs].value !== 'undefined') {
@@ -98,6 +101,9 @@ export function productToCampaign(product: any): Campaign | null {
   
   // Extract price from first variant
   const price = product.variants?.nodes?.[0]?.price?.amount ? parseFloat(product.variants.nodes[0].price.amount) : 30;
+  
+  // Extract video URL from metafield
+  const video = getMetaValue(product, 'video') as string || '';
 
   return {
     id: product.id,
@@ -115,6 +121,7 @@ export function productToCampaign(product: any): Campaign | null {
     deliveryMethods,
     images,
     price,
+    video,
   };
 }
 
@@ -146,6 +153,9 @@ export async function hydrateCampaignFromAdmin(env: Env, product: any): Promise<
   }
   const price = product?.variants?.nodes?.[0]?.price?.amount ? parseFloat(product.variants.nodes[0].price.amount) : 30;
   
+  // Extract video URL from metafield
+  const video = mf['video'] || '';
+  
   return {
     id: productId,
     shopifyProductId: productId,
@@ -162,5 +172,6 @@ export async function hydrateCampaignFromAdmin(env: Env, product: any): Promise<
     deliveryMethods,
     images,
     price,
+    video,
   };
 }

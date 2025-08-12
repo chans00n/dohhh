@@ -31,6 +31,7 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
     campaignCurrentQuantity: metafield(namespace: "campaign", key: "current_quantity") { value }
     campaignBackerCount: metafield(namespace: "campaign", key: "backer_count") { value }
     campaignTotalRaised: metafield(namespace: "campaign", key: "total_raised") { value }
+    campaignVideo: metafield(namespace: "campaign", key: "video") { value }
     # Alternative namespace commonly seen as a custom namespace
     campaignNameCustom: metafield(namespace: "custom.campaign", key: "name") { value }
     campaignSlugCustom: metafield(namespace: "custom.campaign", key: "slug") { value }
@@ -57,6 +58,8 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
     campaignCurrentQuantityCustom: metafield(namespace: "custom.campaign", key: "current_quantity") { value }
     campaignBackerCountCustom: metafield(namespace: "custom.campaign", key: "backer_count") { value }
     campaignTotalRaisedCustom: metafield(namespace: "custom.campaign", key: "total_raised") { value }
+    campaignVideoCustom: metafield(namespace: "custom.campaign", key: "video") { value }
+    campaignVideoCustomNs: metafield(namespace: "custom", key: "campaign_video") { value }
     metafields(identifiers: [
       {namespace: "campaign", key: "name"},
       {namespace: "campaign", key: "slug"},
@@ -69,6 +72,7 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
       {namespace: "campaign", key: "current_quantity"},
       {namespace: "campaign", key: "backer_count"},
       {namespace: "campaign", key: "total_raised"},
+      {namespace: "campaign", key: "video"},
       {namespace: "custom.campaign", key: "name"},
       {namespace: "custom.campaign", key: "slug"},
       {namespace: "custom.campaign", key: "description"},
@@ -79,7 +83,8 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
       {namespace: "custom.campaign", key: "delivery_methods"},
       {namespace: "custom.campaign", key: "current_quantity"},
       {namespace: "custom.campaign", key: "backer_count"},
-      {namespace: "custom.campaign", key: "total_raised"}
+      {namespace: "custom.campaign", key: "total_raised"},
+      {namespace: "custom.campaign", key: "video"},
       {namespace: "custom", key: "campaign_name"},
       {namespace: "custom", key: "campaign_slug"},
       {namespace: "custom", key: "campaign_description"},
@@ -90,7 +95,8 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
       {namespace: "custom", key: "campaign_delivery_methods_json"},
       {namespace: "custom", key: "campaign_current_quantity"},
       {namespace: "custom", key: "campaign_backer_count"},
-      {namespace: "custom", key: "campaign_total_raised"}
+      {namespace: "custom", key: "campaign_total_raised"},
+      {namespace: "custom", key: "campaign_video"}
     ]) {
       key
       namespace
