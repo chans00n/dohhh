@@ -358,7 +358,14 @@ export default function CampaignDetail() {
                   type="number" 
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="flex-1 border-t-2 border-b-2 border-l-0 border-r-0 border-black px-4 lg:px-8 py-6 text-2xl text-center"
+                  className="flex-1 border-t-2 border-b-2 border-black px-4 lg:px-8 py-6 text-2xl text-center my-0 rounded-none"
+                  style={{
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    marginTop: '0',
+                    marginBottom: '0',
+                    borderRadius: '0'
+                  }}
                 />
                 <button 
                   type="button"
@@ -456,6 +463,192 @@ export default function CampaignDetail() {
               year: 'numeric'
             }).toUpperCase()}
           </p>
+        </div>
+      </section>
+      
+      {/* Campaign Mission Section - Similar to DOHHH Way */}
+      <section className="w-full bg-white border-b-2 border-black">
+        <div className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Left - Image/Video */}
+            <div className="border-b-2 lg:border-b-0 lg:border-r-2 border-black">
+              {campaign.video ? (
+                <div className="relative w-full h-full min-h-[400px] lg:min-h-[600px] bg-black">
+                  <iframe
+                    src={campaign.video}
+                    className="absolute inset-0 w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <img
+                  src={campaign.images?.[1]?.url || campaign.images?.[0]?.url || "/cash-lifting-gym.png"}
+                  alt={`${campaign.name} Mission`}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            
+            {/* Right - Content */}
+            <div className="py-8 lg:p-12">
+              <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-8 border-b-2 border-black pb-4">
+                THE CAMPAIGN MISSION
+              </h2>
+              
+              <div className="space-y-6">
+                {/* Campaign Promise */}
+                <div className="border-2 border-black p-6 bg-yellow-50">
+                  <h3 className="text-2xl font-bold uppercase mb-3">MAKING IMPACT, ONE COOKIE AT A TIME</h3>
+                  <p className="text-lg uppercase leading-relaxed">
+                    {campaign.description || "Every cookie sold directly supports this important cause. Together, we're creating real change."}
+                  </p>
+                </div>
+                
+                {/* Three Pillars */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="border-2 border-black p-4 hover:bg-black hover:text-white transition-colors">
+                    <div className="text-4xl font-bold mb-2">01</div>
+                    <h4 className="font-bold uppercase mb-1">DIRECT IMPACT</h4>
+                    <p className="text-sm uppercase">100% of proceeds go to the cause</p>
+                  </div>
+                  <div className="border-2 border-black p-4 hover:bg-black hover:text-white transition-colors">
+                    <div className="text-4xl font-bold mb-2">02</div>
+                    <h4 className="font-bold uppercase mb-1">TRANSPARENT</h4>
+                    <p className="text-sm uppercase">Track every cookie, every dollar</p>
+                  </div>
+                  <div className="border-2 border-black p-4 hover:bg-black hover:text-white transition-colors">
+                    <div className="text-4xl font-bold mb-2">03</div>
+                    <h4 className="font-bold uppercase mb-1">COMMUNITY</h4>
+                    <p className="text-sm uppercase">Join backers making a difference</p>
+                  </div>
+                </div>
+                
+                {/* The Impact */}
+                <div className="border-l-8 border-black pl-6 py-2">
+                  <p className="text-xl font-bold uppercase mb-2">
+                    YOUR CONTRIBUTION MATTERS
+                  </p>
+                  <p className="text-lg">
+                    When you back this campaign, you're not just buying cookies — you're 
+                    becoming part of a movement. Every purchase brings us closer to our goal 
+                    and creates lasting impact in our community.
+                  </p>
+                </div>
+                
+                {/* Call to Action */}
+                <div className="bg-black text-white p-6">
+                  <p className="text-2xl font-bold uppercase text-center">
+                    {daysLeft > 0 ? `${daysLeft} DAYS LEFT TO MAKE A DIFFERENCE` : 'CAMPAIGN ENDING SOON'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Campaign Highlights Section */}
+      <section className="w-full bg-white border-b-2 border-black">
+        <div className="w-full px-4 lg:px-8 py-8 lg:py-12">
+          <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-8">
+            CAMPAIGN HIGHLIGHTS
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Highlight 1 - Why This Matters */}
+            <div className="border-2 border-black">
+              <div className="h-48 bg-gray-100 flex items-center justify-center">
+                {campaign.images?.[2] ? (
+                  <img
+                    src={campaign.images[2].url}
+                    alt="Why This Matters"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-6xl">🎯</div>
+                )}
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold uppercase mb-3">WHY THIS MATTERS</h3>
+                <p className="text-base">
+                  This campaign addresses a critical need in our community. Your support 
+                  helps create tangible, lasting change.
+                </p>
+              </div>
+            </div>
+            
+            {/* Highlight 2 - The Goal */}
+            <div className="border-2 border-black">
+              <div className="h-48 bg-gray-100 flex items-center justify-center">
+                {campaign.images?.[3] ? (
+                  <img
+                    src={campaign.images[3].url}
+                    alt="The Goal"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-6xl">🚀</div>
+                )}
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold uppercase mb-3">THE GOAL</h3>
+                <p className="text-base">
+                  We're aiming to sell {campaign.goal.quantity} cookies to fund this 
+                  important initiative. Every cookie counts!
+                </p>
+              </div>
+            </div>
+            
+            {/* Highlight 3 - The Impact */}
+            <div className="border-2 border-black">
+              <div className="h-48 bg-gray-100 flex items-center justify-center">
+                {campaign.images?.[4] ? (
+                  <img
+                    src={campaign.images[4].url}
+                    alt="The Impact"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-6xl">💪</div>
+                )}
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold uppercase mb-3">THE IMPACT</h3>
+                <p className="text-base">
+                  Your contribution will directly support {campaign.organizerInfo.name || 'this cause'} 
+                  {' '}and create positive change.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Impact Metrics Section */}
+      <section className="w-full bg-white border-b-2 border-black py-12">
+        <div className="w-full">
+          <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-8 text-center">
+            CAMPAIGN IMPACT
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 px-4 lg:px-8">
+            <div className="text-center border-2 border-black p-4 lg:p-6">
+              <div className="text-3xl lg:text-4xl font-bold mb-2">100%</div>
+              <p className="text-sm lg:text-base uppercase font-bold">Goes to Cause</p>
+            </div>
+            <div className="text-center border-2 border-black p-4 lg:p-6">
+              <div className="text-3xl lg:text-4xl font-bold mb-2">{campaign.progress.backerCount}</div>
+              <p className="text-sm lg:text-base uppercase font-bold">Supporters</p>
+            </div>
+            <div className="text-center border-2 border-black p-4 lg:p-6">
+              <div className="text-3xl lg:text-4xl font-bold mb-2">{campaign.progress.currentQuantity}</div>
+              <p className="text-sm lg:text-base uppercase font-bold">Cookies Sold</p>
+            </div>
+            <div className="text-center border-2 border-black p-4 lg:p-6">
+              <div className="text-3xl lg:text-4xl font-bold mb-2">{daysLeft}</div>
+              <p className="text-sm lg:text-base uppercase font-bold">Days to Go</p>
+            </div>
+          </div>
         </div>
       </section>
       

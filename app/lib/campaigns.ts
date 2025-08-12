@@ -17,6 +17,7 @@ export interface Campaign {
   deliveryMethods: Array<{ type: DeliveryType; price: number; description: string }>;
   images?: Array<{ url: string; altText?: string }>;
   price?: number;
+  video?: string;
 }
 
 // Mock data removed - Using real Shopify data only
