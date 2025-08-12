@@ -21,6 +21,7 @@ interface PageLayoutProps {
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
   children?: React.ReactNode;
+  campaignDeadline?: string;
 }
 
 export function PageLayout({
@@ -30,6 +31,7 @@ export function PageLayout({
   header,
   isLoggedIn,
   publicStoreDomain,
+  campaignDeadline,
 }: PageLayoutProps) {
   return (
     <Aside.Provider>
@@ -42,6 +44,7 @@ export function PageLayout({
           cart={cart}
           isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
+          campaignDeadline={campaignDeadline}
         />
       )}
       <main>{children}</main>

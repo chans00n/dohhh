@@ -287,11 +287,8 @@ export default function CampaignDetail() {
             <h1 className="text-4xl lg:text-6xl font-bold uppercase mb-4">
               {campaign.name}
             </h1>
-            <p className="text-xl mb-6">
+            <p className="text-xl mb-6 uppercase">
               {campaign.description}
-            </p>
-            <p className="text-lg uppercase">
-              BY DOHHH
             </p>
           </div>
         </div>
@@ -501,7 +498,7 @@ export default function CampaignDetail() {
                 <div className="border-2 border-black p-6 bg-yellow-50">
                   <h3 className="text-2xl font-bold uppercase mb-3">MAKING IMPACT, ONE COOKIE AT A TIME</h3>
                   <p className="text-lg uppercase leading-relaxed">
-                    {campaign.description || "Every cookie sold directly supports this important cause. Together, we're creating real change."}
+                    <CampaignStory campaign={campaign} />
                   </p>
                 </div>
                 
@@ -526,13 +523,11 @@ export default function CampaignDetail() {
                 
                 {/* The Impact */}
                 <div className="border-l-8 border-black pl-6 py-2">
-                  <p className="text-xl font-bold uppercase mb-2">
+                  <h4 className="font-bold uppercase mb-1">
                     YOUR CONTRIBUTION MATTERS
-                  </p>
-                  <p className="text-lg">
-                    When you back this campaign, you're not just buying cookies — you're 
-                    becoming part of a movement. Every purchase brings us closer to our goal 
-                    and creates lasting impact in our community.
+                  </h4>
+                  <p className="text-lg uppercase leading-relaxed">
+                  This isn't just any competition – it's the American Open, where the nation's top weightlifters gather to compete. For Cash, it's the culmination of years of training, dedication, and early morning gym sessions. Your support helps a young athlete chase his Olympic dreams while building his entrepreneurial spirit.
                   </p>
                 </div>
                 
@@ -570,10 +565,9 @@ export default function CampaignDetail() {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold uppercase mb-3">WHY THIS MATTERS</h3>
-                <p className="text-base">
-                  This campaign addresses a critical need in our community. Your support 
-                  helps create tangible, lasting change.
+                <h3 className="text-xl font-bold uppercase mb-3">ONE BIG DREAM</h3>
+                <p className="text-base uppercase leading-relaxed">
+                We need to sell {campaign.goal.quantity} cookies to fully fund Cash's Texas adventure.
                 </p>
               </div>
             </div>
@@ -592,10 +586,9 @@ export default function CampaignDetail() {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold uppercase mb-3">THE GOAL</h3>
-                <p className="text-base">
-                  We're aiming to sell {campaign.goal.quantity} cookies to fund this 
-                  important initiative. Every cookie counts!
+                <h3 className="text-xl font-bold uppercase mb-3">WHAT YOU GET</h3>
+                <p className="text-base uppercase leading-relaxed">
+                Each cookie is crafted with premium ingredients and the determination of someone who knows what it takes to achieve big goals.
                 </p>
               </div>
             </div>
@@ -614,10 +607,9 @@ export default function CampaignDetail() {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold uppercase mb-3">THE IMPACT</h3>
-                <p className="text-base">
-                  Your contribution will directly support {campaign.organizerInfo.name || 'this cause'} 
-                  {' '}and create positive change.
+                <h3 className="text-xl font-bold uppercase mb-3">JOIN TEAM CASH</h3>
+                <p className="text-base uppercase leading-relaxed">
+                Every cookie brings him one step closer to that competition platform in Fort Worth.
                 </p>
               </div>
             </div>
@@ -651,23 +643,7 @@ export default function CampaignDetail() {
           </div>
         </div>
       </section>
-      
-      {/* Campaign Story */}
-      <section className="w-full border-b-2 border-black">
-        <div className="px-4 py-8 lg:p-12 max-w-6xl mx-auto">
-          <div className="prose prose-lg max-w-none">
-            <CampaignStory campaign={campaign} />
-            {campaign.organizerInfo.bio && (
-              <div className="mt-12 pt-12 border-t-2 border-black">
-                <h3 className="text-2xl uppercase mb-4">ABOUT THE ORGANIZER</h3>
-                <p className="text-xl">{campaign.organizerInfo.name}</p>
-                <p className="text-lg mt-4">{campaign.organizerInfo.bio}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-      
+
       {/* Backers Section */}
       <section className="w-full">
         <div className="px-4 py-8 lg:p-12">

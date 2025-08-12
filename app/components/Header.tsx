@@ -14,6 +14,7 @@ interface HeaderProps {
   cart: Promise<CartApiQueryFragment | null>;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  campaignDeadline?: string;
 }
 
 type Viewport = 'desktop' | 'mobile';
@@ -23,14 +24,23 @@ export function Header({
   isLoggedIn,
   cart,
   publicStoreDomain,
+  campaignDeadline,
 }: HeaderProps) {
   const {shop, menu} = header;
   const [timeLeft, setTimeLeft] = useState('');
   
-  // Campaign countdown timer (example: 7 days from now)
+  // Campaign countdown timer - use actual campaign deadline or default to 7 days
   useEffect(() => {
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 7);
+    let targetDate: Date;
+    
+    if (campaignDeadline) {
+      // Use the actual campaign deadline from metafields
+      targetDate = new Date(campaignDeadline);
+    } else {
+      // Fallback to 7 days from now if no campaign deadline provided
+      targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 7);
+    }
     
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -47,11 +57,11 @@ export function Header({
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      setTimeLeft(`${days}D ${hours}H ${minutes}M ${seconds}S`);
     }, 1000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [campaignDeadline]);
   
   return (
     <>
@@ -60,15 +70,28 @@ export function Header({
         <div className="animate-scroll-left flex whitespace-nowrap">
           <span className="px-8">DOHHH DOHHH</span>
           <span className="px-8">•</span>
-          <span className="px-8">GIVE ME COOKIES</span>
+          <span className="px-8">PERFECTLY IMPERFECT</span>
           <span className="px-8">•</span>
-          <span className="px-8">SUPPORT LOCAL CAMPAIGNS</span>
+          <span className="px-8">SMALL BATCH COOKIES</span>
           <span className="px-8">•</span>
           <span className="px-8">DOHHH DOHHH</span>
           <span className="px-8">•</span>
-          <span className="px-8">OR GIVE ME DEATH</span>
+          <span className="px-8">DOHHH-LICIOUS DREAMS</span>
           <span className="px-8">•</span>
-          <span className="px-8">SUPPORT LOCAL CAMPAIGNS</span>
+          <span className="px-8">HANDCRAFTED</span>
+          <span className="px-8">•</span>
+          {/* Duplicate content for seamless loop */}
+          <span className="px-8">DOHHH DOHHH</span>
+          <span className="px-8">•</span>
+          <span className="px-8">PERFECTLY IMPERFECT</span>
+          <span className="px-8">•</span>
+          <span className="px-8">SMALL BATCH COOKIES</span>
+          <span className="px-8">•</span>
+          <span className="px-8">DOHHH DOHHH</span>
+          <span className="px-8">•</span>
+          <span className="px-8">DOHHH-LICIOUS DREAMS</span>
+          <span className="px-8">•</span>
+          <span className="px-8">HANDCRAFTED</span>
           <span className="px-8">•</span>
         </div>
       </div>
@@ -111,7 +134,7 @@ export function Header({
                 </DropdownTrigger>
                 <DropdownContent>
                   <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Social</div>
+                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">SOCIAL</div>
                     <DropdownItem href="https://twitter.com">TWITTER</DropdownItem>
                     <DropdownItem href="https://instagram.com">INSTAGRAM</DropdownItem>
                     <DropdownItem href="https://tiktok.com">TIKTOK</DropdownItem>
@@ -120,7 +143,7 @@ export function Header({
                   <DropdownSeparator />
                   
                   <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Help</div>
+                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">HELP</div>
                     <DropdownItem href="/pages/faq">FAQ</DropdownItem>
                     <DropdownItem href="/pages/contact">CONTACT</DropdownItem>
                     <DropdownItem href="/pages/refunds">REFUNDS</DropdownItem>
@@ -129,9 +152,9 @@ export function Header({
                   <DropdownSeparator />
                   
                   <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Legal</div>
-                    <DropdownItem href="/policies/privacy-policy">Privacy Policy</DropdownItem>
-                    <DropdownItem href="/policies/terms-of-service">Terms</DropdownItem>
+                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">LEGAL</div>
+                    <DropdownItem href="/policies/privacy-policy">PRIVACY POLICY</DropdownItem>
+                    <DropdownItem href="/policies/terms-of-service">TERMS</DropdownItem>
                   </div>
                 </DropdownContent>
               </Dropdown>

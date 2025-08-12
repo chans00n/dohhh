@@ -102,17 +102,30 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, activeCampaign] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    // Get the first active campaign to show in the header timer
+    storefront.query(ACTIVE_CAMPAIGN_QUERY, {
+      cache: storefront.CacheShort(),
+    }).catch(() => null),
   ]);
 
-  return {header};
+  // Extract campaign deadline from the first active campaign
+  let campaignDeadline = null;
+  if (activeCampaign?.products?.nodes?.[0]) {
+    const product = activeCampaign.products.nodes[0];
+    campaignDeadline = product.campaignDeadline?.value || 
+                       product.campaignDeadlineCustom?.value || 
+                       product.campaignDeadlineCustomNs?.value || 
+                       null;
+  }
+
+  return {header, campaignDeadline};
 }
 
 /**
@@ -207,3 +220,19 @@ export function ErrorBoundary() {
     </div>
   );
 }
+
+// Query to get the active campaign for the header countdown timer
+const ACTIVE_CAMPAIGN_QUERY = `#graphql
+  query ActiveCampaign(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: 1, query: "tag:campaign AND status:active", sortKey: CREATED_AT, reverse: true) {
+      nodes {
+        campaignDeadline: metafield(namespace: "campaign", key: "deadline") { value }
+        campaignDeadlineCustom: metafield(namespace: "custom.campaign", key: "deadline") { value }
+        campaignDeadlineCustomNs: metafield(namespace: "custom", key: "campaign_deadline") { value }
+      }
+    }
+  }
+` as const;
