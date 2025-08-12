@@ -55,7 +55,7 @@ async function loadCriticalData({
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Get recommended products
-    storefront.query(RECOMMENDED_PRODUCTS_QUERY, {
+    storefront.query(PRODUCT_RECOMMENDATIONS_QUERY, {
       variables: {},
     }),
   ]);
@@ -781,8 +781,8 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 ` as const;
 
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  query RecommendedProducts(
+const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
