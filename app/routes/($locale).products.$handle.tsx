@@ -154,10 +154,10 @@ export default function Product() {
   // Format description to handle line breaks properly
   const formattedDescription = descriptionHtml
     ? descriptionHtml
-        .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '</p><p>') // Double line breaks become paragraphs
-        .replace(/^(?!<p>)/, '<p>') // Add opening p tag if missing
-        .replace(/(?!<\/p>)$/, '</p>') // Add closing p tag if missing
-        .replace(/<p>\s*<\/p>/g, '') // Remove empty paragraphs
+        .split(/<br\s*\/?>\s*<br\s*\/?>|<br\s*\/?><br\s*\/?>|\n\n/gi) // Split on double breaks or double newlines
+        .filter(text => text.trim()) // Remove empty segments
+        .map(text => `<p>${text.trim()}</p>`) // Wrap each segment in p tags
+        .join('') // Join back together
     : '';
   
   // Get all product images
@@ -319,7 +319,7 @@ export default function Product() {
             </h1>
           <div className="prose prose-lg max-w-none mb-8">
               <div 
-                className="[&>p]:mb-4 [&>p:last-child]:mb-0"
+                className="[&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-relaxed"
                 dangerouslySetInnerHTML={{__html: formattedDescription}} />
             </div>
           
@@ -380,7 +380,14 @@ export default function Product() {
                   type="number" 
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="flex-1 border-t-2 border-b-2 border-l-0 border-r-0 border-black px-4 lg:px-8 py-6 text-2xl text-center"
+                  className="flex-1 border-t-2 border-b-2 border-black px-4 lg:px-8 py-6 text-2xl text-center my-0 rounded-none"
+                  style={{
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    marginTop: '0',
+                    marginBottom: '0',
+                    borderRadius: '0'
+                  }}
                 />
                 <button 
                   type="button"
