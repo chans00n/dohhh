@@ -7,7 +7,6 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
-import {Dropdown, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator} from '~/components/ui/dropdown';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -117,7 +116,7 @@ export function Header({
               </NavLink>
               
               <NavLink
-                to="/cookies"
+                to="/collections/cookies"
                 className={({isActive}) => `text-sm font-medium uppercase tracking-wider transition-colors hover:text-amber-600 ${
                   isActive ? 'text-amber-600' : 'text-neutral-900'
                 }`}
@@ -125,39 +124,14 @@ export function Header({
                 Cookies
               </NavLink>
               
-              <Dropdown>
-                <DropdownTrigger className="flex items-center gap-1 text-sm font-medium uppercase tracking-wider text-neutral-900 transition-colors hover:text-amber-600">
-                  More
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </DropdownTrigger>
-                <DropdownContent>
-                  <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">SOCIAL</div>
-                    <DropdownItem href="https://twitter.com">TWITTER</DropdownItem>
-                    <DropdownItem href="https://instagram.com">INSTAGRAM</DropdownItem>
-                    <DropdownItem href="https://tiktok.com">TIKTOK</DropdownItem>
-                  </div>
-                  
-                  <DropdownSeparator />
-                  
-                  <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">HELP</div>
-                    <DropdownItem href="/pages/faq">FAQ</DropdownItem>
-                    <DropdownItem href="/pages/contact">CONTACT</DropdownItem>
-                    <DropdownItem href="/pages/refunds">REFUNDS</DropdownItem>
-                  </div>
-                  
-                  <DropdownSeparator />
-                  
-                  <div className="py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">LEGAL</div>
-                    <DropdownItem href="/policies/privacy-policy">PRIVACY POLICY</DropdownItem>
-                    <DropdownItem href="/policies/terms-of-service">TERMS</DropdownItem>
-                  </div>
-                </DropdownContent>
-              </Dropdown>
+              <NavLink
+                to="/collections/goods"
+                className={({isActive}) => `text-sm font-medium uppercase tracking-wider transition-colors hover:text-amber-600 ${
+                  isActive ? 'text-amber-600' : 'text-neutral-900'
+                }`}
+              >
+                Goods
+              </NavLink>
             </nav>
             
             {/* Right Side - Countdown, Search, Cart */}
@@ -226,7 +200,7 @@ export function HeaderMenu({
         <NavLink
           onClick={close}
           prefetch="intent"
-          to="/cookies"
+          to="/collections/cookies"
           className={({isActive}) => `block px-4 py-3 text-base font-medium transition-colors ${
             isActive ? 'bg-amber-50 text-amber-600 border-l-4 border-amber-600' : 'text-neutral-900 hover:bg-neutral-50'
           }`}
@@ -234,31 +208,16 @@ export function HeaderMenu({
           Cookies
         </NavLink>
         
-        <div className="border-t border-neutral-200 my-2" />
-        
-        <div className="px-4 py-2">
-          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Social</div>
-          <a href="https://twitter.com" className="block py-2 text-neutral-700 hover:text-amber-600">Twitter</a>
-          <a href="https://instagram.com" className="block py-2 text-neutral-700 hover:text-amber-600">Instagram</a>
-          <a href="https://tiktok.com" className="block py-2 text-neutral-700 hover:text-amber-600">TikTok</a>
-        </div>
-        
-        <div className="border-t border-neutral-200 my-2" />
-        
-        <div className="px-4 py-2">
-          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Help</div>
-          <NavLink to="/pages/faq" onClick={close} className="block py-2 text-neutral-700 hover:text-amber-600">FAQ</NavLink>
-          <NavLink to="/pages/contact" onClick={close} className="block py-2 text-neutral-700 hover:text-amber-600">Contact</NavLink>
-          <NavLink to="/pages/refunds" onClick={close} className="block py-2 text-neutral-700 hover:text-amber-600">Refunds</NavLink>
-        </div>
-        
-        <div className="border-t border-neutral-200 my-2" />
-        
-        <div className="px-4 py-2">
-          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Legal</div>
-          <NavLink to="/policies/privacy-policy" onClick={close} className="block py-2 text-neutral-700 hover:text-amber-600">Privacy Policy</NavLink>
-          <NavLink to="/policies/terms-of-service" onClick={close} className="block py-2 text-neutral-700 hover:text-amber-600">Terms</NavLink>
-        </div>
+        <NavLink
+          onClick={close}
+          prefetch="intent"
+          to="/collections/goods"
+          className={({isActive}) => `block px-4 py-3 text-base font-medium transition-colors ${
+            isActive ? 'bg-amber-50 text-amber-600 border-l-4 border-amber-600' : 'text-neutral-900 hover:bg-neutral-50'
+          }`}
+        >
+          Goods
+        </NavLink>
       </nav>
     );
   }
@@ -393,11 +352,9 @@ function CartBanner() {
 const FALLBACK_HEADER_MENU = {
   id: 'fallback',
   items: [
-    { id: 'collections', resourceId: null, tags: [], title: 'Collections', type: 'HTTP', url: '/collections', items: [] },
     { id: 'campaigns', resourceId: null, tags: [], title: 'Campaigns', type: 'HTTP', url: '/campaigns', items: [] },
-    { id: 'cookies', resourceId: null, tags: [], title: 'Cookies', type: 'HTTP', url: '/cookies', items: [] },
-    { id: 'policies', resourceId: null, tags: [], title: 'Policies', type: 'HTTP', url: '/policies', items: [] },
-    { id: 'about', resourceId: 'gid://shopify/Page/92591030328', tags: [], title: 'About', type: 'PAGE', url: '/pages/about', items: [] },
+    { id: 'cookies', resourceId: null, tags: [], title: 'Cookies', type: 'HTTP', url: '/collections/cookies', items: [] },
+    { id: 'goods', resourceId: null, tags: [], title: 'Goods', type: 'HTTP', url: '/collections/goods', items: [] },
   ],
 };
 
