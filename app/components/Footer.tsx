@@ -17,9 +17,7 @@ export function Footer() {
               className="h-8 lg:h-8 w-auto"
             />
           </Link>
-          <p className="text-lg uppercase mb-2">HEY DOHHH DOHHH 👋</p>
-          <p className="text-lg uppercase mb-2">HUNTINGTON BEACH, CA</p>
-          <p className="text-lg uppercase">EST. 2025</p>
+          <p className="text-lg uppercase mb-2">WE MAKE PERFECTLY IMPERFECT COOKIES FOR PERFECTLY IMPORTANT CAUSES. BECAUSE THE BEST STORIES - AND COOKIES - ARE BEAUTIFULLY HUMAN.</p>
         </div>
         
         {/* Shop Links */}
@@ -46,19 +44,19 @@ export function Footer() {
         
         {/* Info Section */}
         <div className="p-8 lg:p-12">
-          <h4 className="text-2xl font-bold uppercase mb-6">INFO</h4>
+          <h4 className="text-2xl font-bold uppercase mb-6">SOCIAL</h4>
           <div className="space-y-3">
-            <Link to="/pages/about" className="block text-lg uppercase text-white hover:underline">
-              ABOUT US
+            <Link to="https://www.instagram.com/dohhh_dohhh/" className="block text-lg uppercase text-white hover:underline">
+              INSTAGRAM
             </Link>
-            <Link to="/pages/how-it-works" className="block text-lg uppercase text-white hover:underline">
-              HOW IT WORKS
+            <Link to="https://www.facebook.com/dohhh_dohhh/" className="block text-lg uppercase text-white hover:underline">
+              FACEBOOK
             </Link>
-            <Link to="/pages/shipping" className="block text-lg uppercase text-white hover:underline">
-              SHIPPING
+            <Link to="https://x.com/dohhh_dohhh" className="block text-lg uppercase text-white hover:underline">
+              X
             </Link>
-            <Link to="/pages/contact" className="block text-lg uppercase text-white hover:underline">
-              CONTACT
+            <Link to="https://www.tiktok.com/@dohhh_dohhh" className="block text-lg uppercase text-white hover:underline">
+              TIKTOK
             </Link>
           </div>
         </div>
@@ -73,7 +71,7 @@ export function Footer() {
             <input
               type="email"
               placeholder="YOUR EMAIL"
-              className="w-full px-4 py-3 bg-black border-2 border-white text-white placeholder-gray-400 uppercase focus:outline-none focus:bg-white focus:text-black transition-colors"
+              className="w-full px-4 py-3 bg-white border-2 border-white text-white placeholder-gray-400 uppercase focus:outline-none focus:bg-white focus:text-black transition-colors"
             />
             <button
               type="submit"
