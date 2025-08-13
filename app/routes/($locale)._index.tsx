@@ -10,7 +10,35 @@ import {RichText} from '~/components/campaigns/RichText';
 import {Footer} from '~/components/Footer';
 
 export const meta: MetaFunction = () => {
-  return [{title: 'DOHHH'}];
+  return [
+    {title: 'DOHHH - Perfectly Imperfect Cookies for Important Causes'},
+    {name: 'description', content: 'DOHHH makes perfectly imperfect cookies for perfectly important causes. Small batch, handcrafted cookies that support meaningful campaigns and make a difference.'},
+    {name: 'keywords', content: 'cookies, handcrafted cookies, small batch cookies, charity cookies, campaign cookies, DOHHH, perfectly imperfect, Huntington Beach'},
+    
+    // Open Graph tags for social sharing
+    {property: 'og:type', content: 'website'},
+    {property: 'og:title', content: 'DOHHH - Perfectly Imperfect Cookies for Important Causes'},
+    {property: 'og:description', content: 'We make perfectly imperfect cookies for perfectly important causes. Because the best stories - and cookies - are beautifully human.'},
+    {property: 'og:url', content: 'https://www.dohhh.shop'},
+    {property: 'og:site_name', content: 'DOHHH'},
+    {property: 'og:image', content: 'https://www.dohhh.shop/dohhh-share.png'},
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
+    {property: 'og:locale', content: 'en_US'},
+    
+    // Twitter Card tags
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@dohhh_dohhh'},
+    {name: 'twitter:title', content: 'DOHHH - Perfectly Imperfect Cookies'},
+    {name: 'twitter:description', content: 'Small batch, handcrafted cookies that support meaningful campaigns and make a difference.'},
+    {name: 'twitter:image', content: 'https://www.dohhh.shop/dohhh-share.png'},
+    
+    // Additional SEO tags
+    {name: 'robots', content: 'index, follow'},
+    {name: 'author', content: 'DOHHH'},
+    {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+    {'http-equiv': 'content-language', content: 'en-US'},
+  ];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -67,27 +95,27 @@ function FAQAccordion() {
   const faqs = [
     {
       question: "HOW DOES COOKIE CROWDFUNDING WORK?",
-      answer: "Cookie crowdfunding allows passionate bakers to launch campaigns for their unique cookie creations. Backers support campaigns by pre-ordering cookies, and once the funding goal is met, the cookies are baked and delivered. It's a way to bring innovative cookie ideas to life while building a community of cookie enthusiasts."
+      answer: "It's beautifully simple! Cookie lovers launch campaigns for their perfectly imperfect creations, and dreamers like you back them by pre-ordering small batches. Once we hit the goal, we handcraft every Dohhh-licious cookie and deliver them fresh. It's like Kickstarter, but way more delicious - and guaranteed to make you smile with every bite."
     },
     {
       question: "WHEN WILL I RECEIVE MY COOKIES?",
-      answer: "Delivery times vary by campaign. Each campaign has a specific deadline and estimated delivery date listed on its page. Typically, cookies are delivered 2-4 weeks after a campaign successfully closes. You'll receive tracking information once your order ships from our bakery in Austin, TX."
+      answer: "Good things take time! Each campaign shows its deadline and estimated delivery date right on the page. Typically, your handcrafted cookies arrive 1-2 weeks after a campaign closes successfully. We'll send tracking info once your small-batch order ships from our California bakery - because waiting is easier when you know your Dohhh-licious treats are on the way."
     },
     {
       question: "WHAT HAPPENS IF A CAMPAIGN DOESN'T REACH ITS GOAL?",
-      answer: "If a campaign doesn't reach its funding goal by the deadline, all backers are automatically refunded in full. No cookies are produced, and no charges are finalized. We only move forward with production when a campaign is fully funded to ensure quality and sustainability."
+      answer: "We believe every dream deserves a chance! Even if a campaign doesn't hit its original goal by the deadline, we're committed to making it happen anyway. We'll handcraft those perfectly imperfect cookies in whatever quantities were backed - because supporting dreamers is what we're all about. Your small-batch order will still be Dohhh-licious, and every backer still gets their cookies. Sometimes the best stories aren't about hitting targets, they're about showing up for each other."
     },
     {
       question: "CAN I BACK MULTIPLE CAMPAIGNS?",
-      answer: "Absolutely! You can back as many campaigns as you'd like. Each campaign is tracked separately, and you'll receive updates for each one you support. Many of our backers enjoy discovering and supporting multiple unique cookie creations."
+      answer: "Absolutely! Go ahead and be a serial backer - we love cookie enthusiasts who support multiple dreams. Each campaign is tracked separately, so you'll get updates on all your perfectly imperfect investments. Many of our biggest supporters have backed dozens of Dohhh-licious campaigns. Don't be a Dohhh-Dohhh - spread the love!"
     },
     {
       question: "ARE THE COOKIES MADE FRESH?",
-      answer: "Yes, all cookies are made fresh to order once a campaign closes successfully. We never use frozen dough or pre-made cookies. Each batch is crafted with premium ingredients and shipped at peak freshness to ensure the best possible taste and texture."
+      answer: "Always! Every single cookie is handcrafted fresh to order once campaigns close successfully. No frozen dough, no shortcuts, no compromises. Just premium ingredients, small-batch love, and perfectly imperfect cookies shipped at peak Dohhh-liciousness. Because life's too short for stale cookies."
     },
     {
       question: "DO YOU SHIP INTERNATIONALLY?",
-      answer: "Currently, we ship within the United States only. We're working on expanding our shipping capabilities to serve cookie lovers worldwide. Sign up for our newsletter to be notified when international shipping becomes available."
+      answer: "Not yet, but we're dreaming big! Right now we ship within the US only, but we're working on bringing our handcrafted, perfectly imperfect cookies to cookie lovers worldwide. Sign up for our newsletter so you'll be the first to know when we go global - because everyone deserves Dohhh-licious dreams."
     }
   ];
   
@@ -114,7 +142,7 @@ function FAQAccordion() {
             
             {openIndex === index && (
               <div className="px-8 py-8 bg-gray-50">
-                <p className="text-lg">
+                <p className="text-lg uppercase">
                   {faq.answer}
                 </p>
               </div>

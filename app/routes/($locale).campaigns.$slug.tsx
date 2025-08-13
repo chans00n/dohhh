@@ -135,9 +135,43 @@ function BackersDisplay({ backersJson }: { backersJson: string }) {
   );
 }
 
-export const meta: MetaFunction = ({params}) => [
-  {title: `${params.slug?.toUpperCase()}`},
-];
+export const meta: MetaFunction<typeof loader> = ({data, params}) => {
+  const campaign = data?.campaign;
+  const imageUrl = campaign?.images?.[0]?.url || 'https://www.dohhh.shop/dohhh-share.png';
+  const progress = campaign?.currentAmount && campaign?.goalAmount 
+    ? Math.round((campaign.currentAmount / campaign.goalAmount) * 100)
+    : 0;
+  
+  return [
+    {title: `${campaign?.title || params.slug?.toUpperCase()} | DOHHH Campaign`},
+    {name: 'description', content: campaign?.description || `Support the ${campaign?.title} campaign. Help us make a difference with perfectly imperfect cookies for important causes.`},
+    {
+      rel: 'canonical',
+      href: `https://www.dohhh.shop/campaigns/${params.slug}`,
+    },
+    
+    // Open Graph tags
+    {property: 'og:type', content: 'article'},
+    {property: 'og:title', content: `${campaign?.title} | DOHHH Campaign`},
+    {property: 'og:description', content: campaign?.description || 'Join this meaningful campaign and make a difference with DOHHH cookies.'},
+    {property: 'og:url', content: `https://www.dohhh.shop/campaigns/${params.slug}`},
+    {property: 'og:image', content: imageUrl},
+    {property: 'og:image:alt', content: campaign?.title},
+    {property: 'og:site_name', content: 'DOHHH'},
+    {property: 'article:author', content: 'DOHHH'},
+    
+    // Twitter Card tags
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@dohhh_dohhh'},
+    {name: 'twitter:title', content: `${campaign?.title} | Support This Campaign`},
+    {name: 'twitter:description', content: campaign?.description?.substring(0, 200) || 'Help us reach our goal and make a difference.'},
+    {name: 'twitter:image', content: imageUrl},
+    {name: 'twitter:label1', content: 'Progress'},
+    {name: 'twitter:data1', content: `${progress}% funded`},
+    {name: 'twitter:label2', content: 'Goal'},
+    {name: 'twitter:data2', content: `$${campaign?.goalAmount || 0}`},
+  ];
+};
 
 export async function loader({params, context}: LoaderFunctionArgs) {
   const handle = params.slug || '';

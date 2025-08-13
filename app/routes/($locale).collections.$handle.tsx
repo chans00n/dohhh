@@ -6,7 +6,32 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {Footer} from '~/components/Footer';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  const collection = data?.collection;
+  const productCount = collection?.products?.nodes?.length || 0;
+  
+  return [
+    {title: `${collection?.title ?? ''} | DOHHH Collection`},
+    {name: 'description', content: collection?.description || `Explore our ${collection?.title} collection. ${productCount} perfectly imperfect, handcrafted cookies available.`},
+    {
+      rel: 'canonical',
+      href: `https://www.dohhh.shop/collections/${collection?.handle}`,
+    },
+    
+    // Open Graph tags
+    {property: 'og:type', content: 'website'},
+    {property: 'og:title', content: `${collection?.title} | DOHHH Collection`},
+    {property: 'og:description', content: collection?.description || `Shop our ${collection?.title} collection of handcrafted cookies.`},
+    {property: 'og:url', content: `https://www.dohhh.shop/collections/${collection?.handle}`},
+    {property: 'og:image', content: 'https://www.dohhh.shop/dohhh-share.png'},
+    {property: 'og:site_name', content: 'DOHHH'},
+    
+    // Twitter Card tags
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@dohhh_dohhh'},
+    {name: 'twitter:title', content: `${collection?.title} Collection | DOHHH`},
+    {name: 'twitter:description', content: `${productCount} products in our ${collection?.title} collection.`},
+    {name: 'twitter:image', content: 'https://www.dohhh.shop/dohhh-share.png'},
+  ];
 };
 
 export async function loader(args: LoaderFunctionArgs) {

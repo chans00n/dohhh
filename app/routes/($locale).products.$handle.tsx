@@ -15,12 +15,41 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {Footer} from '~/components/Footer';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
+  const product = data?.product;
+  const selectedVariant = product?.selectedVariant;
+  const price = selectedVariant?.price?.amount || product?.priceRange?.minVariantPrice?.amount;
+  const imageUrl = product?.featuredImage?.url || 'https://www.dohhh.shop/dohhh-share.png';
+  
   return [
-    {title: `${data?.product.title ?? ''} | DOHHH`},
+    {title: `${product?.title ?? ''} | DOHHH - Perfectly Imperfect Cookies`},
+    {name: 'description', content: product?.description || `Shop ${product?.title} from DOHHH. Perfectly imperfect, handcrafted cookies that support important causes.`},
     {
       rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      href: `https://www.dohhh.shop/products/${product?.handle}`,
     },
+    
+    // Open Graph tags
+    {property: 'og:type', content: 'product'},
+    {property: 'og:title', content: `${product?.title} | DOHHH`},
+    {property: 'og:description', content: product?.description || 'Perfectly imperfect, handcrafted cookies that make a difference.'},
+    {property: 'og:url', content: `https://www.dohhh.shop/products/${product?.handle}`},
+    {property: 'og:image', content: imageUrl},
+    {property: 'og:image:alt', content: product?.title},
+    {property: 'product:price:amount', content: price},
+    {property: 'product:price:currency', content: 'USD'},
+    {property: 'product:availability', content: selectedVariant?.availableForSale ? 'in stock' : 'out of stock'},
+    {property: 'product:brand', content: 'DOHHH'},
+    
+    // Twitter Card tags
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@dohhh_dohhh'},
+    {name: 'twitter:title', content: `${product?.title} | DOHHH`},
+    {name: 'twitter:description', content: product?.description?.substring(0, 200) || 'Perfectly imperfect cookies for important causes.'},
+    {name: 'twitter:image', content: imageUrl},
+    {name: 'twitter:label1', content: 'Price'},
+    {name: 'twitter:data1', content: `$${price}`},
+    {name: 'twitter:label2', content: 'Availability'},
+    {name: 'twitter:data2', content: selectedVariant?.availableForSale ? 'In Stock' : 'Out of Stock'},
   ];
 };
 
@@ -171,8 +200,40 @@ export default function Product() {
   const variantPrice = selectedVariant?.price?.amount ? parseFloat(selectedVariant.price.amount) : 0;
   const totalPrice = variantPrice * quantity;
 
+  // Structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.images?.nodes?.map((img: any) => img.url) || [],
+    "description": product.description || "",
+    "brand": {
+      "@type": "Brand",
+      "name": "DOHHH"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://www.dohhh.shop/products/${product.handle}`,
+      "priceCurrency": selectedVariant?.price?.currencyCode || "USD",
+      "price": selectedVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount,
+      "availability": selectedVariant?.availableForSale 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "DOHHH"
+      }
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
+      />
+      
       {/* Product Header and Purchase Section */}
       <section className="w-full grid grid-cols-1 xl:grid-cols-3 border-b-2 border-black">
         {/* Left - Images Section */}
