@@ -1,8 +1,6 @@
 import {Link} from 'react-router';
-import {useAside} from '~/components/Aside';
 
 export function Footer() {
-  const {open} = useAside();
   
   return (
     <footer className="w-full bg-black text-white border-t-2 border-black">
@@ -33,12 +31,6 @@ export function Footer() {
             <Link to="/collections/goods" className="block text-lg uppercase text-white hover:underline">
               GOODS
             </Link>
-            <button 
-              onClick={() => open('cart')}
-              className="block text-lg uppercase text-white hover:underline text-left w-full"
-            >
-              CART
-            </button>
             <Link to="/account" className="block text-lg uppercase text-white hover:underline">
               ACCOUNT
             </Link>
