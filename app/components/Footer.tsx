@@ -27,8 +27,11 @@ export function Footer() {
             <Link to="/campaigns" className="block text-lg uppercase text-white hover:underline">
               CAMPAIGNS
             </Link>
-            <Link to="/cookies" className="block text-lg uppercase text-white hover:underline">
+            <Link to="/collections/cookies" className="block text-lg uppercase text-white hover:underline">
               COOKIES
+            </Link>
+            <Link to="/collections/goods" className="block text-lg uppercase text-white hover:underline">
+              GOODS
             </Link>
             <button 
               onClick={() => open('cart')}
