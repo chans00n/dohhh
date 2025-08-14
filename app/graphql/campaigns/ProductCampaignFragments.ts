@@ -23,6 +23,7 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
     campaignName: metafield(namespace: "campaign", key: "name") { value }
     campaignSlug: metafield(namespace: "campaign", key: "slug") { value }
     campaignDescription: metafield(namespace: "campaign", key: "description") { value }
+    campaignDescriptionRich: metafield(namespace: "campaign", key: "description_rich") { value }
     campaignStory: metafield(namespace: "campaign", key: "story_html") { value }
     campaignGoalQuantity: metafield(namespace: "campaign", key: "goal_quantity") { value }
     campaignDeadline: metafield(namespace: "campaign", key: "deadline") { value }
@@ -64,6 +65,7 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
       {namespace: "campaign", key: "name"},
       {namespace: "campaign", key: "slug"},
       {namespace: "campaign", key: "description"},
+      {namespace: "campaign", key: "description_rich"},
       {namespace: "campaign", key: "story_html"},
       {namespace: "campaign", key: "goal_quantity"},
       {namespace: "campaign", key: "deadline"},
@@ -88,6 +90,7 @@ export const CAMPAIGN_METAFIELDS_FRAGMENT = `#graphql
       {namespace: "custom", key: "campaign_name"},
       {namespace: "custom", key: "campaign_slug"},
       {namespace: "custom", key: "campaign_description"},
+      {namespace: "custom", key: "campaign_description_rich"},
       {namespace: "custom", key: "campaign_story_html"},
       {namespace: "custom", key: "campaign_goal_quantity"},
       {namespace: "custom", key: "campaign_deadline"},

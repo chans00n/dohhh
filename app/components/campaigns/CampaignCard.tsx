@@ -5,6 +5,31 @@ import {Badge} from '~/components/ui/badge';
 import {Avatar, AvatarImage, AvatarFallback} from '~/components/ui/avatar';
 import {Card, CardContent, CardHeader} from '~/components/ui/card';
 
+// Helper to extract plain text from rich text JSON
+function extractPlainText(text: string): string {
+  if (!text) return '';
+  
+  // If it's JSON rich text, try to extract text
+  if (text.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(text);
+      const extractFromNode = (node: any): string => {
+        if (node.type === 'text' && node.value) return node.value;
+        if (node.children) {
+          return node.children.map((c: any) => extractFromNode(c)).join(' ');
+        }
+        return '';
+      };
+      return extractFromNode(parsed);
+    } catch {
+      return text;
+    }
+  }
+  
+  // Otherwise return as-is (strip HTML if needed)
+  return text.replace(/<[^>]+>/g, '');
+}
+
 export function CampaignCard({campaign}: {campaign: Campaign}) {
   const daysLeft = Math.ceil((new Date(campaign.goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   const isFunded = campaign.progress.percentage >= 100;
@@ -36,7 +61,7 @@ export function CampaignCard({campaign}: {campaign: Campaign}) {
           </div>
           
           <p className="text-sm text-neutral-700 line-clamp-2">
-            {campaign.description}
+            {extractPlainText(campaign.description)}
           </p>
           
           <div className="space-y-3">

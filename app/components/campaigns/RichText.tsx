@@ -13,7 +13,7 @@ function renderNode(node: RichTextNode, key?: React.Key): React.ReactNode {
     case 'root':
       return <div key={key}>{children.map((c, i) => renderNode(c, i))}</div>;
     case 'paragraph':
-      return <p key={key}>{children.map((c, i) => renderNode(c, i))}</p>;
+      return <p key={key} style={{marginBottom: '20px', lineHeight: '1.8'}}>{children.map((c, i) => renderNode(c, i))}</p>;
     case 'text':
       return <span key={key}>{value}</span>;
     case 'link':
@@ -40,8 +40,11 @@ function renderNode(node: RichTextNode, key?: React.Key): React.ReactNode {
 export function RichText({json}: {json: string}) {
   try {
     const parsed = JSON.parse(json) as RichTextNode;
-    return <div className="prose max-w-none">{renderNode(parsed)}</div>;
-  } catch {
-    return <div className="prose max-w-none whitespace-pre-wrap">{json}</div>;
+    console.log('Parsed rich text structure:', parsed);
+    return <div>{renderNode(parsed)}</div>;
+  } catch (e) {
+    console.error('Failed to parse rich text:', e);
+    console.log('Raw JSON string:', json);
+    return <div className="whitespace-pre-wrap">{json}</div>;
   }
 }

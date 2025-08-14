@@ -185,24 +185,26 @@ export default function Homepage() {
                 </Link>
                 
                 {/* Content */}
-                <div className="lg:col-span-5 px-4 py-8 md:p-8 lg:p-12 lg:border-r-2 lg:border-black">
+                <div className="lg:col-span-5 py-8 md:p-8 lg:p-12 lg:border-r-2 lg:border-black">
                   <h2 className="text-3xl lg:text-4xl font-bold uppercase mb-4">
                     {campaign.name}
                   </h2>
-                  <div className="text-lg mb-6">
+                  <div className="text-lg mb-6 uppercase">
                     {campaign.story && campaign.story.trim().startsWith('{') ? (
                       <RichText json={campaign.story} />
                     ) : campaign.story ? (
                       <div dangerouslySetInnerHTML={{ __html: campaign.story }} />
+                    ) : campaign.description && campaign.description.trim().startsWith('{') ? (
+                      <RichText json={campaign.description} />
                     ) : (
                       <p>{campaign.description}</p>
                     )}
                   </div>
                   <Link 
                     to={`/campaigns/${campaign.slug}`}
-                    className="inline-block text-lg border-2 w-full border-black px-6 py-3 bg-white text-black hover:bg-neutral-400 hover:text-white transition-colors"
+                    className="inline-block text-lg border-2 w-full border-black px-6 py-3 bg-black text-white hover:bg-white hover:text-black transition-colors"
                   >
-                    BACK THIS CAMPAIGN →
+                    BACK THIS CAMPAIGN
                   </Link>
                 </div>
                 
@@ -228,7 +230,7 @@ export default function Homepage() {
               </div>
               
               {/* Progress bar */}
-              <div className="px-4 md:px-8 py-8 group-hover:bg-gray-50">
+              <div className="md:px-8 py-8 group-hover:bg-gray-50">
                 <div className="border-2 border-black h-12">
                   <div 
                     className="bg-black h-full transition-all duration-500" 

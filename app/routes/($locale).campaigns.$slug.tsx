@@ -255,6 +255,12 @@ export default function CampaignDetail() {
     variants: Array<{id: string; title: string; availableForSale: boolean; price: {amount: string; currencyCode: string}}>;
     backersJson?: string
   };
+  
+  // Debug logging
+  console.log('Campaign object:', campaign);
+  console.log('Campaign description:', campaign.description);
+  console.log('Campaign description_rich:', campaign.description_rich);
+  
   const fetcher = useFetcher();
   const {open} = useAside();
   const [quantity, setQuantity] = useState(1);
@@ -317,18 +323,18 @@ export default function CampaignDetail() {
             </div>
           </div>
           
-          <div className="px-4 py-8 lg:p-12">
+          <div className="lg:p-12">
             <h1 className="text-4xl lg:text-6xl font-bold uppercase mb-4">
               {campaign.name}
             </h1>
-            <p className="text-xl mb-6 uppercase">
-              {campaign.description}
-            </p>
+            <div className="text-xl mb-6 uppercase">
+              <CampaignStory campaign={{...campaign, story: campaign.description_rich || campaign.description || ''}} />
+            </div>
           </div>
         </div>
         
         {/* Right - Purchase Section */}
-        <div className="px-4 py-8 lg:p-8 lg:pl-8 lg:pr-12 lg:pt-0 lg:pb-12 w-full xl:col-span-1">
+        <div className="py-8 lg:p-8 lg:pl-8 lg:pr-12 lg:pt-0 lg:pb-12 w-full xl:col-span-1">
           <h2 className="text-2xl uppercase mb-2 lg:mt-0">BACK THIS CAMPAIGN</h2>
           <p className="text-3xl font-bold uppercase mb-8">${variantPrice.toFixed(2)}</p>
           

@@ -64,6 +64,8 @@ export default function CampaignsIndex() {
                       <RichText json={campaign.story} />
                     ) : campaign.story ? (
                       <div dangerouslySetInnerHTML={{ __html: campaign.story }} />
+                    ) : campaign.description && campaign.description.trim().startsWith('{') ? (
+                      <RichText json={campaign.description} />
                     ) : (
                       <p>{campaign.description}</p>
                     )}

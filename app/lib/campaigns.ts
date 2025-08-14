@@ -7,6 +7,7 @@ export interface Campaign {
   name: string;
   slug: string;
   description: string;
+  description_rich?: string;
   story: string;
   organizerInfo: { name: string; avatar: string; bio: string };
   goal: { quantity: number; deadline: string };

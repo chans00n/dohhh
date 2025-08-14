@@ -76,7 +76,49 @@ export function productToCampaign(product: any): Campaign | null {
   const currentQuantity = Number(getMetaValue(product, 'current_quantity') ?? '0');
   const backerCount = Number(getMetaValue(product, 'backer_count') ?? '0');
   const totalRaised = Number(getMetaValue(product, 'total_raised') ?? '0');
+  // Get both plain text and rich text descriptions
   const description = getMetaValue(product, 'description') || '';
+  // Try to get description_rich from multiple possible locations
+  let description_rich = product.campaignDescriptionRich?.value || '';
+  
+  // If not found in aliased field, check metafields array
+  if (!description_rich && product.metafields) {
+    // First try campaign namespace
+    let richTextField = product.metafields.find((m: any) => 
+      m && m.key === 'description_rich' && m.namespace === 'campaign'
+    );
+    
+    // If not found, try custom namespace with campaign_description_rich
+    if (!richTextField) {
+      richTextField = product.metafields.find((m: any) => 
+        m && m.key === 'campaign_description_rich' && m.namespace === 'custom'
+      );
+    }
+    
+    if (richTextField) {
+      description_rich = richTextField.value || '';
+      console.log('Found description_rich field:', richTextField);
+    }
+  }
+  
+  // Debug logging - let's see ALL metafields
+  console.log('Product campaignDescriptionRich:', product.campaignDescriptionRich);
+  console.log('All metafields:', product.metafields);
+  // Log the actual metafield objects (not null ones)
+  if (product.metafields) {
+    product.metafields.forEach((mf: any, index: number) => {
+      if (mf && mf.key) {
+        console.log(`Metafield ${index}:`, {
+          namespace: mf.namespace,
+          key: mf.key,
+          type: mf.type,
+          value: mf.value?.substring(0, 50) + '...' // Show first 50 chars
+        });
+      }
+    });
+  }
+  console.log('description_rich value:', description_rich);
+  console.log('description value:', description);
   const story = getMetaValue(product, 'story_html') || '';
   const deliveryMethodsJson = getMetaValue(product, 'delivery_methods') || '[]';
   let deliveryMethods: Campaign['deliveryMethods'] = [];
@@ -111,6 +153,7 @@ export function productToCampaign(product: any): Campaign | null {
     name,
     slug,
     description,
+    description_rich,
     story,
     organizerInfo: { name: 'Organizer', avatar: product.featuredImage?.url || '', bio: '' },
     goal: { quantity: goalQuantity, deadline },
