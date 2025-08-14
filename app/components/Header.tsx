@@ -194,7 +194,7 @@ export function HeaderMenu({
             isActive ? 'bg-amber-50 text-amber-600 border-l-4 border-amber-600' : 'text-neutral-900 hover:bg-neutral-50'
           }`}
         >
-          Campaigns
+          CAMPAIGNS
         </NavLink>
         
         <NavLink
@@ -205,7 +205,7 @@ export function HeaderMenu({
             isActive ? 'bg-amber-50 text-amber-600 border-l-4 border-amber-600' : 'text-neutral-900 hover:bg-neutral-50'
           }`}
         >
-          Cookies
+          COOKIES
         </NavLink>
         
         <NavLink
@@ -216,7 +216,7 @@ export function HeaderMenu({
             isActive ? 'bg-amber-50 text-amber-600 border-l-4 border-amber-600' : 'text-neutral-900 hover:bg-neutral-50'
           }`}
         >
-          Goods
+          GOODS
         </NavLink>
       </nav>
     );
