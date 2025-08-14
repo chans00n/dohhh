@@ -138,13 +138,29 @@ function BackersDisplay({ backersJson }: { backersJson: string }) {
 export const meta: MetaFunction<typeof loader> = ({data, params}) => {
   const campaign = data?.campaign;
   const imageUrl = campaign?.images?.[0]?.url || 'https://www.dohhh.shop/dohhh-share.png';
-  const progress = campaign?.currentAmount && campaign?.goalAmount 
-    ? Math.round((campaign.currentAmount / campaign.goalAmount) * 100)
-    : 0;
+  const progress = campaign?.progress?.percentage || 0;
+  
+  // Extract plain text from rich text description if needed
+  let plainDescription = campaign?.description || '';
+  if (plainDescription && plainDescription.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(plainDescription);
+      const extractText = (node: any): string => {
+        if (node.type === 'text' && node.value) return node.value;
+        if (node.children) {
+          return node.children.map((c: any) => extractText(c)).join(' ');
+        }
+        return '';
+      };
+      plainDescription = extractText(parsed);
+    } catch {
+      // Keep original if parsing fails
+    }
+  }
   
   return [
-    {title: `${campaign?.title || params.slug?.toUpperCase()} | DOHHH Campaign`},
-    {name: 'description', content: campaign?.description || `Support the ${campaign?.title} campaign. Help us make a difference with perfectly imperfect cookies for important causes.`},
+    {title: `${campaign?.name || 'Campaign'} | DOHHH`},
+    {name: 'description', content: plainDescription || `Support the ${campaign?.name} campaign. Help us make a difference with perfectly imperfect cookies for important causes.`},
     {
       rel: 'canonical',
       href: `https://www.dohhh.shop/campaigns/${params.slug}`,
@@ -152,24 +168,24 @@ export const meta: MetaFunction<typeof loader> = ({data, params}) => {
     
     // Open Graph tags
     {property: 'og:type', content: 'article'},
-    {property: 'og:title', content: `${campaign?.title} | DOHHH Campaign`},
-    {property: 'og:description', content: campaign?.description || 'Join this meaningful campaign and make a difference with DOHHH cookies.'},
+    {property: 'og:title', content: `${campaign?.name || 'Campaign'} | DOHHH`},
+    {property: 'og:description', content: plainDescription || 'Join this meaningful campaign and make a difference with DOHHH cookies.'},
     {property: 'og:url', content: `https://www.dohhh.shop/campaigns/${params.slug}`},
     {property: 'og:image', content: imageUrl},
-    {property: 'og:image:alt', content: campaign?.title},
+    {property: 'og:image:alt', content: campaign?.name || 'DOHHH Campaign'},
     {property: 'og:site_name', content: 'DOHHH'},
     {property: 'article:author', content: 'DOHHH'},
     
     // Twitter Card tags
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:site', content: '@dohhh_dohhh'},
-    {name: 'twitter:title', content: `${campaign?.title} | Support This Campaign`},
-    {name: 'twitter:description', content: campaign?.description?.substring(0, 200) || 'Help us reach our goal and make a difference.'},
+    {name: 'twitter:title', content: `${campaign?.name || 'Campaign'} | Support This Campaign`},
+    {name: 'twitter:description', content: plainDescription?.substring(0, 200) || 'Help us reach our goal and make a difference.'},
     {name: 'twitter:image', content: imageUrl},
     {name: 'twitter:label1', content: 'Progress'},
     {name: 'twitter:data1', content: `${progress}% funded`},
     {name: 'twitter:label2', content: 'Goal'},
-    {name: 'twitter:data2', content: `$${campaign?.goalAmount || 0}`},
+    {name: 'twitter:data2', content: `${campaign?.goal?.quantity || 0} cookies`},
   ];
 };
 
