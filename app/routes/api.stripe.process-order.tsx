@@ -1,6 +1,8 @@
 import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {retrievePaymentIntent, updatePaymentIntent} from '~/lib/stripe-fetch.server';
 import {createOrderWithRetry} from '~/services/shopify-order-v2.server';
+// Use V3 for draft order flow to ensure email notifications
+import {createOrderAfterPayment as createOrderV3} from '~/services/shopify-order-v3.server';
 import type {CampaignOrderData} from '~/lib/stripe.types';
 import type {CreateOrderResponse} from '~/types/shopify-order.types';
 
@@ -92,13 +94,36 @@ export async function action({request, context}: ActionFunctionArgs) {
       });
     }
 
-    // Create Shopify order with retry logic
-    const orderResponse = await createOrderWithRetry(
-      context.env,
-      paymentIntent,
-      data.orderData,
-      3 // max retries
-    );
+    // Create Shopify order using V3 draft order flow for email notifications
+    // Try V3 first, fallback to V2 with retry if it fails
+    let orderResponse: CreateOrderResponse;
+    
+    try {
+      console.log('Attempting order creation with V3 (draft order flow)...');
+      orderResponse = await createOrderV3(
+        paymentIntent,
+        data.orderData,
+        context.env
+      );
+      
+      if (!orderResponse.success) {
+        console.log('V3 failed, falling back to V2 with retry...');
+        orderResponse = await createOrderWithRetry(
+          context.env,
+          paymentIntent,
+          data.orderData,
+          3 // max retries
+        );
+      }
+    } catch (error) {
+      console.error('V3 error, falling back to V2:', error);
+      orderResponse = await createOrderWithRetry(
+        context.env,
+        paymentIntent,
+        data.orderData,
+        3 // max retries
+      );
+    }
 
     if (!orderResponse.success) {
       // Log failure for manual recovery

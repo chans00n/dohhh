@@ -156,7 +156,7 @@ export default function CheckoutSuccess() {
         {/* Support Info */}
         <div className="mt-12 pt-12 border-t-4 border-black text-center">
           <p className="text-gray-600 mb-2">Questions about your order?</p>
-          <p className="font-black">Contact us at hello@dohhh.com</p>
+          <p className="font-black">Contact us at hello@dohhh.shop</p>
         </div>
       </main>
     </div>
