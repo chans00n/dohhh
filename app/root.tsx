@@ -17,6 +17,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import checkoutAnimations from '~/styles/checkout-animations.css?url';
+import checkoutPolish from '~/styles/checkout-polish.css?url';
 import {PageLayout} from './components/PageLayout';
 import {ToastProvider} from './components/ui/toast';
 
@@ -66,6 +67,7 @@ export function links() {
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
     {rel: 'stylesheet', href: checkoutAnimations},
+    {rel: 'stylesheet', href: checkoutPolish},
   ];
 }
 
