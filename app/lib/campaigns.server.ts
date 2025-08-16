@@ -97,28 +97,8 @@ export function productToCampaign(product: any): Campaign | null {
     
     if (richTextField) {
       description_rich = richTextField.value || '';
-      console.log('Found description_rich field:', richTextField);
     }
   }
-  
-  // Debug logging - let's see ALL metafields
-  console.log('Product campaignDescriptionRich:', product.campaignDescriptionRich);
-  console.log('All metafields:', product.metafields);
-  // Log the actual metafield objects (not null ones)
-  if (product.metafields) {
-    product.metafields.forEach((mf: any, index: number) => {
-      if (mf && mf.key) {
-        console.log(`Metafield ${index}:`, {
-          namespace: mf.namespace,
-          key: mf.key,
-          type: mf.type,
-          value: mf.value?.substring(0, 50) + '...' // Show first 50 chars
-        });
-      }
-    });
-  }
-  console.log('description_rich value:', description_rich);
-  console.log('description value:', description);
   const story = getMetaValue(product, 'story_html') || '';
   const deliveryMethodsJson = getMetaValue(product, 'delivery_methods') || '[]';
   let deliveryMethods: Campaign['deliveryMethods'] = [];

@@ -40,11 +40,8 @@ function renderNode(node: RichTextNode, key?: React.Key): React.ReactNode {
 export function RichText({json}: {json: string}) {
   try {
     const parsed = JSON.parse(json) as RichTextNode;
-    console.log('Parsed rich text structure:', parsed);
     return <div>{renderNode(parsed)}</div>;
   } catch (e) {
-    console.error('Failed to parse rich text:', e);
-    console.log('Raw JSON string:', json);
     return <div className="whitespace-pre-wrap">{json}</div>;
   }
 }

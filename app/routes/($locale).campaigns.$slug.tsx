@@ -272,11 +272,6 @@ export default function CampaignDetail() {
     backersJson?: string
   };
   
-  // Debug logging
-  console.log('Campaign object:', campaign);
-  console.log('Campaign description:', campaign.description);
-  console.log('Campaign description_rich:', campaign.description_rich);
-  
   const fetcher = useFetcher();
   const {open} = useAside();
   const [quantity, setQuantity] = useState(1);
@@ -443,7 +438,7 @@ export default function CampaignDetail() {
                 className="w-full border-2 border-black py-6 text-2xl uppercase bg-black text-white hover:bg-white hover:text-black transition-colors"
                 disabled={fetcher.state !== 'idle'}
               >
-                {fetcher.state === 'submitting' ? 'ADDING TO CART...' : 'ADD TO CART →'}
+                {fetcher.state === 'submitting' ? 'ADDING TO CART...' : 'ADD TO CART'}
               </button>
             </div>
           </fetcher.Form>

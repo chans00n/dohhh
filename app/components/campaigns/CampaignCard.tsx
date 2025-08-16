@@ -60,7 +60,7 @@ export function CampaignCard({campaign}: {campaign: Campaign}) {
             <p className="text-sm text-neutral-600 mt-1">by {campaign.organizerInfo.name}</p>
           </div>
           
-          <p className="text-sm text-neutral-700 line-clamp-2">
+          <p className="text-sm text-neutral-700 line-clamp-2 uppercase">
             {extractPlainText(campaign.description)}
           </p>
           

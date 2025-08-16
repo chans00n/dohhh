@@ -37,7 +37,7 @@ export const meta: MetaFunction = () => {
     {name: 'robots', content: 'index, follow'},
     {name: 'author', content: 'DOHHH'},
     {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-    {'http-equiv': 'content-language', content: 'en-US'},
+    {httpEquiv: 'content-language', content: 'en-US'},
   ];
 };
 

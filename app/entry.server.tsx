@@ -17,6 +17,22 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    // Add Stripe domains to CSP
+    scriptSrc: [
+      "'self'",
+      'https://js.stripe.com',
+      'https://checkout.stripe.com',
+    ],
+    frameSrc: [
+      "'self'",
+      'https://js.stripe.com',
+      'https://checkout.stripe.com',
+    ],
+    connectSrc: [
+      "'self'",
+      'https://api.stripe.com',
+      'https://checkout.stripe.com',
+    ],
   });
 
   const body = await renderToReadableStream(

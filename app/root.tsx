@@ -16,6 +16,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
+import checkoutAnimations from '~/styles/checkout-animations.css?url';
 import {PageLayout} from './components/PageLayout';
 import {ToastProvider} from './components/ui/toast';
 
@@ -64,6 +65,7 @@ export function links() {
       href: 'https://shop.app',
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {rel: 'stylesheet', href: checkoutAnimations},
   ];
 }
 
@@ -153,6 +155,9 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
     cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
     footer,
+    env: {
+      STRIPE_PUBLISHABLE_KEY: context.env.STRIPE_PUBLISHABLE_KEY,
+    },
   };
 }
 
@@ -187,6 +192,14 @@ export function Layout({children}: {children?: React.ReactNode}) {
         )}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
+        {data?.env && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify(data.env)}`,
+            }}
+            nonce={nonce}
+          />
+        )}
       </body>
     </html>
   );

@@ -59,7 +59,7 @@ export default function CampaignsIndex() {
                   <h2 className="text-3xl lg:text-4xl font-bold uppercase mb-4">
                     {campaign.name}
                   </h2>
-                  <div className="text-lg mb-6">
+                  <div className="text-lg mb-6 uppercase">
                     {campaign.story && campaign.story.trim().startsWith('{') ? (
                       <RichText json={campaign.story} />
                     ) : campaign.story ? (
