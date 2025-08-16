@@ -23,6 +23,11 @@ declare global {
     SHOPIFY_ADMIN_API_VERSION?: string;
     PRIVATE_ADMIN_API_ACCESS_TOKEN?: string;
     SHOPIFY_WEBHOOK_SECRET?: string;
+    
+    // Stripe configuration
+    STRIPE_PUBLISHABLE_KEY: string;
+    STRIPE_SECRET_KEY: string;
+    STRIPE_WEBHOOK_SECRET: string;
   }
 }
 
