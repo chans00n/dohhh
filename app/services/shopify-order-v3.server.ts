@@ -74,6 +74,28 @@ export async function createOrderAfterPayment(
       email: campaignOrderData.customer.email
     });
 
+    // Update payment intent metadata to prevent duplicate orders
+    try {
+      const stripeSecretKey = env.STRIPE_SECRET_KEY;
+      if (stripeSecretKey) {
+        const updateUrl = `https://api.stripe.com/v1/payment_intents/${stripePaymentIntent.id}`;
+        await fetch(updateUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${stripeSecretKey}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            'metadata[shopify_order_id]': orderResult.order.id,
+            'metadata[shopify_order_name]': orderResult.order.name,
+          }).toString(),
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update payment intent metadata:', error);
+      // Don't fail the order creation if metadata update fails
+    }
+
     // Update campaign progress if it's a campaign product
     if (campaignOrderData.campaignId?.includes('gid://shopify/Product/')) {
       await updateCampaignProgress(

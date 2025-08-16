@@ -89,25 +89,28 @@ export async function action({request, context}: ActionFunctionArgs) {
       return jsonResponse({
         success: true,
         orderId: existingOrderId,
-        orderName: paymentIntent.metadata?.shopify_order_name,
+        orderName: paymentIntent.metadata?.shopify_order_name || `#DOHHH_${existingOrderId}`,
         message: 'Order already processed'
       });
     }
 
     // Create Shopify order using V3 draft order flow for email notifications
-    // Try V3 first, fallback to V2 with retry if it fails
     let orderResponse: CreateOrderResponse;
     
     try {
-      console.log('Attempting order creation with V3 (draft order flow)...');
+      console.log('Attempting order creation with V3 (draft order flow for email notifications)...');
       orderResponse = await createOrderV3(
         paymentIntent,
         data.orderData,
         context.env
       );
       
-      if (!orderResponse.success) {
-        console.log('V3 failed, falling back to V2 with retry...');
+      // If V3 succeeds, we're done - don't run V2
+      if (orderResponse.success) {
+        console.log('V3 order creation successful with email notification');
+      } else {
+        // Only fall back to V2 if V3 actually failed to create an order
+        console.log('V3 failed, falling back to V2 with retry (no customer email)...');
         orderResponse = await createOrderWithRetry(
           context.env,
           paymentIntent,
@@ -117,6 +120,7 @@ export async function action({request, context}: ActionFunctionArgs) {
       }
     } catch (error) {
       console.error('V3 error, falling back to V2:', error);
+      // Only use V2 if V3 threw an error
       orderResponse = await createOrderWithRetry(
         context.env,
         paymentIntent,
