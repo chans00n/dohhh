@@ -130,21 +130,31 @@ export function stripeToShopifyOrder(
   const lastName = nameParts.slice(1).join(' ') || '';
 
   // Format line items
-  const lineItems: ShopifyLineItem[] = orderData.items.map(item => ({
-    variant_id: item.variantId.replace('gid://shopify/ProductVariant/', ''),
-    quantity: item.quantity,
-    price: item.price.toFixed(2),
-    properties: [
-      {
-        name: 'Campaign',
-        value: orderData.campaignName
-      },
-      {
-        name: 'Payment Method',
-        value: 'Stripe'
-      }
-    ]
-  }));
+  const lineItems: ShopifyLineItem[] = [
+    ...orderData.items.map(item => ({
+      variant_id: item.variantId.replace('gid://shopify/ProductVariant/', ''),
+      quantity: item.quantity,
+      price: item.price.toFixed(2),
+      properties: [
+        {
+          name: 'Campaign',
+          value: orderData.campaignName
+        },
+        {
+          name: 'Payment Method',
+          value: 'Stripe'
+        }
+      ]
+    })),
+    // Add tip as a custom line item if present
+    ...(orderData.tipAmount && orderData.tipAmount > 0 ? [{
+      title: 'Campaign Support Tip',
+      price: orderData.tipAmount.toFixed(2),
+      quantity: 1,
+      requires_shipping: false,
+      taxable: false,
+    } as any] : [])
+  ];
 
   // Format shipping lines
   const shippingLines: ShopifyShippingLine[] = [];
@@ -218,7 +228,11 @@ export function stripeToShopifyOrder(
       {
         name: 'campaign_name',
         value: orderData.campaignName
-      }
+      },
+      ...(orderData.tipAmount && orderData.tipAmount > 0 ? [{
+        name: 'tip_amount',
+        value: `$${orderData.tipAmount.toFixed(2)}`
+      }] : [])
     ],
     source_identifier: paymentIntent.id,
     source_name: 'stripe',
