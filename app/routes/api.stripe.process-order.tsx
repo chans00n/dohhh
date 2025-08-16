@@ -1,8 +1,8 @@
 import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {retrievePaymentIntent, updatePaymentIntent} from '~/lib/stripe-fetch.server';
 import {createOrderWithRetry} from '~/services/shopify-order-v2.server';
-// Use V3 for draft order flow to ensure email notifications
-import {createOrderAfterPayment as createOrderV3} from '~/services/shopify-order-v3.server';
+// Use V4 for direct order with email notification (V3 draft orders causing duplicates)
+import {createOrderWithEmail} from '~/services/shopify-order-v4.server';
 import type {CampaignOrderData} from '~/lib/stripe.types';
 import type {CreateOrderResponse} from '~/types/shopify-order.types';
 
@@ -94,40 +94,13 @@ export async function action({request, context}: ActionFunctionArgs) {
       });
     }
 
-    // Create Shopify order using V3 draft order flow for email notifications
-    let orderResponse: CreateOrderResponse;
-    
-    try {
-      console.log('Attempting order creation with V3 (draft order flow for email notifications)...');
-      orderResponse = await createOrderV3(
-        paymentIntent,
-        data.orderData,
-        context.env
-      );
-      
-      // If V3 succeeds, we're done - don't run V2
-      if (orderResponse.success) {
-        console.log('V3 order creation successful with email notification');
-      } else {
-        // Only fall back to V2 if V3 actually failed to create an order
-        console.log('V3 failed, falling back to V2 with retry (no customer email)...');
-        orderResponse = await createOrderWithRetry(
-          context.env,
-          paymentIntent,
-          data.orderData,
-          3 // max retries
-        );
-      }
-    } catch (error) {
-      console.error('V3 error, falling back to V2:', error);
-      // Only use V2 if V3 threw an error
-      orderResponse = await createOrderWithRetry(
-        context.env,
-        paymentIntent,
-        data.orderData,
-        3 // max retries
-      );
-    }
+    // Create Shopify order using V4 (direct order with email notification)
+    // V3 draft orders were causing duplicate issues
+    const orderResponse = await createOrderWithEmail(
+      paymentIntent,
+      data.orderData,
+      context.env
+    );
 
     if (!orderResponse.success) {
       // Log failure for manual recovery
