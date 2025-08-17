@@ -6,6 +6,8 @@
 import {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 import {StripeProvider} from './StripeProvider.client';
+import {CheckoutLoading} from './CheckoutLoading';
+import {CheckoutError} from './CheckoutError';
 import type {
   StripeCheckoutProps,
   CheckoutFormState,
@@ -90,6 +92,7 @@ function BrutalistCheckoutForm({
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
 
   const [formState, setFormState] = useState<CheckoutFormState>({
     customer: {
@@ -219,7 +222,7 @@ function BrutalistCheckoutForm({
       const {error, paymentIntent} = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + '/checkout/success',
+          return_url: window.location.origin + '/checkout/success/v2',
           payment_method_data: {
             billing_details: {
               name: formState.customer.name,
@@ -241,6 +244,7 @@ function BrutalistCheckoutForm({
 
       if (error) {
         setPaymentError(error.message || 'Payment failed');
+        setShowError(true);
         if (onError) onError(new Error(error.message));
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         // Create Shopify order
@@ -274,8 +278,14 @@ function BrutalistCheckoutForm({
           if (!orderResult.success) {
             console.error('Failed to create Shopify order:', orderResult.error);
           } else if (orderResult.orderName) {
-            // Redirect to success page with order name
-            window.location.href = `/checkout/success?payment_intent=${paymentIntent.id}&order_name=${encodeURIComponent(orderResult.orderName)}`;
+            // Redirect to success page with order name and campaign data
+            const successUrl = new URL('/checkout/success/v2', window.location.origin);
+            successUrl.searchParams.set('payment_intent', paymentIntent.id);
+            successUrl.searchParams.set('order_name', orderResult.orderName);
+            successUrl.searchParams.set('campaign_id', campaignId);
+            successUrl.searchParams.set('total', summary.total.toString());
+            successUrl.searchParams.set('email', formState.customer.email);
+            window.location.href = successUrl.toString();
             return; // Exit early to prevent double redirect
           }
         } catch (orderError) {
@@ -283,16 +293,37 @@ function BrutalistCheckoutForm({
         }
 
         // Fallback redirect without order name if something went wrong
-        window.location.href = `/checkout/success?payment_intent=${paymentIntent.id}`;
+        const fallbackUrl = new URL('/checkout/success/v2', window.location.origin);
+        fallbackUrl.searchParams.set('payment_intent', paymentIntent.id);
+        fallbackUrl.searchParams.set('campaign_id', campaignId);
+        fallbackUrl.searchParams.set('total', summary.total.toString());
+        window.location.href = fallbackUrl.toString();
         if (onSuccess) onSuccess(paymentIntent);
       }
     } catch (error: any) {
       setPaymentError('Failed to process payment');
+      setShowError(true);
       if (onError) onError(error);
     } finally {
       setIsProcessing(false);
     }
   }, [stripe, elements, formState, summary, campaignId, campaignName, items, onSuccess, onError]);
+
+  // Show error component if payment failed
+  if (showError) {
+    return (
+      <CheckoutError
+        type="payment_failed"
+        errorMessage={paymentError || 'Payment failed'}
+        onRetry={() => {
+          setShowError(false);
+          setPaymentError(null);
+          setIsProcessing(false);
+        }}
+        onCancel={onCancel}
+      />
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3">
@@ -559,7 +590,7 @@ function BrutalistCheckoutForm({
 
         {/* Step 4: Payment */}
         {currentStep === 4 && (
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
             <h2 className="text-3xl font-black border-b-4 border-black pb-2 mb-6">
               PAYMENT
             </h2>
@@ -583,18 +614,35 @@ function BrutalistCheckoutForm({
               <button
                 onClick={goToPreviousStep}
                 disabled={isProcessing}
-                className="flex-1 bg-white text-black border-2 border-black py-4 px-6 font-black text-lg rounded-none hover:bg-gray-100 transition-colors disabled:opacity-50"
+                className="flex-1 bg-white text-black border-2 border-black py-4 px-6 font-black text-lg rounded-none hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ← BACK
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={!stripe || isProcessing}
-                className="flex-1 bg-black text-white py-4 px-6 font-black text-lg rounded-none hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="flex-1 bg-black text-white py-4 px-6 font-black text-lg rounded-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
-                {isProcessing ? 'PROCESSING...' : `PAY $${summary.total.toFixed(2)}`}
+                {isProcessing ? (
+                  <span className="flex items-center justify-center">
+                    <span className="animate-spin mr-2">🍪</span> PROCESSING...
+                  </span>
+                ) : (
+                  `PAY $${summary.total.toFixed(2)}`
+                )}
               </button>
             </div>
+            
+            {/* Processing overlay */}
+            {isProcessing && (
+              <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+                <div className="text-center">
+                  <div className="text-6xl animate-bounce mb-4">🍪</div>
+                  <p className="font-black text-xl">BAKING YOUR ORDER...</p>
+                  <p className="font-bold mt-2">Please don't refresh the page</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -706,33 +754,17 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
   }, []); // Empty dependency array to run only once
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-24">
-        <div className="text-center">
-          <svg className="animate-spin h-12 w-12 mx-auto mb-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <p className="text-lg font-bold">INITIALIZING SECURE CHECKOUT...</p>
-        </div>
-      </div>
-    );
+    return <CheckoutLoading stage="payment" campaignName={props.campaignName} />;
   }
 
   if (error) {
     return (
-      <div className="p-8">
-        <div className="p-6 bg-red-50 border-2 border-red-600">
-          <h3 className="text-xl font-black text-red-600 mb-2">PAYMENT SYSTEM ERROR</h3>
-          <p className="text-red-600 font-bold">{error}</p>
-          <button
-            onClick={props.onCancel}
-            className="mt-4 px-6 py-3 bg-black text-white font-black hover:bg-gray-800"
-          >
-            RETURN TO CART
-          </button>
-        </div>
-      </div>
+      <CheckoutError
+        type="system_error"
+        errorMessage={error}
+        onRetry={() => window.location.reload()}
+        onCancel={props.onCancel}
+      />
     );
   }
 

@@ -82,7 +82,8 @@ export async function action({request, context}: ActionFunctionArgs) {
           }))
         ).substring(0, 500),
       },
-      receipt_email: orderData.customer.email,
+      // Explicitly disable email receipts from Stripe
+      receipt_email: null,
       description: `Campaign: ${orderData.campaignName}`,
       shipping: orderData.customer.address
         ? {

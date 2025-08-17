@@ -171,6 +171,9 @@ export function stripeToShopifyOrder(
     });
   }
 
+  // Provide default phone if missing (Shopify requires it)
+  const customerPhone = orderData.customer.phone || '0000000000';
+
   // Format addresses if provided
   let shippingAddress: ShopifyAddress | undefined;
   let billingAddress: ShopifyAddress | undefined;
@@ -185,7 +188,7 @@ export function stripeToShopifyOrder(
       province: orderData.customer.address.state,
       country: orderData.customer.address.country || 'US',
       zip: orderData.customer.address.postal_code,
-      phone: orderData.customer.phone
+      phone: customerPhone
     };
     shippingAddress = address;
     billingAddress = address;
@@ -200,7 +203,7 @@ export function stripeToShopifyOrder(
       email: orderData.customer.email,
       first_name: firstName,
       last_name: lastName,
-      phone: orderData.customer.phone
+      phone: customerPhone
     },
     billing_address: billingAddress,
     shipping_address: shippingAddress,

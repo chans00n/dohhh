@@ -41,10 +41,8 @@ export function CampaignCheckoutWrapper({
 
   const handleSuccess = async (result: any) => {
     console.log('Payment successful:', result);
-    // Clear cart and redirect to success page
-    setTimeout(() => {
-      navigate('/checkout/success?payment_intent=' + result.id);
-    }, 1500);
+    // Note: Redirect is handled by BrutalistCheckoutV2 component
+    // which will redirect to /checkout/success/v2 with proper params
   };
 
   const handleError = (error: Error) => {

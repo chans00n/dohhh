@@ -63,8 +63,9 @@ export async function action({request, context}: ActionFunctionArgs) {
         metadata.customerPhone = data.customer.phone;
       }
       
-      // Also update receipt email
-      updateParams.receipt_email = data.customer.email;
+      // Explicitly disable email receipts from Stripe
+      // (We'll send our own branded DOHHH confirmation instead)
+      updateParams.receipt_email = null;
     }
 
     if (data.delivery) {

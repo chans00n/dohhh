@@ -101,7 +101,7 @@ export function CheckoutSuccess({
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto">
         {/* Success Header */}
         <div className="text-center mb-12">
           <h1 className="text-6xl font-black mb-4 animate-fade-in">
@@ -125,7 +125,7 @@ export function CheckoutSuccess({
             {/* Progress Bar */}
             <div className="mb-6">
               <div className="flex justify-between mb-2">
-                <span className="font-bold">Campaign Progress</span>
+                <span className="font-bold uppercase">Campaign Progress</span>
                 <span className="font-bold">{progressAnimated.toFixed(1)}%</span>
               </div>
               <div className="w-full bg-gray-800 h-8 relative overflow-hidden">
@@ -156,7 +156,7 @@ export function CheckoutSuccess({
               </div>
             </div>
 
-            <p className="text-center mt-6 text-lg">
+            <p className="text-center mt-6 text-lg uppercase">
               🎯 You helped {campaignName} get {((progressAnimated - (progressAnimated - 5)) || 5).toFixed(1)}% closer to the goal!
             </p>
           </div>
@@ -184,7 +184,7 @@ export function CheckoutSuccess({
 
           <div className="mt-6 p-4 bg-gray-100">
             <p className="font-bold mb-2">WHAT'S NEXT?</p>
-            <ul className="space-y-1 text-sm">
+            <ul className="space-y-1 text-sm uppercase">
               <li>✓ You'll receive an order confirmation email</li>
               <li>✓ We'll start baking your fresh cookies</li>
               <li>✓ Shipping updates will be sent to your email</li>
@@ -198,11 +198,11 @@ export function CheckoutSuccess({
           <h3 className="text-2xl font-black mb-4 text-center">
             SPREAD THE DOHHH!
           </h3>
-          <p className="text-center mb-6">
+          <p className="text-center mb-6 uppercase">
             Help {campaignName} reach more supporters!
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
             <button
               onClick={shareOnTwitter}
               className="px-6 py-3 bg-black text-white font-black hover:bg-gray-800 transition-colors"
@@ -228,7 +228,7 @@ export function CheckoutSuccess({
         <div className="text-center">
           <Link
             to="/campaigns"
-            className="inline-block px-8 py-4 bg-black text-white font-black text-lg hover:bg-gray-800 transition-colors"
+            className="inline-block mb-4 px-8 py-4 bg-black text-white font-black text-lg hover:bg-gray-800 transition-colors"
           >
             BACK MORE CAMPAIGNS
           </Link>

@@ -13,19 +13,19 @@ const CAMPAIGN_QUERY = `#graphql
       id
       title
       handle
-      backerCount: metafield(namespace: "campaign", key: "backer_count") {
+      campaignBackers: metafield(namespace: "campaign", key: "backers") {
         value
       }
-      currentQuantity: metafield(namespace: "campaign", key: "current_quantity") {
+      campaignBackerCount: metafield(namespace: "campaign", key: "backer_count") {
         value
       }
-      totalRaised: metafield(namespace: "campaign", key: "total_raised") {
+      campaignTotalRaised: metafield(namespace: "campaign", key: "total_raised") {
         value
       }
-      targetQuantity: metafield(namespace: "campaign", key: "target_quantity") {
+      campaignCurrentQuantity: metafield(namespace: "campaign", key: "current_quantity") {
         value
       }
-      targetAmount: metafield(namespace: "campaign", key: "target_amount") {
+      campaignGoalQuantity: metafield(namespace: "campaign", key: "goal_quantity") {
         value
       }
     }
@@ -53,10 +53,31 @@ export async function loader({context, request}: LoaderFunctionArgs) {
         });
         
         if (product) {
-          const backerCount = parseInt(product.backerCount?.value || '0');
-          const currentAmount = parseFloat(product.totalRaised?.value || '0');
-          const targetAmount = parseFloat(product.targetAmount?.value || '10000');
-          const percentComplete = Math.min((currentAmount / targetAmount) * 100, 100);
+          // Use the metafield values directly since webhook updates them
+          const backersJson = product.campaignBackers?.value || '';
+          const backerCount = parseInt(product.campaignBackerCount?.value || '0');
+          const currentAmount = parseFloat(product.campaignTotalRaised?.value || '0');
+          const currentQuantity = parseInt(product.campaignCurrentQuantity?.value || '0');
+          const goalQuantity = parseInt(product.campaignGoalQuantity?.value || '250');
+          
+          let backers = [];
+          if (backersJson) {
+            try {
+              backers = JSON.parse(backersJson);
+              console.log('Campaign data from metafields:', {
+                backerCount,
+                currentAmount,
+                currentQuantity,
+                backersLength: backers.length
+              });
+            } catch (e) {
+              console.error('Error parsing backers JSON:', e);
+            }
+          }
+          
+          // Calculate target amount based on goal quantity * price per cookie
+          const targetAmount = goalQuantity * 7; // Assuming $7 per cookie average
+          const percentComplete = Math.min((currentQuantity / goalQuantity) * 100, 100);
           
           campaignData = {
             id: product.id,
@@ -68,6 +89,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
               backerCount,
               percentComplete,
             },
+            backers, // Include backers array to find the current user's backer number
           };
         }
       } catch (error) {
@@ -143,6 +165,11 @@ export default function CheckoutSuccessV2() {
     quantity: line.quantity,
     price: parseFloat(line.cost.totalAmount.amount),
   })) || [];
+  
+  // Calculate backer number (could be based on order or just increment from existing)
+  let backerNumber = loaderData?.campaignData?.campaignProgress?.backerCount 
+    ? loaderData.campaignData.campaignProgress.backerCount + 1 
+    : undefined;
 
   useEffect(() => {
     // Simulate loading for polished experience
@@ -168,6 +195,7 @@ export default function CheckoutSuccessV2() {
         campaignId={loaderData?.campaignData?.handle}
         items={items}
         customerEmail={customerEmail || 'your email'}
+        backerNumber={backerNumber}
         campaignProgress={loaderData?.campaignData?.campaignProgress}
       />
     </>

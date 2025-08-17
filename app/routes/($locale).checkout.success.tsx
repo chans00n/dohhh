@@ -3,23 +3,115 @@ import {useEffect, useState, useRef} from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {data} from '@shopify/remix-oxygen';
+import {CheckoutSuccess} from '~/components/checkout/CheckoutSuccess';
+import {CheckoutLoading} from '~/components/checkout/CheckoutLoading';
+
+// Query to get campaign data for the success page
+const CAMPAIGN_QUERY = `#graphql
+  query CampaignSuccess($productId: ID!) {
+    product(id: $productId) {
+      id
+      title
+      handle
+      campaignBackers: metafield(namespace: "campaign", key: "backers") {
+        value
+      }
+      campaignBackerCount: metafield(namespace: "campaign", key: "backer_count") {
+        value
+      }
+      campaignTotalRaised: metafield(namespace: "campaign", key: "total_raised") {
+        value
+      }
+      campaignCurrentQuantity: metafield(namespace: "campaign", key: "current_quantity") {
+        value
+      }
+      campaignGoalQuantity: metafield(namespace: "campaign", key: "goal_quantity") {
+        value
+      }
+    }
+  }
+`;
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   try {
     const url = new URL(request.url);
     const orderName = url.searchParams.get('order_name');
+    const campaignId = url.searchParams.get('campaign_id');
+    const orderTotal = url.searchParams.get('total');
     
     // Get cart to pass to client for clearing
     const cart = await context.cart.get();
     
+    // Fetch campaign data if campaign ID is provided
+    let campaignData = null;
+    if (campaignId) {
+      try {
+        const {product} = await context.storefront.query(CAMPAIGN_QUERY, {
+          variables: {
+            productId: campaignId,
+          },
+        });
+        
+        if (product) {
+          // Use the metafield values directly since webhook updates them
+          const backersJson = product.campaignBackers?.value || '';
+          const backerCount = parseInt(product.campaignBackerCount?.value || '0');
+          const currentAmount = parseFloat(product.campaignTotalRaised?.value || '0');
+          const currentQuantity = parseInt(product.campaignCurrentQuantity?.value || '0');
+          const goalQuantity = parseInt(product.campaignGoalQuantity?.value || '250');
+          
+          let backers = [];
+          if (backersJson) {
+            try {
+              backers = JSON.parse(backersJson);
+              console.log('Campaign data from metafields:', {
+                backerCount,
+                currentAmount,
+                currentQuantity,
+                backersLength: backers.length
+              });
+            } catch (e) {
+              console.error('Error parsing backers JSON:', e);
+            }
+          }
+          
+          // Calculate target amount based on goal quantity * price per cookie
+          const targetAmount = goalQuantity * 7; // Assuming $7 per cookie average
+          const percentComplete = Math.min((currentQuantity / goalQuantity) * 100, 100);
+          
+          campaignData = {
+            id: product.id,
+            name: product.title,
+            handle: product.handle,
+            campaignProgress: {
+              currentAmount,
+              goalAmount: targetAmount,
+              backerCount,
+              percentComplete,
+            },
+            backers,
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching campaign data:', error);
+      }
+    }
+    
     return data({ 
       cart,
-      orderName: orderName || null 
+      orderName: orderName || null,
+      orderTotal: orderTotal ? parseFloat(orderTotal) : null,
+      campaignData,
     });
   } catch (error) {
     // If anything fails, still show success page
     console.error('Error in success page loader:', error);
-    return data({ cart: null, orderName: null });
+    return data({ 
+      cart: null, 
+      orderName: null,
+      orderTotal: null,
+      campaignData: null,
+    });
   }
 }
 
@@ -57,108 +149,67 @@ function CartClearForm({cart}: {cart: any}) {
   );
 }
 
-export default function CheckoutSuccess() {
+export default function CheckoutSuccessPage() {
   const [searchParams] = useSearchParams();
   const loaderData = useLoaderData<typeof loader>();
+  const [isLoading, setIsLoading] = useState(true);
+  
   const paymentIntent = searchParams.get('payment_intent');
   const orderNameFromUrl = searchParams.get('order_name');
-  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const campaignId = searchParams.get('campaign_id');
+  const totalAmount = searchParams.get('total');
+  
+  // Parse cart items for display
+  const items = loaderData?.cart?.lines?.nodes?.map((line: any) => ({
+    name: line.merchandise.product.title,
+    quantity: line.quantity,
+    price: parseFloat(line.cost.amountPerQuantity.amount),
+  })) || [];
+  
+  // Get campaign name from cart (if available)
+  // Use campaign data from loader if available, fallback to cart data
+  const campaignName = loaderData?.campaignData?.name || 
+    loaderData?.cart?.lines?.nodes?.find((line: any) => 
+      line.merchandise.product.tags?.includes('campaign')
+    )?.merchandise.product.title || 'Your Campaign';
+  
+  // Calculate backer number
+  let backerNumber = loaderData?.campaignData?.campaignProgress?.backerCount 
+    ? loaderData.campaignData.campaignProgress.backerCount + 1 
+    : undefined;
 
   useEffect(() => {
-    // Use the actual Shopify order name if available
-    if (orderNameFromUrl) {
-      setOrderNumber(orderNameFromUrl);
-    } else if (loaderData?.orderName) {
-      setOrderNumber(loaderData.orderName);
-    } else {
-      // Fallback to a placeholder if no order name available
-      setOrderNumber('Processing...');
-    }
-  }, [orderNameFromUrl, loaderData]);
+    // Show loading animation briefly for polish
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <CheckoutLoading stage="complete" campaignName={campaignName} />;
+  }
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
       {/* Auto-submit CartForm to clear cart */}
       <CartClearForm cart={loaderData?.cart} />
       
-      <main className="max-w-4xl mx-auto px-4 py-16">
-        {/* Success Icon */}
-        <div className="text-center mb-8">
-          <div className="inline-block p-8 bg-black rounded-full mb-6">
-            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Success Message */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-black mb-4 tracking-tight">ORDER CONFIRMED!</h1>
-          <p className="text-xl text-gray-600 mb-2">Thank you for backing this campaign</p>
-          {orderNumber && (
-            <p className="text-lg text-gray-500">Order #{orderNumber}</p>
-          )}
-        </div>
-
-        {/* Order Details Box */}
-        <div className="border-4 border-black p-8 mb-8">
-          <h2 className="text-2xl font-black mb-6 border-b-4 border-black pb-2">WHAT'S NEXT?</h2>
-          
-          <div className="space-y-6">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-black text-white font-black flex items-center justify-center mr-4">
-                1
-              </div>
-              <div>
-                <h3 className="font-black text-lg mb-1">CONFIRMATION EMAIL</h3>
-                <p className="text-gray-600">You'll receive an order confirmation email shortly with all your order details.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-black text-white font-black flex items-center justify-center mr-4">
-                2
-              </div>
-              <div>
-                <h3 className="font-black text-lg mb-1">CAMPAIGN UPDATES</h3>
-                <p className="text-gray-600">We'll keep you updated on the campaign progress and production timeline.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-black text-white font-black flex items-center justify-center mr-4">
-                3
-              </div>
-              <div>
-                <h3 className="font-black text-lg mb-1">SHIPPING NOTIFICATION</h3>
-                <p className="text-gray-600">Once your order ships, you'll receive tracking information via email.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Call to Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Link
-            to="/campaigns"
-            className="block text-center bg-white text-black border-4 border-black py-4 px-6 font-black text-lg hover:bg-gray-100 transition-colors"
-          >
-            BROWSE MORE CAMPAIGNS
-          </Link>
-          <Link
-            to="/"
-            className="block text-center bg-black text-white py-4 px-6 font-black text-lg hover:bg-gray-800 transition-colors"
-          >
-            RETURN TO HOMEPAGE
-          </Link>
-        </div>
-
-        {/* Support Info */}
-        <div className="mt-12 pt-12 border-t-4 border-black text-center">
-          <p className="text-gray-600 mb-2">Questions about your order?</p>
-          <p className="font-black">Contact us at hello@dohhh.shop</p>
-        </div>
-      </main>
-    </div>
+      <CheckoutSuccess
+        orderName={orderNameFromUrl || loaderData?.orderName || 'Processing...'}
+        orderTotal={loaderData?.orderTotal || (totalAmount ? parseFloat(totalAmount) : 0)}
+        campaignName={campaignName}
+        campaignId={loaderData?.campaignData?.handle || campaignId}
+        items={items}
+        customerEmail={searchParams.get('email') || ''}
+        backerNumber={backerNumber}
+        campaignProgress={loaderData?.campaignData?.campaignProgress || {
+          currentAmount: 0,
+          goalAmount: 10000,
+          backerCount: 0,
+          percentComplete: 0,
+        }}
+      />
+    </>
   );
 }
