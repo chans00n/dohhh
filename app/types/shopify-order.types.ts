@@ -171,8 +171,9 @@ export function stripeToShopifyOrder(
     });
   }
 
-  // Provide default phone if missing (Shopify requires it)
-  const customerPhone = orderData.customer.phone || '0000000000';
+  // Provide valid default phone if missing (Shopify requires it)
+  // Using a valid US phone number format that Shopify will accept
+  const customerPhone = orderData.customer.phone || '+15555551234';
 
   // Format addresses if provided
   let shippingAddress: ShopifyAddress | undefined;

@@ -140,7 +140,7 @@ async function handlePaymentIntentSucceeded(event: any, context: any) {
       customer: {
         email: paymentIntent.metadata?.customerEmail || paymentIntent.receipt_email || '',
         name: paymentIntent.metadata?.customerName || '',
-        phone: paymentIntent.shipping?.phone,
+        phone: paymentIntent.shipping?.phone || paymentIntent.metadata?.customerPhone || '+15555551234',
         address: paymentIntent.shipping?.address ? {
           line1: paymentIntent.shipping.address.line1 || '',
           line2: paymentIntent.shipping.address.line2,
