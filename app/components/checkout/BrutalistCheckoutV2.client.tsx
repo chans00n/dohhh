@@ -90,6 +90,10 @@ function BrutalistCheckoutForm({
   setIsLoading,
   setError,
   inStripeContext = false,
+  currentStep,
+  setCurrentStep,
+  formState,
+  setFormState,
 }: StripeCheckoutProps & {
   paymentIntentId: string | null;
   setClientSecret?: (secret: string | null) => void;
@@ -97,41 +101,18 @@ function BrutalistCheckoutForm({
   setIsLoading?: (loading: boolean) => void;
   setError?: (error: string | null) => void;
   inStripeContext?: boolean;
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  formState: CheckoutFormState;
+  setFormState: React.Dispatch<React.SetStateAction<CheckoutFormState>>;
 }) {
-  // Only use Stripe hooks when we're wrapped in StripeProvider
+  // Only use Stripe hooks when we're wrapped in StripeProvider with a client secret
   const stripe = inStripeContext ? useStripe() : null;
   const elements = inStripeContext ? useElements() : null;
 
-  const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [showError, setShowError] = useState(false);
-
-  const [formState, setFormState] = useState<CheckoutFormState>({
-    customer: {
-      email: '',
-      name: '',
-      phone: '',
-    },
-    delivery: {
-      method: 'shipping',
-      address: {
-        line1: '',
-        line2: '',
-        city: '',
-        state: '',
-        postal_code: '',
-        country: 'US',
-      },
-      instructions: '',
-    },
-    tipAmount: 0,
-    tipPercentage: 0,
-    customTip: false,
-    items,
-    processing: false,
-    errors: {},
-  });
 
   const summary: CheckoutSummary = useMemo(() => {
     return calculateOrderSummary(items, formState.delivery.method, formState.tipAmount);
@@ -732,6 +713,34 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Lift form state up to persist across re-renders
+  const [formState, setFormState] = useState<CheckoutFormState>({
+    customer: {
+      email: '',
+      name: '',
+      phone: '',
+    },
+    delivery: {
+      method: 'shipping',
+      address: {
+        line1: '',
+        line2: '',
+        city: '',
+        state: '',
+        postal_code: '',
+        country: 'US',
+      },
+      instructions: '',
+    },
+    tipAmount: 0,
+    tipPercentage: 0,
+    customTip: false,
+    items: props.items,
+    processing: false,
+    errors: {},
+  });
 
   // Pass the state setters to the form component
   const enhancedProps = {
@@ -741,6 +750,10 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
     setPaymentIntentId,
     setIsLoading,
     setError,
+    currentStep,
+    setCurrentStep,
+    formState,
+    setFormState,
   };
 
   if (isLoading) {
@@ -758,14 +771,10 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
     );
   }
 
-  // Show form immediately, payment intent will be created when needed
-  if (!clientSecret) {
-    return <BrutalistCheckoutForm {...enhancedProps} inStripeContext={false} />;
-  }
-
+  // Always render with StripeProvider wrapper, but only provide clientSecret when available
   return (
     <StripeProvider clientSecret={clientSecret}>
-      <BrutalistCheckoutForm {...enhancedProps} inStripeContext={true} />
+      <BrutalistCheckoutForm {...enhancedProps} inStripeContext={!!clientSecret} />
     </StripeProvider>
   );
 }
