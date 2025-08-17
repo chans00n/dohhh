@@ -171,11 +171,27 @@ export function stripeToShopifyOrder(
     });
   }
 
-  // Ensure phone is valid and properly formatted
-  // Phone is now required, but we'll still validate it
-  const customerPhone = orderData.customer.phone && orderData.customer.phone.trim() 
-    ? orderData.customer.phone 
-    : '+15555551234'; // Fallback just in case
+  // Ensure phone is valid and properly formatted for Shopify (E.164 format)
+  // Convert formatted phone like "(555) 555-5555" to "+15555555555"
+  let customerPhone = '+15555551234'; // Default fallback
+  
+  if (orderData.customer.phone && orderData.customer.phone.trim()) {
+    // Remove all non-digit characters
+    const cleaned = orderData.customer.phone.replace(/\D/g, '');
+    
+    if (cleaned.length === 10) {
+      // US phone without country code
+      customerPhone = `+1${cleaned}`;
+    } else if (cleaned.length === 11 && cleaned[0] === '1') {
+      // US phone with country code
+      customerPhone = `+${cleaned}`;
+    } else if (cleaned.length > 0) {
+      // Use as-is if it's some other format, but add + if missing
+      customerPhone = orderData.customer.phone.startsWith('+') 
+        ? orderData.customer.phone 
+        : `+${cleaned}`;
+    }
+  }
 
   // Format addresses if provided
   let shippingAddress: ShopifyAddress | undefined;
