@@ -21,7 +21,7 @@ export interface CampaignOrderData {
   customer: {
     email: string;
     name: string;
-    phone: string;
+    phone?: string;
     address?: {
       line1: string;
       line2?: string;
@@ -81,7 +81,8 @@ export function validateOrderData(data: any): data is CampaignOrderData {
   if (!data.customer || typeof data.customer !== 'object') return false;
   if (!data.customer.email || typeof data.customer.email !== 'string') return false;
   if (!data.customer.name || typeof data.customer.name !== 'string') return false;
-  if (!data.customer.phone || typeof data.customer.phone !== 'string') return false;
+  // Phone is optional during initial creation but required before final payment
+  if (data.customer.phone !== undefined && typeof data.customer.phone !== 'string') return false;
   
   // Validate items
   for (const item of data.items) {

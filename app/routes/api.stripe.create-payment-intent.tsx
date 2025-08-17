@@ -88,7 +88,7 @@ export async function action({request, context}: ActionFunctionArgs) {
       shipping: orderData.customer.address
         ? {
             name: orderData.customer.name,
-            phone: orderData.customer.phone,
+            phone: orderData.customer.phone || undefined,
             address: {
               line1: orderData.customer.address.line1,
               line2: orderData.customer.address.line2,

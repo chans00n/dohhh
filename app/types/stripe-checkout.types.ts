@@ -11,7 +11,7 @@ import type {CampaignOrderItem} from '~/lib/stripe.types';
 export interface CustomerFormData {
   email: string;
   name: string;
-  phone: string;
+  phone?: string;
 }
 
 /**

@@ -17,7 +17,7 @@ interface UpdatePaymentIntentRequest {
   customer?: {
     email: string;
     name: string;
-    phone: string;
+    phone?: string;
   };
   delivery?: {
     method: string;
@@ -59,7 +59,9 @@ export async function action({request, context}: ActionFunctionArgs) {
     if (data.customer) {
       metadata.customerEmail = data.customer.email;
       metadata.customerName = data.customer.name;
-      metadata.customerPhone = data.customer.phone;
+      if (data.customer.phone) {
+        metadata.customerPhone = data.customer.phone;
+      }
       
       // Explicitly disable email receipts from Stripe
       // (We'll send our own branded DOHHH confirmation instead)

@@ -29,7 +29,7 @@ export interface ShopifyCustomer {
   email: string;
   first_name?: string;
   last_name?: string;
-  phone: string;
+  phone?: string;
 }
 
 export interface ShopifyAddress {
