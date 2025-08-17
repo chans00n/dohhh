@@ -85,7 +85,17 @@ function BrutalistCheckoutForm({
   onError,
   onCancel,
   paymentIntentId,
-}: StripeCheckoutProps & {paymentIntentId: string}) {
+  setClientSecret,
+  setPaymentIntentId,
+  setIsLoading,
+  setError,
+}: StripeCheckoutProps & {
+  paymentIntentId: string | null;
+  setClientSecret?: (secret: string | null) => void;
+  setPaymentIntentId?: (id: string | null) => void;
+  setIsLoading?: (loading: boolean) => void;
+  setError?: (error: string | null) => void;
+}) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -178,34 +188,50 @@ function BrutalistCheckoutForm({
       return;
     }
     
-    // Update payment intent with customer data when moving from step 1
-    if (currentStep === 1 && formState.customer.email && formState.customer.name) {
-      fetch('/api/stripe/update-payment-intent', {
+    // Create payment intent when moving to payment step
+    if (currentStep === 3 && !paymentIntentId) {
+      if (setIsLoading) setIsLoading(true);
+      
+      // Create payment intent with all collected data
+      fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          paymentIntentId,
-          customer: formState.customer,
-          delivery: formState.delivery,
-          tipAmount: formState.tipAmount,
+          campaignId,
+          campaignName,
+          items,
+          deliveryMethod: formState.delivery.method,
+          deliveryPrice: summary.deliveryFee || 0,
+          subtotal: summary.subtotal,
           total: summary.total,
-        }),
-      }).catch(err => console.error('Failed to update payment intent:', err));
-    }
-    
-    // Update payment intent with final amount when moving to payment step
-    if (currentStep === 3) {
-      fetch('/api/stripe/update-payment-intent', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          paymentIntentId,
-          customer: formState.customer,
-          delivery: formState.delivery,
           tipAmount: formState.tipAmount,
-          total: summary.total,
+          customer: {
+            email: formState.customer.email,
+            name: formState.customer.name,
+            phone: formState.customer.phone,
+            address: formState.delivery.address,
+          },
         }),
-      }).catch(err => console.error('Failed to update payment intent:', err));
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.clientSecret) {
+          if (setClientSecret) setClientSecret(data.clientSecret);
+          if (setPaymentIntentId) setPaymentIntentId(data.paymentIntentId);
+          setCurrentStep(4);
+        } else {
+          if (setError) setError(data.error || 'Failed to initialize payment');
+        }
+      })
+      .catch(err => {
+        console.error('Failed to create payment intent:', err);
+        if (setError) setError('Failed to connect to payment system');
+      })
+      .finally(() => {
+        if (setIsLoading) setIsLoading(false);
+      });
+      
+      return; // Don't increment step yet, wait for payment intent creation
     }
     
     setCurrentStep(prev => Math.min(prev + 1, 4));
@@ -701,61 +727,18 @@ function BrutalistCheckoutForm({
 export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const initRef = useRef(false);
 
-  // Calculate initial totals
-  const subtotal = props.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const initialTotal = subtotal + DELIVERY_PRICING.shipping; // Flat rate shipping
-
-  useEffect(() => {
-    // Prevent double initialization in strict mode
-    if (initRef.current) return;
-    initRef.current = true;
-
-    // Create payment intent on mount
-    const createPaymentIntent = async () => {
-      try {
-        const response = await fetch('/api/stripe/create-payment-intent', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            campaignId: props.campaignId,
-            campaignName: props.campaignName,
-            items: props.items,
-            deliveryMethod: 'shipping',
-            deliveryPrice: DELIVERY_PRICING.shipping,
-            subtotal,
-            total: initialTotal,
-            customer: {
-              email: 'pending@example.com',
-              name: 'Pending',
-            },
-          }),
-        });
-
-        const data = await response.json();
-        
-        if (data.clientSecret) {
-          setClientSecret(data.clientSecret);
-          setPaymentIntentId(data.paymentIntentId);
-        } else {
-          console.error('Failed to create payment intent:', data.error);
-          setError(data.error || 'Failed to initialize payment');
-        }
-      } catch (err: any) {
-        console.error('Error creating payment intent:', err);
-        setError('Failed to connect to payment system');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (initialTotal > 0) {
-      createPaymentIntent();
-    }
-  }, []); // Empty dependency array to run only once
+  // Pass the state setters to the form component
+  const enhancedProps = {
+    ...props,
+    paymentIntentId,
+    setClientSecret,
+    setPaymentIntentId,
+    setIsLoading,
+    setError,
+  };
 
   if (isLoading) {
     return <CheckoutLoading stage="payment" campaignName={props.campaignName} />;
@@ -772,19 +755,14 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
     );
   }
 
-  if (!clientSecret || !paymentIntentId) {
-    return (
-      <div className="p-8">
-        <div className="p-6 bg-yellow-50 border-2 border-yellow-600">
-          <p className="text-yellow-600 font-bold">Waiting for payment system...</p>
-        </div>
-      </div>
-    );
+  // Show form immediately, payment intent will be created when needed
+  if (!clientSecret) {
+    return <BrutalistCheckoutForm {...enhancedProps} />;
   }
 
   return (
     <StripeProvider clientSecret={clientSecret}>
-      <BrutalistCheckoutForm {...props} paymentIntentId={paymentIntentId} />
+      <BrutalistCheckoutForm {...enhancedProps} />
     </StripeProvider>
   );
 }

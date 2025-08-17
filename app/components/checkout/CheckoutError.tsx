@@ -197,14 +197,8 @@ export function CheckoutError({
           <p className="font-bold mb-2">NEED IMMEDIATE HELP?</p>
           <p>
             Email us at{' '}
-            <a href="mailto:support@dohhh.shop" className="underline">
-              support@dohhh.shop
-            </a>
-          </p>
-          <p>
-            Or call us at{' '}
-            <a href="tel:+1-949-295-5330" className="underline">
-              (949) 295-5330
+            <a href="mailto:hello@dohhh.shop" className="underline">
+              hello@dohhh.shop
             </a>
           </p>
           <p className="mt-2">
