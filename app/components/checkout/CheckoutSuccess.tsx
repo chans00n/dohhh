@@ -38,18 +38,7 @@ export function CheckoutSuccess({
   campaignProgress,
 }: CheckoutSuccessProps) {
   const [showCelebration, setShowCelebration] = useState(true);
-  const [progressAnimated, setProgressAnimated] = useState(0);
   const [copied, setCopied] = useState(false);
-
-  // Animate progress bar
-  useEffect(() => {
-    if (campaignProgress) {
-      const timer = setTimeout(() => {
-        setProgressAnimated(campaignProgress.percentComplete);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [campaignProgress]);
 
   // Hide celebration after animation
   useEffect(() => {
@@ -115,52 +104,6 @@ export function CheckoutSuccess({
           </p>
         </div>
 
-        {/* Campaign Impact Section */}
-        {campaignProgress && (
-          <div className="bg-black text-white p-8 mb-8 animate-slide-up">
-            <h2 className="text-3xl font-black mb-6 text-center">
-              YOUR IMPACT
-            </h2>
-            
-            {/* Progress Bar */}
-            <div className="mb-6">
-              <div className="flex justify-between mb-2">
-                <span className="font-bold uppercase">Campaign Progress</span>
-                <span className="font-bold">{progressAnimated.toFixed(1)}%</span>
-              </div>
-              <div className="w-full bg-gray-800 h-8 relative overflow-hidden">
-                <div 
-                  className="absolute top-0 left-0 h-full bg-white transition-all duration-2000 ease-out"
-                  style={{width: `${progressAnimated}%`}}
-                />
-              </div>
-            </div>
-
-            {/* Impact Stats */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-3xl font-black">{campaignProgress.backerCount}</div>
-                <div className="text-sm uppercase">Backers</div>
-              </div>
-              <div>
-                <div className="text-3xl font-black">
-                  ${campaignProgress.currentAmount.toLocaleString()}
-                </div>
-                <div className="text-sm uppercase">Raised</div>
-              </div>
-              <div>
-                <div className="text-3xl font-black">
-                  #{backerNumber || campaignProgress.backerCount}
-                </div>
-                <div className="text-sm uppercase">Your Backer #</div>
-              </div>
-            </div>
-
-            <p className="text-center mt-6 text-lg uppercase">
-              🎯 You helped {campaignName} get {((progressAnimated - (progressAnimated - 5)) || 5).toFixed(1)}% closer to the goal!
-            </p>
-          </div>
-        )}
 
         {/* Order Details */}
         <div className="border-2 border-black p-6 mb-8">
