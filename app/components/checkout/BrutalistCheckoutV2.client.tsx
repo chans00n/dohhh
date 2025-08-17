@@ -152,6 +152,9 @@ function BrutalistCheckoutForm({
       if (!formState.customer.name || formState.customer.name.length < 2) {
         errors.name = 'Please enter your full name';
       }
+      if (!formState.customer.phone || formState.customer.phone.replace(/\D/g, '').length < 10) {
+        errors.phone = 'Please enter a valid phone number';
+      }
     }
     
     if (currentStep === 2) {
@@ -396,7 +399,7 @@ function BrutalistCheckoutForm({
 
             <div>
               <label className="block text-sm font-black mb-2 tracking-wide">
-                PHONE (OPTIONAL)
+                PHONE *
               </label>
               <input
                 type="tel"
@@ -404,6 +407,7 @@ function BrutalistCheckoutForm({
                 onChange={(e) => updateCustomer({phone: formatPhoneNumber(e.target.value)})}
                 className="w-full p-4 border-2 border-black text-black font-bold rounded-none focus:outline-none focus:ring-4 focus:ring-gray-400"
                 placeholder="(555) 555-5555"
+                required
               />
             </div>
 

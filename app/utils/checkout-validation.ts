@@ -92,15 +92,13 @@ export function validateCustomer(customer: CustomerFormData): Record<string, str
   );
   if (nameError) errors.name = nameError;
 
-  // Validate phone (optional)
-  if (customer.phone) {
-    const phoneError = validateField(
-      customer.phone,
-      {phone: true},
-      'Phone'
-    );
-    if (phoneError) errors.phone = phoneError;
-  }
+  // Validate phone (required)
+  const phoneError = validateField(
+    customer.phone,
+    {required: true, phone: true},
+    'Phone'
+  );
+  if (phoneError) errors.phone = phoneError;
 
   return errors;
 }

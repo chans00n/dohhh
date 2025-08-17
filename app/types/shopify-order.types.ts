@@ -29,7 +29,7 @@ export interface ShopifyCustomer {
   email: string;
   first_name?: string;
   last_name?: string;
-  phone?: string;
+  phone: string;
 }
 
 export interface ShopifyAddress {
@@ -171,9 +171,11 @@ export function stripeToShopifyOrder(
     });
   }
 
-  // Provide valid default phone if missing (Shopify requires it)
-  // Using a valid US phone number format that Shopify will accept
-  const customerPhone = orderData.customer.phone || '+15555551234';
+  // Ensure phone is valid and properly formatted
+  // Phone is now required, but we'll still validate it
+  const customerPhone = orderData.customer.phone && orderData.customer.phone.trim() 
+    ? orderData.customer.phone 
+    : '+15555551234'; // Fallback just in case
 
   // Format addresses if provided
   let shippingAddress: ShopifyAddress | undefined;
