@@ -89,15 +89,18 @@ function BrutalistCheckoutForm({
   setPaymentIntentId,
   setIsLoading,
   setError,
+  inStripeContext = false,
 }: StripeCheckoutProps & {
   paymentIntentId: string | null;
   setClientSecret?: (secret: string | null) => void;
   setPaymentIntentId?: (id: string | null) => void;
   setIsLoading?: (loading: boolean) => void;
   setError?: (error: string | null) => void;
+  inStripeContext?: boolean;
 }) {
-  const stripe = useStripe();
-  const elements = useElements();
+  // Only use Stripe hooks when we're wrapped in StripeProvider
+  const stripe = inStripeContext ? useStripe() : null;
+  const elements = inStripeContext ? useElements() : null;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -757,12 +760,12 @@ export default function BrutalistCheckoutV2(props: StripeCheckoutProps) {
 
   // Show form immediately, payment intent will be created when needed
   if (!clientSecret) {
-    return <BrutalistCheckoutForm {...enhancedProps} />;
+    return <BrutalistCheckoutForm {...enhancedProps} inStripeContext={false} />;
   }
 
   return (
     <StripeProvider clientSecret={clientSecret}>
-      <BrutalistCheckoutForm {...enhancedProps} />
+      <BrutalistCheckoutForm {...enhancedProps} inStripeContext={true} />
     </StripeProvider>
   );
 }
