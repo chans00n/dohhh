@@ -4,7 +4,7 @@
  * Example: /account/reset/9725469458751/abc123def456
  */
 
-import {json, type LoaderFunctionArgs, type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {data, type LoaderFunctionArgs, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Form, useNavigation} from 'react-router';
 import {useState} from 'react';
 import {SuccessPage, ErrorPage} from '~/components/account/BrandedConfirmation';
@@ -23,14 +23,14 @@ export async function loader({params}: LoaderFunctionArgs) {
   // Validate parameters
   if (!id || !token) {
     console.error('Invalid reset parameters');
-    return json({
+    return data({
       success: false,
       error: 'INVALID RESET LINK',
       suggestion: 'This link may be expired. Request a new password reset email.'
     });
   }
 
-  return json({
+  return data({
     success: null,
     id,
     token
@@ -51,7 +51,7 @@ export async function action({params, request, context}: ActionFunctionArgs) {
 
   // Validate inputs
   if (!password || !confirmPassword) {
-    return json({
+    return data({
       success: false,
       error: 'Please enter a password',
       fieldError: true
@@ -59,7 +59,7 @@ export async function action({params, request, context}: ActionFunctionArgs) {
   }
 
   if (password !== confirmPassword) {
-    return json({
+    return data({
       success: false,
       error: 'Passwords don\'t match',
       fieldError: true
@@ -67,7 +67,7 @@ export async function action({params, request, context}: ActionFunctionArgs) {
   }
 
   if (password.length < 8) {
-    return json({
+    return data({
       success: false,
       error: 'Password must be at least 8 characters',
       fieldError: true
@@ -78,13 +78,13 @@ export async function action({params, request, context}: ActionFunctionArgs) {
     const result = await resetPasswordWithShopify(id!, token!, password, context);
     
     if (result.success) {
-      return json({
+      return data({
         success: true,
         message: 'PASSWORD RESET SUCCESSFUL!',
         nextSteps: 'Your password has been updated. You can now log in with your new password.'
       });
     } else {
-      return json({
+      return data({
         success: false,
         error: 'RESET FAILED',
         suggestion: result.message || 'This link may be expired. Request a new reset email.'
@@ -92,7 +92,7 @@ export async function action({params, request, context}: ActionFunctionArgs) {
     }
   } catch (error) {
     console.error('Reset error:', error);
-    return json({
+    return data({
       success: false,
       error: 'SOMETHING WENT WRONG',
       suggestion: 'Please try again or contact support'

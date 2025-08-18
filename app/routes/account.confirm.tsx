@@ -4,7 +4,7 @@
  * Example: /account/confirm?token=abc123&customer_id=123456
  */
 
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {data, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from 'react-router';
 import {SuccessPage, ErrorPage} from '~/components/account/BrandedConfirmation';
 import {confirmSubscriptionWithShopify} from '~/lib/shopify-account.server';
@@ -22,7 +22,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   });
 
   if (!token) {
-    return json({
+    return data({
       success: false,
       error: 'DOHHH! MISSING CONFIRMATION INFO',
       suggestion: 'Check your email for the correct link'
@@ -34,13 +34,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     const result = await confirmSubscriptionWithShopify(token, context);
     
     if (result.success) {
-      return json({ 
+      return data({ 
         success: true, 
         message: 'EMAIL CONFIRMED! YOU\'RE ALL SET!',
         nextSteps: 'Your email is verified and ready for cookie updates!'
       });
     } else {
-      return json({ 
+      return data({ 
         success: false, 
         error: 'CONFIRMATION FAILED',
         suggestion: result.message || 'Try clicking the link in your email again'
@@ -48,7 +48,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   } catch (error) {
     console.error('Confirmation error:', error);
-    return json({ 
+    return data({ 
       success: false, 
       error: 'SOMETHING CRUMBLED!',
       suggestion: 'Please try again or contact support'

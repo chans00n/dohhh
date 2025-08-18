@@ -4,7 +4,7 @@
  * Example: /account/subscribe?syclid=xyz&token=abc123
  */
 
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {data, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from 'react-router';
 import {SuccessPage, ErrorPage} from '~/components/account/BrandedConfirmation';
 import {confirmSubscriptionWithShopify} from '~/lib/shopify-account.server';
@@ -23,7 +23,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   });
 
   if (!token && !syclid) {
-    return json({ 
+    return data({ 
       success: false, 
       error: 'DOHHH! MISSING SUBSCRIPTION INFO',
       suggestion: 'Check your email and try the link again'
@@ -38,13 +38,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     );
     
     if (result.success) {
-      return json({ 
+      return data({ 
         success: true, 
         message: 'DOHHH-LICIOUS! YOU\'RE SUBSCRIBED!',
         nextSteps: 'Get ready for exclusive campaigns and cookie drops!'
       });
     } else {
-      return json({ 
+      return data({ 
         success: false, 
         error: 'DOHHH! SUBSCRIPTION HICCUP',
         suggestion: result.message || 'Try again or contact support'
@@ -52,7 +52,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   } catch (error) {
     console.error('Subscription error:', error);
-    return json({ 
+    return data({ 
       success: false, 
       error: 'BURNT COOKIES! SOMETHING WENT WRONG',
       suggestion: 'Please try again later or contact support'
