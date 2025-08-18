@@ -62,7 +62,7 @@ function CartEmpty({
         NOTHING HERE BUT CRUMBS... TIME TO FILL IT UP!
       </p>
       <Link 
-        to="/collections" 
+        to="/collections/all" 
         onClick={close} 
         prefetch="viewport"
         className="inline-block bg-black hover:bg-gray-800 text-white font-black py-3 px-8 border-2 border-black transition-colors uppercase"
