@@ -89,11 +89,11 @@ export function EmailCapture({
 
   return (
     <div className={`email-capture email-capture-${variant}`}>
-      <div className="border-2 border-black p-6 bg-yellow-50">
-        <h3 className="text-xl font-black uppercase mb-2">
+      <div className={`border-2 border-black p-6 ${variant === 'popup' ? 'bg-white' : 'bg-yellow-50'}`}>
+        <h3 className="text-xl font-black uppercase mb-2 text-black">
           GET DOHHH UPDATES ON THIS CAMPAIGN
         </h3>
-        <p className="text-sm uppercase mb-4">
+        <p className="text-sm uppercase mb-4 text-black">
           BE THE FIRST TO KNOW WHEN COOKIES ARE READY
         </p>
         
@@ -110,7 +110,7 @@ export function EmailCapture({
                 }
               }}
               placeholder="YOUR@EMAIL.COM"
-              className="w-full px-4 py-3 border-2 border-black uppercase font-bold placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-4 py-3 border-2 border-black uppercase font-bold placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black bg-white text-black"
               disabled={status === 'loading'}
               required
             />
@@ -179,11 +179,11 @@ export function EmailCapturePopup({
   if (!showPopup || dismissed) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="relative max-w-md w-full animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white bg-opacity-50">
+      <div className="relative max-w-md w-full">
         <button
           onClick={handleDismiss}
-          className="absolute -top-2 -right-2 w-8 h-8 bg-white border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors"
+          className="absolute -top-2 -right-2 w-10 h-10 bg-white border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors z-10 text-lg font-bold"
           aria-label="Close"
         >
           ✕
