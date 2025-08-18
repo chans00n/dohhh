@@ -7,6 +7,8 @@ import {CampaignStory} from '~/components/campaigns/CampaignStory';
 import {CAMPAIGN_BY_HANDLE_QUERY, CAMPAIGN_LIST_QUERY, CAMPAIGN_RECENT_QUERY} from '~/graphql/campaigns/ProductCampaignFragments';
 import {productToCampaign} from '~/lib/campaigns.server';
 import {Footer} from '~/components/Footer';
+import {SocialShareButtons, ShareBar} from '~/components/SocialShareButtons';
+import {EmailCapture, EmailCapturePopup} from '~/components/campaigns/EmailCapture';
 
 // Helper function to format relative time
 function getRelativeTime(dateString: string): string {
@@ -296,6 +298,13 @@ export default function CampaignDetail() {
   
   return (
     <div className="bg-white min-h-screen">
+      {/* Email Capture Popup - Shows after 30 seconds */}
+      <EmailCapturePopup
+        campaignName={campaign.name}
+        campaignId={campaign.id || campaign.handle}
+        delay={30000}
+      />
+      
       {/* Campaign Header and Purchase Section */}
       <section className="w-full grid grid-cols-1 xl:grid-cols-3 border-b-2 border-black">
         {/* Left - Images Section */}
@@ -341,6 +350,13 @@ export default function CampaignDetail() {
             <div className="text-xl mb-6 uppercase">
               <CampaignStory campaign={{...campaign, story: campaign.description_rich || campaign.description || ''}} />
             </div>
+            
+            {/* Share Bar - Inline Version */}
+            <ShareBar 
+              campaignName={campaign.name}
+              campaignUrl={`https://www.dohhh.shop/campaigns/${campaign.handle}`}
+              percentFunded={campaign.progress.percentage}
+            />
           </div>
         </div>
         
@@ -513,6 +529,7 @@ export default function CampaignDetail() {
           </p>
         </div>
       </section>
+      
       
       {/* Campaign Mission Section - Similar to DOHHH Way */}
       <section className="w-full bg-white border-b-2 border-black">
@@ -700,6 +717,24 @@ export default function CampaignDetail() {
         <div className="px-4 py-8 lg:p-12">
           <h2 className="text-4xl lg:text-5xl font-bold uppercase mb-8">CAMPAIGN BACKERS</h2>
           <BackersDisplay backersJson={backersJson || ''} />
+        </div>
+      </section>
+      
+      {/* Final CTA - Email Capture */}
+      <section className="w-full bg-yellow-50 border-y-2 border-black">
+        <div className="max-w-2xl mx-auto px-4 py-12 lg:py-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl lg:text-4xl font-black uppercase mb-4">
+              DON'T MISS THE COOKIE DROP!
+            </h2>
+            <p className="text-xl uppercase">
+              Be the first to know when {campaign.name} reaches their goal
+            </p>
+          </div>
+          <EmailCapture
+            campaignName={campaign.name}
+            campaignId={campaign.id || campaign.handle}
+          />
         </div>
       </section>
       

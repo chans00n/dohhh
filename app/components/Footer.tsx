@@ -1,6 +1,62 @@
 import {Link} from 'react-router';
+import {useState, useEffect} from 'react';
+import {useFetcher} from 'react-router';
 
 export function Footer() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const fetcher = useFetcher();
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate email
+    if (!validateEmail(email)) {
+      setStatus('error');
+      setErrorMessage('DOHHH! ENTER A VALID EMAIL');
+      return;
+    }
+
+    setStatus('loading');
+    
+    // Submit to Shopify customer API
+    fetcher.submit(
+      {
+        email,
+        campaignId: 'newsletter',
+        campaignName: 'Newsletter Signup',
+        action: 'subscribe',
+      },
+      {
+        method: 'post',
+        action: '/api/email-capture',
+      }
+    );
+  };
+
+  // Handle fetcher response
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      if (fetcher.data.success) {
+        setStatus('success');
+        
+        // Reset after showing success
+        setTimeout(() => {
+          setStatus('idle');
+          setEmail('');
+        }, 3000);
+      } else if (fetcher.data.error) {
+        setStatus('error');
+        setErrorMessage(fetcher.data.error);
+      }
+    }
+  }, [fetcher.state, fetcher.data]);
   
   return (
     <footer className="w-full bg-black text-white border-t-2 border-black">
@@ -59,22 +115,51 @@ export function Footer() {
         {/* Connect Section */}
         <div className="p-8 lg:p-12">
           <h4 className="text-2xl font-bold uppercase mb-6">CONNECT</h4>
-          <p className="text-lg mb-6">
-            JOIN OUR COOKIE COMMUNITY FOR EXCLUSIVE CAMPAIGNS AND EARLY ACCESS
-          </p>
-          <form className="space-y-4">
-            <input
-              type="email"
-              placeholder="YOUR EMAIL"
-              className="w-full px-4 py-3 bg-white border-2 border-white text-white placeholder-gray-400 uppercase focus:outline-none focus:bg-white focus:text-black transition-colors"
-            />
-            <button
-              type="submit"
-              className="w-full px-6 py-3 border-2 border-white bg-white text-black hover:bg-black hover:text-white transition-colors text-lg font-bold uppercase"
-            >
-              SUBSCRIBE →
-            </button>
-          </form>
+          
+          {status === 'success' ? (
+            <div className="text-center py-4">
+              <div className="text-3xl mb-2">🍪</div>
+              <p className="text-lg font-bold uppercase">YOU'RE IN!</p>
+              <p className="text-sm uppercase mt-2">WELCOME TO THE COOKIE COMMUNITY</p>
+            </div>
+          ) : (
+            <>
+              <p className="text-lg mb-6">
+                JOIN OUR COOKIE COMMUNITY FOR EXCLUSIVE CAMPAIGNS AND EARLY ACCESS
+              </p>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (status === 'error') {
+                        setStatus('idle');
+                        setErrorMessage('');
+                      }
+                    }}
+                    placeholder="YOUR EMAIL"
+                    className="w-full px-4 py-3 bg-white border-2 border-black text-black placeholder-gray-400 uppercase focus:outline-none focus:bg-white focus:text-black transition-colors"
+                    disabled={status === 'loading'}
+                    required
+                  />
+                  {status === 'error' && (
+                    <p className="text-yellow-400 text-sm uppercase mt-1 font-bold">
+                      {errorMessage}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="w-full px-6 py-3 border-2 border-white bg-white text-black hover:bg-black hover:text-white transition-colors text-lg font-bold uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === 'loading' ? 'SUBSCRIBING...' : 'SUBSCRIBE →'}
+                </button>
+              </form>
+            </>
+          )}
         </div>
       </div>
       

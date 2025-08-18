@@ -6,6 +6,8 @@
 import {useEffect, useState} from 'react';
 import {Link} from 'react-router';
 import {Money} from '@shopify/hydrogen';
+import {SocialShareButtons} from '~/components/SocialShareButtons';
+import {EmailCapture} from '~/components/campaigns/EmailCapture';
 
 interface CheckoutSuccessProps {
   orderName?: string;
@@ -139,36 +141,28 @@ export function CheckoutSuccess({
           </div>
         </div>
 
-        {/* Social Sharing */}
+        {/* Social Sharing - Enhanced with new component */}
         <div className="border-2 border-black p-6 mb-8">
-          <h3 className="text-2xl font-black mb-4 text-center">
-            SPREAD THE DOHHH-LOVE!
-          </h3>
-          <p className="text-center mb-6 uppercase font-bold">
-            HELP {campaignName} BECOME FULLY BAKED!
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
-            <button
-              onClick={shareOnTwitter}
-              className="px-6 py-3 bg-black text-white font-black hover:bg-gray-800 transition-colors"
-            >
-              SHARE ON TWITTER
-            </button>
-            <button
-              onClick={shareOnFacebook}
-              className="px-6 py-3 bg-black text-white font-black hover:bg-gray-800 transition-colors"
-            >
-              SHARE ON FACEBOOK
-            </button>
-            <button
-              onClick={copyShareLink}
-              className="px-6 py-3 border-2 border-black font-black hover:bg-gray-100 transition-colors"
-            >
-              {copied ? 'COPIED!' : 'COPY LINK'}
-            </button>
-          </div>
+          <SocialShareButtons
+            campaignName={campaignName}
+            campaignUrl={`https://www.dohhh.shop/campaigns/${campaignId}`}
+            percentFunded={campaignProgress?.percentComplete}
+            goalAmount={campaignProgress ? `$${campaignProgress.goalAmount}` : 'their goal'}
+            variant="stack"
+            showLabels={true}
+            onShare={(platform) => console.log(`Shared ${campaignName} on ${platform} after order`)}
+          />
         </div>
+
+        {/* Email Updates - After successful backing */}
+        {campaignId && (
+          <div className="mb-8">
+            <EmailCapture
+              campaignName={campaignName}
+              campaignId={campaignId}
+            />
+          </div>
+        )}
 
         {/* Continue Shopping */}
         <div className="text-center">
