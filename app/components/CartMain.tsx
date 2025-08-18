@@ -54,19 +54,20 @@ function CartEmpty({
   const {close} = useAside();
   return (
     <div hidden={hidden} className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <svg className="w-16 h-16 text-neutral-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-      </svg>
-      <p className="text-neutral-600 mb-6">
-        Your cart is empty
+      <div className="text-6xl mb-4">🍪</div>
+      <h2 className="text-2xl font-black mb-2 uppercase">
+        YOUR CART IS HUNGRY FOR COOKIES
+      </h2>
+      <p className="text-neutral-600 mb-6 font-mono">
+        NOTHING HERE BUT CRUMBS... TIME TO FILL IT UP!
       </p>
       <Link 
         to="/collections" 
         onClick={close} 
         prefetch="viewport"
-        className="inline-block bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+        className="inline-block bg-black hover:bg-gray-800 text-white font-black py-3 px-8 border-2 border-black transition-colors uppercase"
       >
-        Start Shopping
+        FEED YOUR CART
       </Link>
     </div>
   );

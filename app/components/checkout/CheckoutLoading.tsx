@@ -12,38 +12,38 @@ interface CheckoutLoadingProps {
 
 const LOADING_MESSAGES = {
   payment: [
-    "Processing your payment...",
-    "Securing your transaction...",
-    "Almost there...",
-    "Verifying payment details...",
+    "BAKING YOUR DREAMS...",
+    "MIXING THE PERFECT BATCH...",
+    "DOHHH! ALMOST READY...",
+    "PERFECTLY IMPERFECT LOADING...",
   ],
   order: [
-    "Creating your order...",
-    "Reserving your cookies...",
-    "Preparing your Dohhh-licious treats...",
-    "Getting everything ready...",
+    "CREATING YOUR DOHHH-LICIOUS ORDER...",
+    "RESERVING YOUR COOKIE DREAMS...",
+    "PREPARING THE PERFECT BATCH...",
+    "GETTING YOUR COOKIES READY...",
   ],
   campaign: [
-    "Updating campaign progress...",
-    "Adding you as a backer...",
-    "Recording your support...",
-    "Making dreams happen...",
+    "UPDATING COOKIE CAMPAIGN...",
+    "ADDING YOU TO THE DOHHH SQUAD...",
+    "RECORDING YOUR SWEET SUPPORT...",
+    "MAKING COOKIE DREAMS HAPPEN...",
   ],
   complete: [
-    "Finalizing everything...",
-    "Just a moment more...",
-    "Success is coming...",
-    "Get ready to celebrate...",
+    "FINALIZING YOUR DOHHH-LIGHT...",
+    "JUST ONE MORE COOKIE SECOND...",
+    "SWEET SUCCESS INCOMING...",
+    "GET READY FOR DOHHH-LICIOUSNESS...",
   ],
 };
 
 const COOKIE_FACTS = [
-  "Did you know? We bake fresh cookies every morning!",
-  "Fun fact: Our chocolate chips are 72% cacao",
-  "Cookie tip: Our cookies taste best slightly warm",
-  "Sweet fact: Each batch supports local dreams",
-  "Baking secret: We use real butter, always",
-  "Dohhh fact: Every cookie is perfectly imperfect",
+  "DOHHH FACT: WE BAKE PERFECTLY IMPERFECT COOKIES DAILY!",
+  "COOKIE TRUTH: OUR CHOCOLATE CHIPS ARE 72% PURE DREAMS",
+  "HOT TIP: DOHHH COOKIES TASTE BEST SLIGHTLY WARM",
+  "SWEET REALITY: EACH BATCH FUNDS LOCAL COOKIE DREAMS",
+  "BAKING SECRET: REAL BUTTER, NO COMPROMISES, EVER",
+  "DOHHH PHILOSOPHY: EVERY COOKIE IS PERFECTLY IMPERFECT",
 ];
 
 export function CheckoutLoading({

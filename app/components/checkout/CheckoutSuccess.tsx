@@ -94,13 +94,16 @@ export function CheckoutSuccess({
         {/* Success Header */}
         <div className="text-center mb-12">
           <h1 className="text-6xl font-black mb-4 animate-fade-in">
-            DOHHH-LICIOUS!
+            SWEET SUCCESS!
           </h1>
+          <h2 className="text-3xl font-black mb-2">
+            YOU'RE A COOKIE HERO!
+          </h2>
           <p className="text-2xl font-bold">
-            Your order {orderName} is confirmed!
+            ORDER {orderName} IS PERFECTLY IMPERFECT!
           </p>
-          <p className="text-lg text-gray-600 mt-2">
-            We sent a confirmation to {customerEmail}
+          <p className="text-lg text-gray-600 mt-2 uppercase">
+            DOHHH-LICIOUS CONFIRMATION SENT TO {customerEmail}
           </p>
         </div>
 
@@ -126,12 +129,12 @@ export function CheckoutSuccess({
           </div>
 
           <div className="mt-6 p-4 bg-gray-100">
-            <p className="font-bold mb-2">WHAT'S NEXT?</p>
-            <ul className="space-y-1 text-sm uppercase">
-              <li>✓ You'll receive an order confirmation email</li>
-              <li>✓ We'll start baking your fresh cookies</li>
-              <li>✓ Shipping updates will be sent to your email</li>
-              <li>✓ Expect delivery in 5-7 business days</li>
+            <p className="font-black mb-2">WHAT'S BAKING NEXT?</p>
+            <ul className="space-y-1 text-sm uppercase font-bold">
+              <li>🍪 YOUR DOHHH-LICIOUS EMAIL IS ON THE WAY</li>
+              <li>🍪 WE'RE MIXING YOUR PERFECT BATCH NOW</li>
+              <li>🍪 TRACKING UPDATES COMING TO YOUR INBOX</li>
+              <li>🍪 FRESH COOKIES ARRIVING IN 5-7 DAYS</li>
             </ul>
           </div>
         </div>
@@ -139,10 +142,10 @@ export function CheckoutSuccess({
         {/* Social Sharing */}
         <div className="border-2 border-black p-6 mb-8">
           <h3 className="text-2xl font-black mb-4 text-center">
-            SPREAD THE DOHHH!
+            SPREAD THE DOHHH-LOVE!
           </h3>
-          <p className="text-center mb-6 uppercase">
-            Help {campaignName} reach more supporters!
+          <p className="text-center mb-6 uppercase font-bold">
+            HELP {campaignName} BECOME FULLY BAKED!
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">

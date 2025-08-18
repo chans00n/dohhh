@@ -181,12 +181,10 @@ export function StripeProvider({children, clientSecret}: StripeProviderProps & {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8 bg-white">
-        <div className="flex items-center gap-3">
-          <svg className="animate-spin h-5 w-5 text-gray-600" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <span className="text-gray-700">Loading payment system...</span>
+        <div className="text-center">
+          <div className="text-5xl mb-4">🍪</div>
+          <p className="text-gray-700 font-black uppercase">PREPARING SECURE CHECKOUT...</p>
+          <p className="text-sm text-gray-500 mt-2">DOHHH! ALMOST READY...</p>
         </div>
       </div>
     );
@@ -195,9 +193,9 @@ export function StripeProvider({children, clientSecret}: StripeProviderProps & {
   // Show error state
   if (error || !stripe || !ElementsComponent) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg" style={{backgroundColor: '#fef2f2'}}>
-        <p className="text-red-600" style={{color: '#dc2626'}}>
-          {error || 'Payment system is not available. Please contact support.'}
+      <div className="p-4 bg-yellow-50 border-2 border-black">
+        <p className="text-black font-black uppercase">
+          {error || 'DOHHH! PAYMENT SYSTEM TOOK A COOKIE BREAK. PLEASE REFRESH OR CONTACT THE DOHHH SQUAD.'}
         </p>
       </div>
     );

@@ -157,5 +157,11 @@ function SearchResultsProducts({
 }
 
 function SearchResultsEmpty() {
-  return <p>No results, try a different search.</p>;
+  return (
+    <div className="text-center py-12">
+      <div className="text-6xl mb-4">🔍</div>
+      <h2 className="text-2xl font-black mb-2 uppercase">NOTHING HERE BUT CRUMBS!</h2>
+      <p className="text-gray-600 font-mono uppercase">Try searching for something else DOHHH-licious!</p>
+    </div>
+  );
 }

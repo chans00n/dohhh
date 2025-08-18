@@ -31,50 +31,50 @@ const ERROR_CONFIG: Record<ErrorType, {
 }> = {
   payment_failed: {
     icon: '💳',
-    title: "OOPS! PAYMENT DIDN'T GO THROUGH",
-    message: "Don't be a Dohhh-Dohhh - let's try that again! Your card wasn't charged.",
+    title: "DOHHH! THAT DIDN'T WORK",
+    message: "Your payment hit a snag! Don't worry - your card wasn't charged. Let's give it another shot!",
     showRetry: true,
     showSupport: true,
   },
   card_declined: {
     icon: '🚫',
-    title: 'CARD DECLINED',
-    message: 'Your card was declined. Please try a different payment method or contact your bank.',
+    title: 'BURNT COOKIES! TRY AGAIN',
+    message: 'Your card got declined faster than overcooked cookies. Try a different payment method!',
     showRetry: true,
     showSupport: false,
   },
   network_error: {
     icon: '🌐',
-    title: 'CONNECTION LOST',
-    message: "Even our cookies need a good connection! Check your internet and try again.",
+    title: 'CRUMBLED! CONNECTION LOST',
+    message: "The internet crumbled like a dry cookie! Check your connection and rebuild.",
     showRetry: true,
     showSupport: false,
   },
   order_creation_failed: {
     icon: '📦',
-    title: 'ORDER HICCUP',
-    message: "Your payment went through but we had trouble creating your order. Don't worry - we're on it!",
+    title: 'OOPS! EVEN HOMER MAKES MISTAKES',
+    message: "Your payment worked but we fumbled the order. DOHHH! Our team is on it!",
     showRetry: false,
     showSupport: true,
   },
   inventory_error: {
     icon: '🍪',
-    title: 'OUT OF COOKIES!',
-    message: "Someone beat you to the last batch! But don't worry, we're baking more.",
+    title: 'ALL COOKIES DEVOURED!',
+    message: "Someone ate the last batch! But we're mixing up fresh DOHHH-liciousness right now.",
     showRetry: true,
     showSupport: false,
   },
   session_expired: {
     icon: '⏰',
-    title: 'SESSION EXPIRED',
-    message: "You took a bit too long (we get it, choosing cookies is hard!). Let's start fresh.",
+    title: 'COOKIES GOT STALE!',
+    message: "Your session expired like milk left out too long. Time to start fresh!",
     showRetry: true,
     showSupport: false,
   },
   generic_error: {
     icon: '😅',
-    title: 'SOMETHING WENT WRONG',
-    message: "Even we make mistakes sometimes! Let's try this again.",
+    title: 'DOHHH! SOMETHING CRUMBLED',
+    message: "Even perfectly imperfect cookies have hiccups! Let's rebuild this batch.",
     showRetry: true,
     showSupport: true,
   },
@@ -150,7 +150,7 @@ export function CheckoutError({
                 onClick={handleRetry}
                 className="px-8 py-4 bg-black text-white font-black hover:bg-gray-800 transition-colors"
               >
-                TRY AGAIN
+                BAKE AGAIN
               </button>
             )}
             
@@ -194,15 +194,15 @@ export function CheckoutError({
 
         {/* Help Section */}
         <div className="mt-8 text-center text-sm text-gray-600">
-          <p className="font-bold mb-2">NEED IMMEDIATE HELP?</p>
+          <p className="font-bold mb-2">NEED A COOKIE EMERGENCY HOTLINE?</p>
           <p>
-            Email us at{' '}
+            Email the DOHHH Squad at{' '}
             <a href="mailto:hello@dohhh.shop" className="underline">
               hello@dohhh.shop
             </a>
           </p>
           <p className="mt-2">
-            We're here Monday-Friday, 9am-5pm PST
+            We're baking Monday-Friday, 9am-5pm PST
           </p>
         </div>
       </div>
