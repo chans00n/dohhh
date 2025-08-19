@@ -185,7 +185,7 @@ function BrutalistCheckoutForm({
           campaignName,
           items,
           deliveryMethod: formState.delivery.method,
-          deliveryPrice: summary.deliveryFee || 0,
+          deliveryPrice: summary.deliveryPrice || 0,
           subtotal: summary.subtotal,
           total: summary.total,
           tipAmount: formState.tipAmount,
@@ -529,25 +529,24 @@ function BrutalistCheckoutForm({
             <p className="font-bold">Support the campaign with an optional tip:</p>
             
             <div className="grid grid-cols-2 gap-4">
-              {[0, 10, 15, 20].map(percent => (
+              {[0, 5, 10, 20].map(amount => (
                 <button
-                  key={percent}
+                  key={amount}
                   onClick={() => {
-                    const tipAmount = Math.round(summary.subtotal * percent) / 100;
                     setFormState(prev => ({
                       ...prev,
-                      tipAmount,
-                      tipPercentage: percent,
+                      tipAmount: amount,
+                      tipPercentage: 0,
                       customTip: false,
                     }));
                   }}
                   className={`p-4 border-2 font-black text-lg transition-colors ${
-                    formState.tipPercentage === percent && !formState.customTip
+                    formState.tipAmount === amount && !formState.customTip
                       ? 'border-black bg-black text-white'
                       : 'border-black hover:bg-gray-100'
                   }`}
                 >
-                  {percent === 0 ? 'NO TIP' : `${percent}% ($${(Math.round(summary.subtotal * percent) / 100).toFixed(2)})`}
+                  {amount === 0 ? 'NO TIP' : `$${amount}`}
                 </button>
               ))}
             </div>

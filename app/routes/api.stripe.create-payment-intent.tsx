@@ -38,9 +38,18 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     const orderData = data as CampaignOrderData;
 
-    // Additional validation for amounts
-    const calculatedTotal = orderData.subtotal + orderData.deliveryPrice;
+    // Additional validation for amounts (including tip if present)
+    const tipAmount = orderData.tipAmount || 0;
+    const calculatedTotal = orderData.subtotal + orderData.deliveryPrice + tipAmount;
     if (Math.abs(calculatedTotal - orderData.total) > 0.01) {
+      console.error('Total mismatch:', {
+        subtotal: orderData.subtotal,
+        deliveryPrice: orderData.deliveryPrice,
+        tipAmount: tipAmount,
+        calculatedTotal,
+        providedTotal: orderData.total,
+        difference: calculatedTotal - orderData.total
+      });
       return jsonResponse(
         {error: 'Order total mismatch. Please recalculate.'},
         {status: 400}
@@ -73,6 +82,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         itemCount: orderData.items.reduce((sum, item) => sum + item.quantity, 0).toString(),
         customerEmail: orderData.customer.email,
         customerName: orderData.customer.name,
+        tipAmount: tipAmount.toString(),
         // Store items as JSON string in metadata (Stripe limit: 500 chars per value)
         items: JSON.stringify(
           orderData.items.map(item => ({
