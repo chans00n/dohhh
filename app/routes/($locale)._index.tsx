@@ -1,8 +1,8 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link, type MetaFunction} from 'react-router';
-import {Suspense, useState} from 'react';
+import {useLoaderData, Link, type MetaFunction} from 'react-router';
+import {useState} from 'react';
 import {Image} from '@shopify/hydrogen';
-import type {FeaturedCollectionFragment, RecommendedProductsQuery} from 'storefrontapi.generated';
+import type {FeaturedCollectionFragment} from 'storefrontapi.generated';
 import {CAMPAIGN_LIST_QUERY} from '~/graphql/campaigns/ProductCampaignFragments';
 import {productToCampaign} from '~/lib/campaigns.server';
 import type {Campaign} from '~/lib/campaigns';
@@ -122,7 +122,7 @@ function FAQAccordion() {
   return (
     <section className="w-full">
       <div className="px-8 py-16 border-t-2 border-black">
-        <h2 className="text-6xl lg:text-8xl font-bold uppercase mb-12">FAQ</h2>
+        <h2 className="font-bold uppercase" style={{fontSize: 'clamp(3rem, 6vw, 5rem)', marginBottom: '3rem', marginTop: '0', lineHeight: '1'}}>FAQ</h2>
       </div>
       
       <div className="w-full">
@@ -159,134 +159,221 @@ export default function Homepage() {
   
   return (
     <div className="bg-white min-h-screen">
-      {/* Campaigns Section */}
-      <section className="w-full">
-        {data.campaigns.map((campaign, idx) => {
+      {/* NEW HERO SECTION - Cookie Focused */}
+      <section className="w-full border-b-2 border-black">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          {/* Left Side - Bold Statement */}
+          <div className="bg-black text-white p-8 lg:p-12 xl:p-16 flex flex-col justify-center border-b-2 lg:border-b-0 lg:border-r-2 border-black min-h-[600px] lg:min-h-[700px]">
+            <h1 
+              className="font-bold uppercase tracking-tighter"
+              style={{
+                fontSize: 'clamp(2.5rem, 7vw, 5rem)',
+                lineHeight: '0.85',
+                marginBottom: '2.5rem',
+                marginTop: '0',
+                fontWeight: '700'
+              }}
+            >
+              PERFECTLY<br/>
+              IMPERFECT<br/>
+              COOKIES
+            </h1>
+            <div className="mb-12">
+              <p className="text-xl lg:text-xl xl:text-2xl uppercase leading-tight">
+                FOUR FLAVORS, ZERO COMPROMISES. MADE WITH INTENTION FOR PEOPLE WHO KNOW THE DIFFERENCE BETWEEN REAL COOKIES AND WHATEVER THEY'RE SELLING AT THE GROCERY STORE.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                to="/collections/cookies"
+                className="inline-block text-center text-lg border-2 border-white px-8 py-4 bg-white text-black hover:bg-transparent hover:text-white transition-colors uppercase font-bold"
+              >
+                SHOP COOKIES NOW
+              </Link>
+              <Link 
+                to="/campaigns"
+                className="inline-block text-center text-lg border-2 border-white px-8 py-4 text-white bg-black hover:bg-white hover:text-black transition-colors uppercase font-bold"
+              >
+                VIEW CAMPAIGNS
+              </Link>
+            </div>
+          </div>
+          
+          {/* Right Side - Featured Cookie Grid */}
+          <div className="grid grid-cols-2">
+            {/* Top Left - Image */}
+            <div className="border-b-2 border-r-2 border-black h-64 lg:h-96 bg-gray-100">
+              <img 
+                src="/CTA-cookie.png" 
+                alt="Featured Cookie" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Top Right - Stats */}
+            <div className="border-b-2 border-black p-6 lg:p-8 flex flex-col justify-center bg-amber-600 text-white">
+              <p className="text-5xl lg:text-6xl font-bold">4</p>
+              <p className="text-lg uppercase font-bold">FLAVORS</p>
+              <p className="text-sm uppercase mt-2">AVAILABLE NOW</p>
+            </div>
+            {/* Bottom Left - Message */}
+            <div className="border-r-2 border-black p-6 lg:p-8 flex flex-col justify-center">
+              <p className="text-2xl lg:text-3xl font-bold uppercase">FREE SHIPPING</p>
+              <p className="text-sm uppercase mt-2">ON ORDERS $100</p>
+            </div>
+            {/* Bottom Right - Image */}
+            <div className="h-64 lg:h-96 bg-gray-100">
+              <img 
+                src="/the_dohhh_way.png" 
+                alt="Cookie Collection" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Value Proposition Bar */}
+      <section className="w-full bg-black text-white">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white">
+          <div className="p-8 text-center">
+            <p className="text-4xl mb-2">🍪</p>
+            <p className="text-lg font-bold uppercase">SMALL BATCH</p>
+            <p className="text-sm uppercase mt-1">HANDCRAFTED WITH LOVE</p>
+          </div>
+          <div className="p-8 text-center">
+            <p className="text-4xl mb-2">📦</p>
+            <p className="text-lg font-bold uppercase">FRESH DELIVERY</p>
+            <p className="text-sm uppercase mt-1">STRAIGHT FROM OUR BAKERY</p>
+          </div>
+          <div className="p-8 text-center">
+            <p className="text-4xl mb-2">💛</p>
+            <p className="text-lg font-bold uppercase">GIVE BACK</p>
+            <p className="text-sm uppercase mt-1">SUPPORT IMPORTANT CAUSES</p>
+          </div>
+        </div>
+      </section>
+      
+      {/* Regular Products Section - Moved Up */}
+      {data.regularProducts.length > 0 && (
+        <>
+          <section className="w-full px-8 py-16 border-b-2 border-black">
+            <div className="flex justify-between items-end mb-8">
+              <div>
+                <h2 className="font-bold uppercase" style={{fontSize: 'clamp(3rem, 6vw, 5rem)', marginBottom: '0', marginTop: '0', lineHeight: '1'}}>SHOP COOKIES</h2>
+                <p className="text-xl mt-4 uppercase">{data.regularProducts.length} DELICIOUS OPTIONS</p>
+              </div>
+              <Link 
+                to="/collections/cookies"
+                className="hidden lg:inline-block text-lg border-2 border-black px-6 py-3 hover:bg-black hover:text-white transition-colors uppercase font-bold"
+              >
+                VIEW ALL →
+              </Link>
+            </div>
+          </section>
+          
+          <section className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {data.regularProducts.slice(0, 6).map((product: any, idx: number) => (
+              <Link
+                key={product.id}
+                to={`/products/${product.handle}`}
+                className={`block border-b-2 border-black ${idx % 3 !== 2 ? 'lg:border-r-2' : ''} ${idx % 2 !== 1 ? 'md:border-r-2 lg:border-r-2' : 'md:border-r-0'} hover:bg-gray-50 transition-colors group`}
+              >
+                <div className="h-80 lg:h-96 overflow-hidden">
+                  {product.featuredImage && (
+                    <img
+                      src={product.featuredImage.url}
+                      alt={product.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
+                </div>
+                <div className="p-8">
+                  <h3 className="font-bold uppercase" style={{fontSize: '1.5rem', marginBottom: '0.5rem', marginTop: '0', lineHeight: '1.1'}}>{product.title}</h3>
+                  <p className="text-xl font-bold">
+                    ${product.priceRange?.minVariantPrice?.amount || '0'}
+                  </p>
+                  <p className="text-sm uppercase mt-2 text-gray-600">ADD TO CART →</p>
+                </div>
+              </Link>
+            ))}
+          </section>
+          
+          {data.regularProducts.length > 6 && (
+            <section className="w-full border-b-2 border-black">
+              <Link 
+                to="/collections/cookies"
+                className="block p-8 text-center hover:bg-gray-50 transition-colors"
+              >
+                <p className="text-2xl font-bold uppercase">VIEW ALL {data.regularProducts.length} PRODUCTS →</p>
+              </Link>
+            </section>
+          )}
+        </>
+      )}
+      
+      {/* Campaigns Section - Moved Down and Made Smaller */}
+      {data.campaigns.length > 0 && (
+        <>
+          <section className="w-full px-8 py-16 border-b-2 border-black bg-gray-50">
+            <h2 className="font-bold uppercase" style={{fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '0', marginTop: '0', lineHeight: '1'}}>ACTIVE CAMPAIGNS</h2>
+            <p className="text-xl mt-4 uppercase">BACK A COOKIE DREAM</p>
+          </section>
+          
+          <section className="w-full">
+            {data.campaigns.map((campaign, idx) => {
           const daysLeft = Math.ceil((new Date(campaign.goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
           
           return (
-            <div 
+            <Link 
               key={campaign.id}
-              className="border-b-2 border-black transition-colors group"
+              to={`/campaigns/${campaign.slug}`}
+              className="block border-b-2 border-black transition-colors hover:bg-gray-50 group"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 group-hover:bg-gray-50">
+              <div className="grid grid-cols-1 md:grid-cols-12 p-6 lg:p-8">
                 {/* Image */}
-                <Link 
-                  to={`/campaigns/${campaign.slug}`}
-                  className="lg:col-span-4 block"
-                >
-                  <div className="h-96 lg:h-auto">
+                <div className="md:col-span-3 mb-4 md:mb-0">
+                  <div className="h-48 md:h-32 lg:h-40">
                     <img
                       src={campaign.images?.[0]?.url || '/Dohhh-Cash-Celebrate.png'}
                       alt={campaign.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                </Link>
+                </div>
                 
                 {/* Content */}
-                <div className="lg:col-span-5 py-8 md:p-8 lg:p-12 lg:border-r-2 lg:border-black">
-                  <h2 className="text-3xl lg:text-4xl font-bold uppercase mb-4">
+                <div className="md:col-span-6 md:px-6">
+                  <h3 className="font-bold uppercase" style={{fontSize: '1.5rem', marginBottom: '0.5rem', marginTop: '0', lineHeight: '1.1'}}>
                     {campaign.name}
-                  </h2>
-                  <div className="text-lg mb-6 uppercase">
-                    {campaign.story && campaign.story.trim().startsWith('{') ? (
-                      <RichText json={campaign.story} />
-                    ) : campaign.story ? (
-                      <div dangerouslySetInnerHTML={{ __html: campaign.story }} />
-                    ) : campaign.description && campaign.description.trim().startsWith('{') ? (
-                      <RichText json={campaign.description} />
-                    ) : (
-                      <p>{campaign.description}</p>
-                    )}
+                  </h3>
+                  <p className="text-sm uppercase text-gray-600 mb-3 line-clamp-2">
+                    {campaign.description || 'Support this cookie campaign'}
+                  </p>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <span className="font-bold">{campaign.progress.percentage}% FUNDED</span>
+                    <span>•</span>
+                    <span>{campaign.progress.backerCount} BACKERS</span>
+                    <span>•</span>
+                    <span>{daysLeft} DAYS LEFT</span>
                   </div>
-                  <Link 
-                    to={`/campaigns/${campaign.slug}`}
-                    className="inline-block text-lg border-2 w-full border-black px-6 py-3 bg-black text-white hover:bg-white hover:text-black transition-colors"
-                  >
-                    BACK THIS CAMPAIGN
-                  </Link>
                 </div>
                 
-                {/* Stats */}
-                <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-1">
-                  <div className="p-6 border-r lg:border-r-0 lg:border-b-2 border-black">
-                    <p className="text-3xl font-bold">{campaign.progress.percentage}%</p>
-                    <p className="text-sm uppercase">FUNDED</p>
+                {/* Progress & CTA */}
+                <div className="md:col-span-3 flex flex-col justify-center mt-4 md:mt-0">
+                  <div className="border-2 border-black h-8 mb-3">
+                    <div 
+                      className="bg-black h-full transition-all duration-500" 
+                      style={{width: `${campaign.progress.percentage}%`}}
+                    />
                   </div>
-                  <div className="p-6 lg:border-b-2 border-black">
-                    <p className="text-3xl font-bold">{campaign.progress.backerCount}</p>
-                    <p className="text-sm uppercase">BACKERS</p>
-                  </div>
-                  <div className="p-6 border-r lg:border-r-0 lg:border-b-2 border-black border-t-2 lg:border-t-0">
-                    <p className="text-3xl font-bold">{daysLeft}</p>
-                    <p className="text-sm uppercase">DAYS LEFT</p>
-                  </div>
-                  <div className="p-6 border-t-2 lg:border-t-0">
-                    <p className="text-3xl font-bold">${campaign.progress.totalRaised.toFixed(2)}</p>
-                    <p className="text-sm uppercase">RAISED</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Progress bar */}
-              <div className="md:px-8 py-8 group-hover:bg-gray-50">
-                <div className="border-2 border-black h-12">
-                  <div 
-                    className="bg-black h-full transition-all duration-500" 
-                    style={{width: `${campaign.progress.percentage}%`}}
-                  />
-                </div>
-                <div className="flex justify-between mt-4">
-                  <p className="text-lg">
-                    {campaign.progress.currentQuantity} / {campaign.goal.quantity} COOKIES
-                  </p>
-                  <p className="text-lg">
-                    DEADLINE: {new Date(campaign.goal.deadline).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    }).toUpperCase()}
+                  <p className="text-sm uppercase text-center font-bold group-hover:underline">
+                    VIEW CAMPAIGN →
                   </p>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
-      </section>
-      
-      {/* Regular Products Section */}
-      {data.regularProducts.length > 0 && (
-        <>
-          <section className="w-full px-8 py-16 border-b-2 border-black">
-            <h2 className="text-6xl lg:text-8xl font-bold uppercase">SHOP</h2>
-            <p className="text-xl mt-4">{data.regularProducts.length} PRODUCTS AVAILABLE</p>
-          </section>
-          
-          <section className="w-full grid grid-cols-1 lg:grid-cols-3">
-            {data.regularProducts.map((product: any, idx: number) => (
-              <Link
-                key={product.id}
-                to={`/products/${product.handle}`}
-                className={`block border-b-2 border-black ${idx % 3 !== 2 ? 'lg:border-r-2' : ''} hover:bg-gray-50 transition-colors`}
-              >
-                <div className="h-96">
-                  {product.featuredImage && (
-                    <img
-                      src={product.featuredImage.url}
-                      alt={product.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold uppercase mb-2">{product.title}</h3>
-                  <p className="text-xl font-bold">
-                    ${product.priceRange?.minVariantPrice?.amount || '0'}
-                  </p>
-                </div>
-              </Link>
-            ))}
           </section>
         </>
       )}
@@ -315,25 +402,6 @@ function FeaturedCollection({collection}: {collection: FeaturedCollectionFragmen
   );
 }
 
-function RecommendedProducts({products}: {products: Promise<RecommendedProductsQuery | null>}) {
-  return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) => (
-            <div className="recommended-products-grid">
-              {response ? response.products.nodes.map((product) => (
-                <ProductItem key={product.id} product={product} />
-              )) : null}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
-    </div>
-  );
-}
 
 const FEATURED_COLLECTION_QUERY = `#graphql
   fragment FeaturedCollection on Collection {

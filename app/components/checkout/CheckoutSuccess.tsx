@@ -104,7 +104,7 @@ export function CheckoutSuccess({
           <p className="text-2xl font-bold">
             ORDER {orderName} IS PERFECTLY IMPERFECT!
           </p>
-          <p className="text-lg text-gray-600 mt-2 uppercase">
+          <p className="text-lg text-gray-600 mt-6 uppercase">
             DOHHH-LICIOUS CONFIRMATION SENT TO {customerEmail}
           </p>
         </div>
@@ -136,7 +136,7 @@ export function CheckoutSuccess({
               <li>🍪 YOUR DOHHH-LICIOUS EMAIL IS ON THE WAY</li>
               <li>🍪 WE'RE MIXING YOUR PERFECT BATCH NOW</li>
               <li>🍪 TRACKING UPDATES COMING TO YOUR INBOX</li>
-              <li>🍪 FRESH COOKIES ARRIVING IN 5-7 DAYS</li>
+              <li>🍪 FRESH COOKIES ARRIVING IN 1-2 WEEKS AFTER CAMPAIGN ENDS</li>
             </ul>
           </div>
         </div>

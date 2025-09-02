@@ -1,4 +1,4 @@
-import {Suspense, useState, useEffect} from 'react';
+import {Suspense} from 'react';
 import {Await, NavLink, useAsyncValue, Link, useLoaderData} from 'react-router';
 import {
   type CartViewPayload,
@@ -26,41 +26,41 @@ export function Header({
   campaignDeadline,
 }: HeaderProps) {
   const {shop, menu} = header;
-  const [timeLeft, setTimeLeft] = useState('');
+  // const [timeLeft, setTimeLeft] = useState('');
   
-  // Campaign countdown timer - use actual campaign deadline or default to 7 days
-  useEffect(() => {
-    let targetDate: Date;
+  // Campaign countdown timer - DISABLED FOR NOW - use actual campaign deadline or default to 7 days
+  // useEffect(() => {
+  //   let targetDate: Date;
     
-    if (campaignDeadline) {
-      // Use the actual campaign deadline from metafields
-      targetDate = new Date(campaignDeadline);
-    } else {
-      // Fallback to 7 days from now if no campaign deadline provided
-      targetDate = new Date();
-      targetDate.setDate(targetDate.getDate() + 7);
-    }
+  //   if (campaignDeadline) {
+  //     // Use the actual campaign deadline from metafields
+  //     targetDate = new Date(campaignDeadline);
+  //   } else {
+  //     // Fallback to 7 days from now if no campaign deadline provided
+  //     targetDate = new Date();
+  //     targetDate.setDate(targetDate.getDate() + 7);
+  //   }
     
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate.getTime() - now;
+  //   const interval = setInterval(() => {
+  //     const now = new Date().getTime();
+  //     const distance = targetDate.getTime() - now;
       
-      if (distance < 0) {
-        setTimeLeft('Campaign Ended');
-        clearInterval(interval);
-        return;
-      }
+  //     if (distance < 0) {
+  //       setTimeLeft('Campaign Ended');
+  //       clearInterval(interval);
+  //       return;
+  //     }
       
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  //     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  //     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
-      setTimeLeft(`${days}D ${hours}H ${minutes}M ${seconds}S`);
-    }, 1000);
+  //     setTimeLeft(`${days}D ${hours}H ${minutes}M ${seconds}S`);
+  //   }, 1000);
     
-    return () => clearInterval(interval);
-  }, [campaignDeadline]);
+  //   return () => clearInterval(interval);
+  // }, [campaignDeadline]);
   
   return (
     <>
@@ -139,11 +139,11 @@ export function Header({
               {/* Mobile Menu Toggle */}
               <HeaderMenuMobileToggle />
               
-              {/* Countdown Timer */}
-              <div className="hidden lg:flex flex-col items-end">
+              {/* Countdown Timer - Hidden for now, can be re-enabled when needed */}
+              {/* <div className="hidden lg:flex flex-col items-end">
                 <div className="text-xs text-neutral-500 uppercase tracking-wider">Campaign Ends</div>
                 <div className="text-sm font-bold text-neutral-900 font-mono">{timeLeft}</div>
-              </div>
+              </div> */}
               
               {/* Search & Cart */}
               <div className="flex items-center gap-2 md:gap-4">
