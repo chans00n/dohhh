@@ -180,7 +180,7 @@ export default function Homepage() {
             </h1>
             <div className="mb-12">
               <p className="text-xl lg:text-xl xl:text-2xl uppercase leading-tight">
-                FOUR FLAVORS, ZERO COMPROMISES. MADE WITH INTENTION FOR PEOPLE WHO KNOW THE DIFFERENCE BETWEEN REAL COOKIES AND WHATEVER THEY'RE SELLING AT THE GROCERY STORE.
+                HANDCRAFTED IN SMALL BATCHES. MADE WITH INTENTION. SUPPORTING REAL DREAMS THROUGH COOKIE-TECH INNOVATION.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -188,13 +188,13 @@ export default function Homepage() {
                 to="/collections/cookies"
                 className="inline-block text-center text-lg border-2 border-white px-8 py-4 bg-white text-black hover:bg-transparent hover:text-white transition-colors uppercase font-bold"
               >
-                SHOP COOKIES NOW
+                GET DOHHH-LICIOUS
               </Link>
               <Link 
                 to="/campaigns"
                 className="inline-block text-center text-lg border-2 border-white px-8 py-4 text-white bg-black hover:bg-white hover:text-black transition-colors uppercase font-bold"
               >
-                VIEW CAMPAIGNS
+                BACK A DREAM
               </Link>
             </div>
           </div>
@@ -237,18 +237,54 @@ export default function Homepage() {
         <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white">
           <div className="p-8 text-center">
             <p className="text-4xl mb-2">🍪</p>
-            <p className="text-lg font-bold uppercase">SMALL BATCH</p>
-            <p className="text-sm uppercase mt-1">HANDCRAFTED WITH LOVE</p>
+            <p className="text-lg font-bold uppercase">SMALL-BATCH CHAOS</p>
+            <p className="text-sm uppercase mt-1">THAT SOMEHOW WORKS</p>
           </div>
           <div className="p-8 text-center">
             <p className="text-4xl mb-2">📦</p>
-            <p className="text-lg font-bold uppercase">FRESH DELIVERY</p>
-            <p className="text-sm uppercase mt-1">STRAIGHT FROM OUR BAKERY</p>
+            <p className="text-lg font-bold uppercase">MADE TO ORDER</p>
+            <p className="text-sm uppercase mt-1">BECAUSE SOME THINGS CAN'T BE RUSHED</p>
           </div>
           <div className="p-8 text-center">
             <p className="text-4xl mb-2">💛</p>
-            <p className="text-lg font-bold uppercase">GIVE BACK</p>
-            <p className="text-sm uppercase mt-1">SUPPORT IMPORTANT CAUSES</p>
+            <p className="text-lg font-bold uppercase">100% GOES TO DREAMS</p>
+            <p className="text-sm uppercase mt-1">NOT CORPORATE NONSENSE</p>
+          </div>
+        </div>
+      </section>
+      
+      {/* Brand Story Section - Who We Are */}
+      <section className="w-full border-b-2 border-black">
+        <div className="max-w-5xl mx-auto px-8 py-16 lg:py-24 text-center">
+          <h2 
+            className="font-bold uppercase mb-12"
+            style={{
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              lineHeight: '0.9',
+              marginTop: '0'
+            }}
+          >
+            PERFECTLY IMPERFECT.<br/>
+            MADE WITH INTENTION.
+          </h2>
+          <div className="space-y-8 text-lg lg:text-xl">
+          <p style={{marginBottom: '20px', lineHeight: '1.8'}}>
+              HERE'S THE THING: TRADITIONAL FUNDRAISING IS BORING. MASS-PRODUCED COOKIES ARE GARBAGE. AND SOME DREAMS DESERVE BETTER THAN CAR WASH FUNDRAISERS.
+            </p>
+            <p style={{marginBottom: '20px', lineHeight: '1.8'}}>
+              SO WE BUILT OUR OWN PLATFORM (BECAUSE EXISTING ONES SUCKED) AND STARTED BAKING SMALL-BATCH COOKIES THAT ACTUALLY TASTE LIKE COOKIES SHOULD. PERFECTLY IMPERFECT BY DESIGN, REVOLUTIONARY BY CHOICE.
+            </p>
+            <p style={{marginBottom: '20px', lineHeight: '1.8'}}>
+              EVERY CAMPAIGN TELLS A STORY. EVERY COOKIE SERVES A PURPOSE. AND EVERY BACKER BECOMES A COOKIE HERO. DON'T BE A DOHHH-DOHHH - JOIN THE MOVEMENT.
+            </p>
+          </div>
+          <div className="pt-12">
+            <Link 
+              to="/campaigns"
+              className="inline-block text-lg border-2 border-black px-8 py-4 hover:bg-black hover:text-white transition-colors uppercase font-bold"
+            >
+              BACK A DREAM →
+            </Link>
           </div>
         </div>
       </section>

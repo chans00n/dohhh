@@ -289,7 +289,10 @@ export default function CampaignDetail() {
     }
   }, [fetcher.data, open]);
   
-  const daysLeft = Math.ceil((new Date(campaign.goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const deadlineDate = new Date(campaign.goal.deadline);
+  const now = new Date();
+  const daysLeft = Math.ceil((deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const isCampaignClosed = deadlineDate < now || daysLeft <= 0;
   
   // Get price from selected variant or use campaign price
   const selectedVariantData = variants.find(v => v.id === selectedVariant);
@@ -362,10 +365,53 @@ export default function CampaignDetail() {
         
         {/* Right - Purchase Section */}
         <div className="py-8 lg:p-8 lg:pl-8 lg:pr-12 lg:pt-0 lg:pb-12 w-full xl:col-span-1">
-          <h2 className="text-2xl uppercase mb-2 lg:mt-0">BACK THIS CAMPAIGN</h2>
-          <p className="text-3xl font-bold uppercase mb-8">${variantPrice.toFixed(2)}</p>
-          
-          <fetcher.Form method="post" className="space-y-8 w-full max-w-2xl">
+          {isCampaignClosed ? (
+            <>
+              <h2 className="text-3xl uppercase mb-4 lg:mt-0 font-bold">CAMPAIGN CLOSED</h2>
+              <div className="border-2 border-black bg-gray-100 p-8 mb-8">
+                <p className="text-xl uppercase mb-4">THIS CAMPAIGN ENDED ON</p>
+                <p className="text-2xl font-bold uppercase mb-6">
+                  {deadlineDate.toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }).toUpperCase()}
+                </p>
+                <p className="text-lg uppercase">
+                  THANK YOU TO ALL {campaign.progress.backerCount} BACKERS WHO MADE THIS CAMPAIGN POSSIBLE!
+                </p>
+              </div>
+              
+              {/* Show final stats */}
+              <div className="space-y-4 mb-8">
+                <div className="border-2 border-black p-4">
+                  <p className="text-sm uppercase text-gray-600">FINAL AMOUNT RAISED</p>
+                  <p className="text-3xl font-bold">${campaign.progress.totalRaised.toFixed(2)}</p>
+                </div>
+                <div className="border-2 border-black p-4">
+                  <p className="text-sm uppercase text-gray-600">TOTAL COOKIES BACKED</p>
+                  <p className="text-3xl font-bold">{campaign.progress.currentQuantity}</p>
+                </div>
+                <div className="border-2 border-black p-4">
+                  <p className="text-sm uppercase text-gray-600">FUNDING ACHIEVED</p>
+                  <p className="text-3xl font-bold">{campaign.progress.percentage}%</p>
+                </div>
+              </div>
+              
+              {/* Browse other campaigns button */}
+              <Link 
+                to="/campaigns"
+                className="block w-full border-2 border-black py-6 text-xl uppercase bg-black text-white hover:bg-white hover:text-black transition-colors text-center"
+              >
+                VIEW ACTIVE CAMPAIGNS
+              </Link>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl uppercase mb-2 lg:mt-0">BACK THIS CAMPAIGN</h2>
+              <p className="text-3xl font-bold uppercase mb-8">${variantPrice.toFixed(2)}</p>
+              
+              <fetcher.Form method="post" className="space-y-8 w-full max-w-2xl">
             <input type="hidden" name="variantId" value={selectedVariant} />
             
             {/* Variant Selector - Only show if multiple variants */}
@@ -465,6 +511,8 @@ export default function CampaignDetail() {
             <p className="text-lg">SHIPS FROM: HUNTINGTON BEACH, CA</p>
             <p className="text-lg">100% GOES TO CAMPAIGN</p>
           </div>
+            </>
+          )}
         </div>
       </section>
       
@@ -490,9 +538,9 @@ export default function CampaignDetail() {
         </div>
         <div className="p-8 lg:p-12 border-b-2 lg:border-b-0 lg:border-r-2 border-black">
           <p className="text-4xl lg:text-5xl font-bold mb-2">
-            {daysLeft}
+            {isCampaignClosed ? 'ENDED' : daysLeft}
           </p>
-          <p className="text-lg uppercase">DAYS LEFT</p>
+          <p className="text-lg uppercase">{isCampaignClosed ? 'CAMPAIGN' : 'DAYS LEFT'}</p>
         </div>
         <div className="p-8 lg:p-12 border-r-2 lg:border-r-2 border-black">
           <p className="text-4xl lg:text-5xl font-bold mb-2">
@@ -510,18 +558,23 @@ export default function CampaignDetail() {
       
       {/* Progress Bar */}
       <section className="w-full px-4 lg:px-8 py-8 lg:py-16">
+        {isCampaignClosed && (
+          <div className="bg-black text-white text-center py-4 mb-8">
+            <p className="text-2xl font-bold uppercase">THIS CAMPAIGN HAS ENDED</p>
+          </div>
+        )}
         <div className="border-2 border-black h-16">
           <div 
-            className="bg-black h-full transition-all duration-500" 
+            className={`h-full transition-all duration-500 ${isCampaignClosed ? 'bg-gray-600' : 'bg-black'}`}
             style={{width: `${campaign.progress.percentage}%`}}
           />
         </div>
         <div className="flex justify-between mt-6">
           <p className="text-xl uppercase">
-            GOAL: {campaign.goal.quantity} COOKIES
+            {isCampaignClosed ? 'FINAL:' : 'GOAL:'} {campaign.goal.quantity} COOKIES
           </p>
           <p className="text-xl uppercase">
-            DEADLINE: {new Date(campaign.goal.deadline).toLocaleDateString('en-US', {
+            {isCampaignClosed ? 'ENDED:' : 'DEADLINE:'} {new Date(campaign.goal.deadline).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric'
@@ -602,7 +655,7 @@ export default function CampaignDetail() {
                 {/* Call to Action */}
                 <div className="bg-black text-white p-6">
                   <p className="text-2xl font-bold uppercase text-center">
-                    {daysLeft > 0 ? `${daysLeft} DAYS LEFT TO MAKE A DIFFERENCE` : 'CAMPAIGN ENDING SOON'}
+                    {isCampaignClosed ? 'CAMPAIGN HAS ENDED' : daysLeft > 0 ? `${daysLeft} DAYS LEFT TO MAKE A DIFFERENCE` : 'CAMPAIGN ENDING SOON'}
                   </p>
                 </div>
               </div>
@@ -705,8 +758,8 @@ export default function CampaignDetail() {
               <p className="text-sm lg:text-base uppercase font-bold">Cookies Sold</p>
             </div>
             <div className="text-center border-2 border-black p-4 lg:p-6">
-              <div className="text-3xl lg:text-4xl font-bold mb-2">{daysLeft}</div>
-              <p className="text-sm lg:text-base uppercase font-bold">Days to Go</p>
+              <div className="text-3xl lg:text-4xl font-bold mb-2">{isCampaignClosed ? 'ENDED' : daysLeft}</div>
+              <p className="text-sm lg:text-base uppercase font-bold">{isCampaignClosed ? 'Campaign' : 'Days to Go'}</p>
             </div>
           </div>
         </div>

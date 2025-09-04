@@ -150,6 +150,11 @@ export default function Product() {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  
+  // Get batch ordering metafields
+  const batchStatus = product.batchStatus?.value || 'available';
+  const nextBatchDate = product.nextBatchDate?.value;
+  const batchMessage = product.batchMessage?.value || 'WE BAKE IN SMALL BATCHES TO ENSURE FRESHNESS. JOIN OUR EMAIL LIST TO BE NOTIFIED WHEN ORDERING OPENS.';
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -467,14 +472,37 @@ export default function Product() {
                 <span className="text-3xl font-bold">${totalPrice.toFixed(2)}</span>
               </div>
               
-              {/* Submit button */}
-              <button
-                type="submit"
-                className="w-full border-2 border-black py-6 text-2xl uppercase bg-black text-white hover:bg-white hover:text-black transition-colors"
-                disabled={fetcher.state !== 'idle'}
-              >
-                {fetcher.state === 'submitting' ? 'ADDING TO CART...' : 'ADD TO CART'}
-              </button>
+              {/* Submit button - Check batch status and availability */}
+              {selectedVariant?.availableForSale && batchStatus !== 'coming_soon' ? (
+                <button
+                  type="submit"
+                  className="w-full border-2 border-black py-6 text-2xl uppercase bg-black text-white hover:bg-white hover:text-black transition-colors"
+                  disabled={fetcher.state !== 'idle'}
+                >
+                  {fetcher.state === 'submitting' ? 'ADDING TO CART...' : 'ADD TO CART'}
+                </button>
+              ) : (
+                <div className="w-full">
+                  <button
+                    type="button"
+                    className="w-full border-2 border-black py-6 text-2xl uppercase bg-gray-300 text-gray-600 cursor-not-allowed"
+                    disabled
+                  >
+                    {batchStatus === 'sold_out' ? 'SOLD OUT - NEXT BATCH COMING' : 'BATCH ORDERING - COMING SOON'}
+                  </button>
+                  {nextBatchDate && (
+                    <p className="text-center mt-2 text-lg font-bold uppercase">
+                      NEXT BATCH: {new Date(nextBatchDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                      }).toUpperCase()}
+                    </p>
+                  )}
+                  <p className="text-center mt-4 text-lg uppercase">
+                    JOIN OUR EMAIL LIST TO BE NOTIFIED
+                  </p>
+                </div>
+              )}
             </div>
           </fetcher.Form>
           
@@ -581,8 +609,30 @@ export default function Product() {
           {/* Product details */}
           <div className="mt-12 pt-8 border-t-2 border-black space-y-2">
             <p className="text-lg">SKU: {selectedVariant?.sku || 'N/A'}</p>
-            <p className="text-lg">AVAILABILITY: {selectedVariant?.availableForSale ? 'IN STOCK' : 'OUT OF STOCK'}</p>
+            <p className="text-lg">AVAILABILITY: {
+              selectedVariant?.availableForSale && batchStatus !== 'coming_soon' 
+                ? 'IN STOCK' 
+                : batchStatus === 'sold_out' 
+                  ? 'SOLD OUT' 
+                  : 'NEXT BATCH COMING SOON'
+            }</p>
             {vendor && <p className="text-lg">BRAND: {vendor.toUpperCase()}</p>}
+            {(!selectedVariant?.availableForSale || batchStatus === 'coming_soon') && (
+              <div className="mt-4 p-4 border-2 border-amber-600 bg-amber-50">
+                <p className="text-sm uppercase font-bold">BATCH ORDERING SYSTEM</p>
+                {nextBatchDate && (
+                  <p className="text-sm uppercase font-bold mt-1">
+                    NEXT BATCH: {new Date(nextBatchDate).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric'
+                    }).toUpperCase()}
+                  </p>
+                )}
+                <p className="text-sm uppercase mt-2">
+                  {batchMessage}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -790,6 +840,15 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    batchStatus: metafield(namespace: "custom", key: "batch_status") {
+      value
+    }
+    nextBatchDate: metafield(namespace: "custom", key: "next_batch_date") {
+      value
+    }
+    batchMessage: metafield(namespace: "custom", key: "batch_message") {
+      value
+    }
     images(first: 10) {
       nodes {
         id
